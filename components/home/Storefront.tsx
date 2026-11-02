@@ -7,6 +7,7 @@ import type { CartItem } from "@/components/store/ProductDetails";
 import { StoreDialog, type DialogState } from "@/components/store/StoreDialog";
 import type { Product } from "@/data/home";
 import { useCallback, useState } from "react";
+import { useRouter } from "next/navigation";
 import { CollectionSection } from "./CollectionSection";
 import { CurrentlyObsessedSection } from "./CurrentlyObsessedSection";
 import { FestiveSection } from "./FestiveSection";
@@ -21,6 +22,7 @@ import { StorySection } from "./StorySection";
 import { TestimonialsSection } from "./TestimonialsSection";
 
 export default function Storefront() {
+  const router = useRouter();
   const [dialog, setDialog] = useState<DialogState | null>(null);
   const [saved, setSaved] = useState<string[]>([]);
   const [cart, setCart] = useState<CartItem[]>([]);
@@ -28,7 +30,7 @@ export default function Storefront() {
   const openPanel = (name: string) => setDialog({ kind: "panel", name });
   const openProduct = (product: Product) => setDialog({ kind: "product", product });
   const openVideo = (id: number) => setDialog({ kind: "video", id });
-  const shop = () => document.getElementById("currently-obsessed")?.scrollIntoView({ behavior: "smooth" });
+  const shop = () => router.push("/shop");
   const toggleSave = (name: string) => setSaved(current => current.includes(name) ? current.filter(item => item !== name) : [...current, name]);
   const addToCart = (item: CartItem) => {
     setCart(current => [...current, item]);
