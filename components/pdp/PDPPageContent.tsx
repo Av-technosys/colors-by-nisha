@@ -1,0 +1,122 @@
+"use client";
+
+import React, { useState } from "react";
+import Link from "next/link";
+import { type ProductItem } from "@/data/products";
+import { Header } from "@/components/layout/Header";
+import { Footer } from "@/components/layout/Footer";
+import { MobileNavigation } from "@/components/layout/MobileNavigation";
+import { CartDrawer } from "@/components/store/CartDrawer";
+import { useStore } from "@/components/store/StoreContext";
+import { ProductGallery } from "./ProductGallery";
+import { ProductDetailsInfo } from "./ProductDetailsInfo";
+import { ProductTabs } from "./ProductTabs";
+import { RelatedProductsSection } from "./RelatedProductsSection";
+import { StickyBottomBar } from "./StickyBottomBar";
+import { QuickViewModal } from "@/components/shop/QuickViewModal";
+
+interface PDPPageContentProps {
+  product: ProductItem;
+}
+
+export function PDPPageContent({ product }: PDPPageContentProps) {
+  const { cart, wishlist, setCartOpen, notification } = useStore();
+  const [quickViewProduct, setQuickViewProduct] = useState<ProductItem | null>(null);
+
+  const cartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+
+  return (
+    <div className="min-h-screen bg-white text-ink flex flex-col pb-28 md:pb-0">
+      {/* Toast Notification */}
+      {notification && (
+        <div className="fixed bottom-24 left-1/2 -translate-x-1/2 z-50 rounded-full bg-ink px-5 py-2.5 text-xs font-semibold text-white shadow-xl animate-in fade-in slide-in-from-bottom-2 duration-200">
+          {notification}
+        </div>
+      )}
+
+      {/* Solid Header */}
+      <Header
+        solid={true}
+        cartCount={cartCount}
+        savedCount={wishlist.length}
+        onPanel={(panel) => {
+          if (panel === "Shopping bag" || panel === "Cart") setCartOpen(true);
+        }}
+      />
+
+      <main className="flex-1">
+        {/* Breadcrumb: Home - Shop - PRODUCT NAME */}
+        <div className="mx-auto max-w-[1360px] px-4 md:px-6 lg:px-8 pt-3 pb-2">
+          <nav aria-label="Breadcrumbs" className="text-xs text-neutral-500">
+            <ol className="flex items-center gap-2 flex-wrap font-medium">
+              <li>
+                <Link href="/" className="hover:text-ink transition-colors">
+                  Home
+                </Link>
+              </li>
+              <li className="text-neutral-400">-</li>
+              <li>
+                <Link href="/shop" className="hover:text-ink transition-colors">
+                  Shop
+                </Link>
+              </li>
+              <li className="text-neutral-400">-</li>
+              <li className="font-semibold text-ink uppercase tracking-wide">
+                {product.name}
+              </li>
+            </ol>
+          </nav>
+        </div>
+
+        {/* 2-Column Main Section */}
+        <section className="mx-auto max-w-[1360px] px-4 md:px-6 lg:px-8 pt-1 md:pt-4">
+          <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-5 lg:gap-14 items-start">
+            {/* Left: Gallery - Normal block on mobile, sticky only on desktop! */}
+            <div className="relative lg:sticky lg:top-28">
+              <ProductGallery
+                images={product.images}
+                productName={product.name}
+                productSlug={product.slug}
+              />
+            </div>
+
+            {/* Right: Details & Purchase Form directly below image on mobile */}
+            <div className="pt-3 md:pt-0">
+              <ProductDetailsInfo product={product} />
+            </div>
+          </div>
+
+          {/* Product Description Tabs */}
+          <div className="mt-8 md:mt-16">
+            <ProductTabs product={product} />
+          </div>
+
+          {/* Related Products */}
+          <RelatedProductsSection
+            currentProduct={product}
+            onQuickView={(p) => setQuickViewProduct(p)}
+          />
+        </section>
+      </main>
+
+      {/* Sticky Bottom Add to Cart Bar (Desktop & Mobile) with Dynamic Scroll Fill Button */}
+      <StickyBottomBar product={product} />
+
+      {/* Mobile Bottom Navigation Bar */}
+      <MobileNavigation
+        onPanel={(panel) => {
+          if (panel === "Shopping bag" || panel === "Cart") setCartOpen(true);
+        }}
+      />
+
+      {/* Cart Drawer */}
+      <CartDrawer />
+
+      {/* Quick View Modal */}
+      <QuickViewModal product={quickViewProduct} onClose={() => setQuickViewProduct(null)} />
+
+      {/* Footer */}
+      <Footer />
+    </div>
+  );
+}

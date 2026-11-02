@@ -5,7 +5,7 @@ import { Photo } from "@/components/ui/Photo";
 import Link from "next/link";
 import { useState } from "react";
 
-export function Footer({ onShop, onPanel }: { onShop: () => void; onPanel: (name: string) => void }) {
+export function Footer({ onShop, onPanel }: { onShop?: () => void; onPanel?: (name: string) => void } = {}) {
   const [subscribed, setSubscribed] = useState(false);
   return (
     <footer id="footer" className="bg-purple text-[13px] text-white">
@@ -24,15 +24,19 @@ export function Footer({ onShop, onPanel }: { onShop: () => void; onPanel: (name
         <div className="flex flex-col items-start gap-2">
           <h3 className="mb-4 font-display text-[17px] md:mb-5 md:text-lg">Quick Links</h3>
           <Link href="/">Home</Link>
-          <button onClick={onShop}>Shop</button>
-          <a href="#our-story">About us</a>
-          <a href="mailto:colorbynishavijay@gmail.com">Contact</a>
-          <button onClick={() => onPanel("Blogs")}>Blogs</button>
+          {onShop ? <button onClick={onShop}>Shop</button> : <Link href="/shop">Shop</Link>}
+          <Link href="/about">About us</Link>
+          <Link href="/contact">Contact</Link>
+          {onPanel ? <button onClick={() => onPanel("Blogs")}>Blogs</button> : <Link href="/blog">Blogs</Link>}
         </div>
         <div className="flex flex-col items-start gap-2">
-          <h3 className="mb-4 font-display text-[17px] md:mb-5 md:text-lg">Categories</h3>{["Lehenga", "Saree", "Ethnic"].map(x => <button key={x} onClick={onShop}>{x}</button>)}</div>
+          <h3 className="mb-4 font-display text-[17px] md:mb-5 md:text-lg">Categories</h3>
+          {["Lehenga", "Saree", "Ethnic"].map(x => onShop ? <button key={x} onClick={onShop}>{x}</button> : <Link key={x} href={`/shop?category=${x.toLowerCase()}`}>{x}</Link>)}
+        </div>
         <div className="flex flex-col items-start gap-2">
-          <h3 className="mb-4 font-display text-[17px] md:mb-5 md:text-lg">Legal Links</h3>{["Privacy Policy", "Terms & Conditions", "Return & Refund", "Customization"].map(x => <button key={x} onClick={() => onPanel(x)}>{x}</button>)}</div>
+          <h3 className="mb-4 font-display text-[17px] md:mb-5 md:text-lg">Legal Links</h3>
+          {["Privacy Policy", "Terms & Conditions", "Return & Refund", "Customization"].map(x => onPanel ? <button key={x} onClick={() => onPanel(x)}>{x}</button> : <span key={x} className="cursor-pointer hover:underline">{x}</span>)}
+        </div>
         <div className="col-span-2 md:col-start-2 lg:col-span-1 lg:col-start-auto">
           <h3 className="mb-4 font-display text-[17px] md:mb-5 md:text-lg">Subscribe to Our Newsletter</h3>
           <p className="mb-5">Subscribe for store updates and discounts.</p>
