@@ -2,7 +2,7 @@
 
 import { Icon } from "@/components/ui/Icon";
 import { Photo } from "@/components/ui/Photo";
-import { handpicked, masterpieces, money, products, type Product } from "@/data/home";
+import { money, handpicked, masterpieces, products, type Product } from "@/data/home";
 import { useState } from "react";
 import type { ProductActions } from "./ProductCard";
 import type { CartItem } from "./ProductDetails";

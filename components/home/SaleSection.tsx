@@ -10,7 +10,7 @@ export function SaleSection({ onShop }: { onShop: () => void }) {
     <Reveal>
       <section className="relative min-h-[280px] text-white md:aspect-2/1 md:min-h-0">
         <Photo id={64} alt="Festive wardrobe collection" />
-        <div className="absolute inset-x-0 bottom-5 mx-auto max-w-[1328px] px-5 md:bottom-8 lg:bottom-12 lg:px-6">
+        <div className="absolute inset-x-0 top-6 mx-auto max-w-[1328px] px-5 md:top-[22%] lg:px-6">
           <p className="mb-2 font-display text-xs md:mb-4 md:text-sm">Exclusive Deals</p>
           <SectionHeading align="left">Discover Festive<br />Wardrobe Now on Sale</SectionHeading>
           <Button variant="outline" onClick={onShop}>Don&apos;t Miss Out</Button>

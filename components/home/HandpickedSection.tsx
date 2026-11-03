@@ -3,7 +3,7 @@
 import { Photo } from "@/components/ui/Photo";
 import { PreviewVideo } from "@/components/ui/PreviewVideo";
 import { Reveal } from "@/components/ui/Reveal";
-import { handpicked, money, videoPosters, videos, type Product } from "@/data/home";
+import { money, handpicked, videoPosters, videos, type Product } from "@/data/home";
 
 export function HandpickedSection({ onPlay, onSelect }: { onPlay: (id: number) => void; onSelect: (product: Product) => void }) {
   return (
