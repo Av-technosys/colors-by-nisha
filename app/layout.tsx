@@ -4,6 +4,7 @@ import "./globals.css";
 import { StoreProvider } from "@/components/store/StoreContext";
 import { MobileMenuDrawer } from "@/components/layout/MobileMenuDrawer";
 import { CartDrawer } from "@/components/store/CartDrawer";
+import { SearchModal } from "@/components/layout/SearchModal";
 
 const montserrat = localFont({
   src: "../public/fonts/montserrat-regular.woff2",
@@ -30,6 +31,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           {children}
           <MobileMenuDrawer />
           <CartDrawer />
+          <SearchModal />
         </StoreProvider>
       </body>
     </html>

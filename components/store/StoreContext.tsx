@@ -27,6 +27,8 @@ interface StoreContextType {
   setCartOpen: (open: boolean) => void;
   menuOpen: boolean;
   setMenuOpen: (open: boolean) => void;
+  searchOpen: boolean;
+  setSearchOpen: (open: boolean) => void;
   notification: string | null;
   clearNotification: () => void;
 }
@@ -56,6 +58,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
 
   const [cartOpen, setCartOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
   const [notification, setNotification] = useState<string | null>(null);
 
   // Save to localStorage whenever cart or wishlist updates
@@ -88,19 +91,14 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       );
       if (existing !== -1) {
         const copy = [...prev];
-        copy[existing] = {
-          ...copy[existing],
-          price: finalPrice,
-          image: finalImage,
-          stockCount: product.stockCount,
-          quantity: Math.min(limit, copy[existing].quantity + qty),
-        };
+        const nextQty = Math.min(limit, copy[existing].quantity + qty);
+        copy[existing] = { ...copy[existing], quantity: nextQty };
         return copy;
       }
       return [
         ...prev,
         {
-          id: product.id,
+          id: `${product.slug}-${size}-${product.variantId || "default"}`,
           slug: product.slug,
           name: product.name,
           price: finalPrice,
@@ -112,9 +110,9 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
         },
       ];
     });
+
+    setNotification(`Added "${product.name}" to cart`);
     setCartOpen(true);
-    setNotification(`Added "${product.name}" to shopping cart!`);
-    setTimeout(() => setNotification(null), 3500);
   };
 
   const removeFromCart = (index: number) => {
@@ -128,18 +126,20 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     }
     setCart((prev) => {
       const copy = [...prev];
-      copy[index] = { ...copy[index], quantity: Math.min(copy[index].stockCount ?? Infinity, Math.max(1, Math.floor(quantity))) };
+      if (copy[index]) {
+        const limit = copy[index].stockCount ?? Infinity;
+        copy[index] = { ...copy[index], quantity: Math.min(limit, Math.floor(quantity)) };
+      }
       return copy;
     });
   };
 
   const toggleWishlist = (slug: string) => {
     setWishlist((prev) => {
-      const exists = prev.includes(slug);
-      const updated = exists ? prev.filter((s) => s !== slug) : [...prev, slug];
-      setNotification(exists ? "Removed from wishlist" : "Added to wishlist");
-      setTimeout(() => setNotification(null), 3000);
-      return updated;
+      if (prev.includes(slug)) {
+        return prev.filter((item) => item !== slug);
+      }
+      return [...prev, slug];
     });
   };
 
@@ -161,6 +161,8 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
         setCartOpen,
         menuOpen,
         setMenuOpen,
+        searchOpen,
+        setSearchOpen,
         notification,
         clearNotification,
       }}
