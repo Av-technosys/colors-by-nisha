@@ -11,16 +11,23 @@ export const metadata: Metadata = {
 async function ShopLoader({
   searchParamsPromise,
 }: {
-  searchParamsPromise?: Promise<{ category?: string; search?: string; sort?: string }>;
+  searchParamsPromise?: Promise<{ category?: string; search?: string; query?: string; q?: string; sort?: string }>;
 }) {
   const params = searchParamsPromise ? await searchParamsPromise : {};
   const products = await getShopProducts();
+  const search = params.search || params.query || params.q || "";
 
-  return <ShopPageContent products={products} initialCategory={params.category} />;
+  return (
+    <ShopPageContent
+      products={products}
+      initialCategory={params.category}
+      initialSearch={search}
+    />
+  );
 }
 
 export default function ShopPage(props: {
-  searchParams?: Promise<{ category?: string; search?: string; sort?: string }>;
+  searchParams?: Promise<{ category?: string; search?: string; query?: string; q?: string; sort?: string }>;
 }) {
   return (
     <div className="min-h-screen bg-white text-ink flex flex-col">

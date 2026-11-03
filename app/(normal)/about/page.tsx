@@ -198,7 +198,7 @@ export default function AboutUsPage() {
                 Every outfit reflects the artistry of skilled craftsmen, premium fabrics, and intricate embroidery, bringing timeless tradition and modern elegance together.
               </p>
               <Link
-                href="/#currently-obsessed"
+                href="/shop"
                 className="inline-flex items-center justify-center bg-[#2d254d] text-[#FCF1D8] hover:bg-[#d4af37] hover:text-[#2d254d] font-display text-[16px] font-[500] uppercase tracking-[1.5px] leading-normal px-8 py-3.5 rounded-[4px] transition-all duration-300 shadow-sm cursor-pointer"
               >
                 EXPLORE COLLECTION
@@ -246,7 +246,7 @@ export default function AboutUsPage() {
                 This exquisite lehenga celebrates Indian heritage through divine embroidered motifs, delicate pearl embellishments, floral artistry, and majestic peacock designs. Soft pastel hues and intricate lotus borders bring timeless elegance to every detail.
               </p>
               <Link
-                href="/#festive-edit"
+                href="/shop"
                 className="inline-flex items-center justify-center bg-[#2d254d] text-[#FCF1D8] hover:bg-[#d4af37] hover:text-[#2d254d] font-display text-[16px] font-[500] uppercase tracking-[1.5px] leading-normal px-10 py-3.5 rounded-[4px] transition-all duration-300 shadow-sm cursor-pointer"
               >
                 SHOP NOW

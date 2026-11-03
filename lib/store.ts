@@ -2,7 +2,7 @@
 
 import { handpicked, masterpieces, products, type Product } from "@/data/home";
 import { productsData } from "@/data/products";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 
 export const allCatalogProducts: Product[] = [
   ...products,
@@ -210,35 +210,40 @@ export function addRecentlyViewed(name: string): string[] {
   }
 }
 
+const noopSubscribe = (callback: () => void) => {
+  if (typeof window === "undefined") return () => {};
+  window.addEventListener(UPDATE_EVENT, callback);
+  window.addEventListener("storage", callback);
+  return () => {
+    window.removeEventListener(UPDATE_EVENT, callback);
+    window.removeEventListener("storage", callback);
+  };
+};
+
 export function useStoreState() {
+  const isMounted = useSyncExternalStore(noopSubscribe, () => true, () => false);
   const [wishlist, setWishlist] = useState<string[]>([]);
   const [recentlyViewed, setRecentlyViewed] = useState<string[]>([]);
-  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
-    setWishlist(getWishlist());
-    setRecentlyViewed(getRecentlyViewed());
-
-    const handleUpdate = () => {
+    const update = () => {
       setWishlist(getWishlist());
       setRecentlyViewed(getRecentlyViewed());
     };
-
-    window.addEventListener(UPDATE_EVENT, handleUpdate);
-    window.addEventListener("storage", handleUpdate);
-
+    update();
+    window.addEventListener(UPDATE_EVENT, update);
+    window.addEventListener("storage", update);
     return () => {
-      window.removeEventListener(UPDATE_EVENT, handleUpdate);
-      window.removeEventListener("storage", handleUpdate);
+      window.removeEventListener(UPDATE_EVENT, update);
+      window.removeEventListener("storage", update);
     };
   }, []);
 
   return {
-    wishlist: mounted ? wishlist : [],
-    recentlyViewed: mounted ? recentlyViewed : [],
+    wishlist: isMounted ? wishlist : [],
+    recentlyViewed: isMounted ? recentlyViewed : [],
     toggleWishlist,
     addRecentlyViewed,
-    mounted,
+    mounted: isMounted,
   };
 }

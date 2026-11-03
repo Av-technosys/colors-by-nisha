@@ -5,19 +5,32 @@ import { money } from "@/data/home";
 import { productsData, type ProductItem } from "@/data/products";
 import Image from "next/image";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
-import { Suspense, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useEffect, useState } from "react";
 import { IoCloseOutline, IoSearchOutline } from "react-icons/io5";
 
 function SearchPageContent() {
+  const router = useRouter();
   const searchParams = useSearchParams();
-  const initialQuery = searchParams.get("q") || "";
+  const initialQuery = searchParams.get("q") || searchParams.get("search") || searchParams.get("query") || "";
   const [query, setQuery] = useState(initialQuery);
+  const [allProducts, setAllProducts] = useState<ProductItem[]>(productsData);
   const [selectedProduct, setSelectedProduct] = useState<ProductItem | null>(null);
+
+  useEffect(() => {
+    fetch("/api/search")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data?.products && Array.isArray(data.products) && data.products.length > 0) {
+          setAllProducts(data.products);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   const normalizedQuery = query.trim().toLowerCase();
   const results = normalizedQuery
-    ? productsData.filter((product) => {
+    ? allProducts.filter((product) => {
         return (
           product.name.toLowerCase().includes(normalizedQuery) ||
           product.category.toLowerCase().includes(normalizedQuery) ||
@@ -28,6 +41,12 @@ function SearchPageContent() {
         );
       })
     : [];
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!query.trim()) return;
+    router.push(`/shop?search=${encodeURIComponent(query.trim())}`);
+  };
 
   return (
     <main className="min-h-screen bg-white">
@@ -41,7 +60,7 @@ function SearchPageContent() {
 
         {/* Search Input Bar (Pill Shape matching Screenshot) */}
         <div className="w-full max-w-[620px] mx-auto mb-8 md:mb-12 pt-2">
-          <div className="relative flex items-center rounded-full border border-neutral-300 focus-within:border-black bg-white px-5 py-3 md:py-3.5 shadow-xs transition-colors">
+          <form onSubmit={handleSearchSubmit} className="relative flex items-center rounded-full border border-neutral-300 focus-within:border-black bg-white px-5 py-3 md:py-3.5 shadow-xs transition-colors">
             <input
               autoFocus
               type="text"
@@ -54,6 +73,7 @@ function SearchPageContent() {
             <div className="absolute right-4 flex items-center gap-2">
               {query && (
                 <button
+                  type="button"
                   onClick={() => setQuery("")}
                   className="text-neutral-400 hover:text-black transition cursor-pointer p-0.5"
                   aria-label="Clear search"
@@ -61,11 +81,15 @@ function SearchPageContent() {
                   <IoCloseOutline size={20} />
                 </button>
               )}
-              <span className="text-neutral-500">
+              <button
+                type="submit"
+                className="text-neutral-500 hover:text-black transition cursor-pointer p-0.5"
+                aria-label="Submit search"
+              >
                 <IoSearchOutline size={20} />
-              </span>
+              </button>
             </div>
-          </div>
+          </form>
         </div>
 
         {/* Search Results Area (Matching Image 2) */}
@@ -96,6 +120,7 @@ function SearchPageContent() {
                           }
                           alt={product.name}
                           fill
+                          unoptimized
                           sizes="(min-width: 1024px) 20vw, (min-width: 768px) 25vw, 50vw"
                           className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
                         />
@@ -113,7 +138,7 @@ function SearchPageContent() {
                 {/* Centered VIEW ALL RESULTS Button */}
                 <div className="mt-10 mb-12 flex justify-center">
                   <Link
-                    href={`/shop?query=${encodeURIComponent(query)}`}
+                    href={`/shop?search=${encodeURIComponent(query)}`}
                     className="inline-flex items-center justify-center bg-[#201a3c] hover:bg-[#d4af37] text-[#FCF1D8] hover:text-[#201a3c] font-display text-[14px] md:text-[15px] font-semibold uppercase tracking-[1.5px] px-8 py-3.5 rounded-[4px] transition-all duration-300 shadow-sm cursor-pointer"
                   >
                     VIEW ALL RESULTS

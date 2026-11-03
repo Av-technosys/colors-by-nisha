@@ -5,6 +5,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { formatINR, getAllProducts, type ProductItem } from "@/data/products";
 import { useStore } from "@/components/store/StoreContext";
+import { QuickViewModal } from "@/components/shop/QuickViewModal";
+import { IoEyeOutline } from "react-icons/io5";
 
 const noopSubscribe = () => () => {};
 
@@ -15,6 +17,7 @@ interface CartPageContentProps {
 export function CartPageContent({ initialCrossSellProducts }: CartPageContentProps = {}) {
   const isMounted = useSyncExternalStore(noopSubscribe, () => true, () => false);
   const { cart, updateQuantity, removeFromCart, addToCart } = useStore();
+  const [selectedQuickProduct, setSelectedQuickProduct] = useState<ProductItem | null>(null);
   const [orderNote, setOrderNote] = useState("");
   const [agreedTerms, setAgreedTerms] = useState(false);
   const [termsError, setTermsError] = useState(false);
@@ -295,12 +298,22 @@ export function CartPageContent({ initialCrossSellProducts }: CartPageContentPro
                               <p className="font-display text-xs font-semibold text-neutral-700 mt-0.5">
                                 {formatINR(product.price)}
                               </p>
-                              <button
-                                onClick={() => addToCart(product, "M", 1)}
-                                className="mt-2 inline-block rounded bg-[#2d254d] hover:bg-[#201938] px-3.5 py-1.5 font-display text-[10px] font-bold uppercase tracking-wider text-white shadow-2xs transition cursor-pointer"
-                              >
-                                ADD TO CART
-                              </button>
+                              <div className="mt-2 flex items-center gap-2">
+                                <button
+                                  onClick={() => addToCart(product, "M", 1)}
+                                  className="rounded bg-[#2d254d] hover:bg-[#201938] px-3.5 py-1.5 font-display text-[10px] font-bold uppercase tracking-wider text-white shadow-2xs transition cursor-pointer"
+                                >
+                                  ADD TO CART
+                                </button>
+                                <button
+                                  onClick={() => setSelectedQuickProduct(product)}
+                                  className="size-7 grid place-items-center rounded bg-neutral-100 hover:bg-neutral-200 text-ink transition cursor-pointer"
+                                  aria-label={`Quick view ${product.name}`}
+                                  title="Quick view"
+                                >
+                                  <IoEyeOutline size={15} />
+                                </button>
+                              </div>
                             </div>
                           </div>
                         );
@@ -506,6 +519,13 @@ export function CartPageContent({ initialCrossSellProducts }: CartPageContentPro
           </div>
         )}
       </div>
+
+      {selectedQuickProduct && (
+        <QuickViewModal
+          product={selectedQuickProduct}
+          onClose={() => setSelectedQuickProduct(null)}
+        />
+      )}
     </div>
   );
 }

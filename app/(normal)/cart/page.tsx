@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { Header } from "@/components/layout/Header";
-import { Footer } from "@/components/layout/Footer";
 import { CartPageContent } from "@/components/cart/CartPageContent";
 import { getShopProducts } from "@/helpers/store/products";
 
@@ -23,15 +21,11 @@ async function DynamicCartContent() {
 
 export default function CartPage() {
   return (
-    <div className="min-h-screen bg-white text-ink flex flex-col">
-      <Header solid={true} />
-      <main className="flex-1">
-        <Suspense fallback={<CartPageContent />}>
-          <DynamicCartContent />
-        </Suspense>
-      </main>
-      <Footer />
-    </div>
+    <main className="min-h-screen bg-white text-ink flex flex-col">
+      <Suspense fallback={<CartPageContent />}>
+        <DynamicCartContent />
+      </Suspense>
+    </main>
   );
 }
 

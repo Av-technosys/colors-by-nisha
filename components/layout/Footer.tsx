@@ -10,16 +10,8 @@ export interface FooterProps {
   onPanel?: (name: string) => void;
 }
 
-export function Footer({ onShop, onPanel }: FooterProps = {}) {
+export function Footer({ onShop: _onShop, onPanel: _onPanel }: FooterProps = {}) {
   const [subscribed, setSubscribed] = useState(false);
-
-  const handleShop = () => {
-    if (onShop) {
-      onShop();
-    } else {
-      window.location.href = "/shop";
-    }
-  };
 
   return (
     <footer id="footer" className="bg-purple text-[13px] text-white">
@@ -50,35 +42,29 @@ export function Footer({ onShop, onPanel }: FooterProps = {}) {
           <h3 className="mb-4 font-display text-[17px] md:mb-5 md:text-lg">
             Quick Links
           </h3>
-          <Link href="/">Home</Link>
-          {onShop ? (
-            <button onClick={handleShop}>Shop</button>
-          ) : (
-            <Link href="/shop">Shop</Link>
-          )}
-          <Link href="/about">About us</Link>
-          <Link href="/contact">Contact</Link>
-          {onPanel ? (
-            <button onClick={() => onPanel("Blogs")}>Blogs</button>
-          ) : (
-            <Link href="/blog">Blogs</Link>
-          )}
+          <Link href="/" className="hover:underline underline-offset-4 transition-colors">Home</Link>
+          <Link href="/shop" className="hover:underline underline-offset-4 transition-colors">Shop</Link>
+          <Link href="/about" className="hover:underline underline-offset-4 transition-colors">About us</Link>
+          <Link href="/contact" className="hover:underline underline-offset-4 transition-colors">Contact</Link>
+          <Link href="/blog" className="hover:underline underline-offset-4 transition-colors">Blogs</Link>
         </div>
         <div className="flex flex-col items-start gap-2">
           <h3 className="mb-4 font-display text-[17px] md:mb-5 md:text-lg">
             Categories
           </h3>
-          {["Lehenga", "Saree", "Ethnic"].map((x) =>
-            onShop ? (
-              <button key={x} onClick={handleShop}>
-                {x}
-              </button>
-            ) : (
-              <Link key={x} href={`/shop?category=${x.toLowerCase()}`}>
-                {x}
-              </Link>
-            )
-          )}
+          {[
+            { name: "Lehenga", href: "/shop?category=lehenga" },
+            { name: "Saree", href: "/shop?category=saree" },
+            { name: "Ethnic", href: "/shop?category=ethnic" },
+          ].map((item) => (
+            <Link
+              key={item.name}
+              href={item.href}
+              className="hover:underline underline-offset-4 transition-colors"
+            >
+              {item.name}
+            </Link>
+          ))}
         </div>
         <div className="flex flex-col items-start gap-2">
           <h3 className="mb-4 font-display text-[17px] md:mb-5 md:text-lg">
@@ -89,17 +75,15 @@ export function Footer({ onShop, onPanel }: FooterProps = {}) {
             { name: "Terms & Conditions", href: "/terms-and-conditions" },
             { name: "Return & Refund", href: "/return-and-refund" },
             { name: "Customization", href: "/customization" },
-          ].map((item) =>
-            onPanel ? (
-              <button key={item.name} onClick={() => onPanel(item.name)}>
-                {item.name}
-              </button>
-            ) : (
-              <Link key={item.name} href={item.href} className="hover:underline">
-                {item.name}
-              </Link>
-            )
-          )}
+          ].map((item) => (
+            <Link
+              key={item.name}
+              href={item.href}
+              className="hover:underline underline-offset-4 transition-colors"
+            >
+              {item.name}
+            </Link>
+          ))}
         </div>
         <div className="col-span-2 md:col-start-2 lg:col-span-1 lg:col-start-auto">
           <h3 className="mb-4 font-display text-[17px] md:mb-5 md:text-lg">

@@ -4,8 +4,6 @@ import { selectVariant } from "@/helpers/store/variant";
 import React, { useState } from "react";
 import Link from "next/link";
 import { type ProductItem } from "@/data/products";
-import { Header } from "@/components/layout/Header";
-import { Footer } from "@/components/layout/Footer";
 import { MobileNavigation } from "@/components/layout/MobileNavigation";
 import { useStore } from "@/components/store/StoreContext";
 import { ProductGallery } from "./ProductGallery";
@@ -24,10 +22,8 @@ export function PDPPageContent({ product: originalProduct, relatedProducts }: PD
   const [variantId, setVariantId] = useState(originalProduct.variants?.find(variant => variant.stock !== 0)?.id || originalProduct.variants?.[0]?.id || "");
   const [quantity, setQuantity] = useState(1);
   const product = selectVariant(originalProduct, variantId);
-  const { cart, wishlist, setCartOpen, notification } = useStore();
+  const { setCartOpen, notification } = useStore();
   const [quickViewProduct, setQuickViewProduct] = useState<ProductItem | null>(null);
-
-  const cartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
     <div className="min-h-screen bg-white text-ink flex flex-col pb-28 md:pb-0">
@@ -37,16 +33,6 @@ export function PDPPageContent({ product: originalProduct, relatedProducts }: PD
           {notification}
         </div>
       )}
-
-      {/* Solid Header */}
-      <Header
-        solid={true}
-        cartCount={cartCount}
-        savedCount={wishlist.length}
-        onPanel={(panel) => {
-          if (panel === "Shopping bag" || panel === "Cart") setCartOpen(true);
-        }}
-      />
 
       <main className="flex-1">
         {/* Breadcrumb: Home - Shop - PRODUCT NAME */}
@@ -119,9 +105,6 @@ export function PDPPageContent({ product: originalProduct, relatedProducts }: PD
 
       {/* Quick View Modal */}
       <QuickViewModal key={quickViewProduct?.id || "closed"} product={quickViewProduct} onClose={() => setQuickViewProduct(null)} />
-
-      {/* Footer */}
-      <Footer />
     </div>
   );
 }

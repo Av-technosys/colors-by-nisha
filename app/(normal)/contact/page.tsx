@@ -1,6 +1,4 @@
 import type { Metadata } from "next";
-import { Header } from "@/components/layout/Header";
-import { Footer } from "@/components/layout/Footer";
 import { ContactPageContent } from "@/components/contact/ContactPageContent";
 
 export const metadata: Metadata = {
@@ -11,12 +9,8 @@ export const metadata: Metadata = {
 
 export default function ContactPage() {
   return (
-    <div className="min-h-screen bg-white text-ink flex flex-col">
-      <Header solid={true} activeNav="contact" />
-      <main className="flex-1">
-        <ContactPageContent />
-      </main>
-      <Footer />
-    </div>
+    <main className="min-h-screen bg-white text-ink flex flex-col">
+      <ContactPageContent />
+    </main>
   );
 }

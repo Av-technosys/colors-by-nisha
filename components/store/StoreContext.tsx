@@ -134,16 +134,29 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     });
   };
 
-  const toggleWishlist = (slug: string) => {
+  const toggleWishlist = (slugOrName: string) => {
+    if (!slugOrName) return;
+    const lower = slugOrName.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-");
     setWishlist((prev) => {
-      if (prev.includes(slug)) {
-        return prev.filter((item) => item !== slug);
+      const matchIndex = prev.findIndex((item) => {
+        const itemLower = item.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-");
+        return itemLower === lower || item === slugOrName;
+      });
+      if (matchIndex >= 0) {
+        return prev.filter((_, idx) => idx !== matchIndex);
       }
-      return [...prev, slug];
+      return [...prev, slugOrName];
     });
   };
 
-  const isWishlisted = (slug: string) => wishlist.includes(slug);
+  const isWishlisted = (slugOrName: string) => {
+    if (!slugOrName) return false;
+    const lower = slugOrName.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-");
+    return wishlist.some((item) => {
+      const itemLower = item.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-");
+      return itemLower === lower || item === slugOrName;
+    });
+  };
 
   const clearNotification = () => setNotification(null);
 

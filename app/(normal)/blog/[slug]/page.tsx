@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
-import { Header } from "@/components/layout/Header";
-import { Footer } from "@/components/layout/Footer";
 import { BlogPostDetailContent } from "@/components/blog/BlogPostDetailContent";
 import { getPublicBlogPostBySlug, getPublicBlogPosts } from "@/helpers/public-blogs";
 
@@ -52,15 +50,11 @@ async function BlogPostContent({ params }: BlogPostPageProps) {
 
 export default function BlogPostPage(props: BlogPostPageProps) {
   return (
-    <div className="min-h-screen bg-white text-ink flex flex-col">
-      <Header solid={true} activeNav="blogs" />
-      <main className="flex-1">
-        <Suspense fallback={<div className="min-h-[50vh] grid place-items-center text-sm text-neutral-400 font-sans">Loading article...</div>}>
-          <BlogPostContent {...props} />
-        </Suspense>
-      </main>
-      <Footer />
-    </div>
+    <main className="min-h-screen bg-white text-ink flex flex-col">
+      <Suspense fallback={<div className="min-h-[50vh] grid place-items-center text-sm text-neutral-400 font-sans">Loading article...</div>}>
+        <BlogPostContent {...props} />
+      </Suspense>
+    </main>
   );
 }
 

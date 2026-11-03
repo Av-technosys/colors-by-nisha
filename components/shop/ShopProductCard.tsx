@@ -6,6 +6,7 @@ import Link from "next/link";
 import { formatINR, type ProductItem } from "@/data/products";
 import { useRouter } from "next/navigation";
 import { useStore } from "@/components/store/StoreContext";
+import { IoEyeOutline } from "react-icons/io5";
 
 interface ShopProductCardProps {
   product: ProductItem;
@@ -118,18 +119,15 @@ export function ShopProductCard({ product, onQuickView }: ShopProductCardProps) 
             </svg>
           </button>
 
-          {/* Quick View Button on desktop hover */}
+          {/* Quick View Button on desktop hover & mobile accessible */}
           {onQuickView && (
             <button
               onClick={handleQuickView}
-              className="hidden md:grid size-9 place-items-center rounded-full bg-white text-neutral-700 shadow-md opacity-0 translate-y-1 transition-all duration-200 group-hover:opacity-100 group-hover:translate-y-0 hover:text-ink hover:scale-110"
-              aria-label="Quick view"
+              className="grid size-8 md:size-9 place-items-center rounded-full bg-white text-neutral-700 shadow-md transition-all duration-200 opacity-90 md:opacity-0 md:translate-y-1 md:group-hover:opacity-100 md:group-hover:translate-y-0 hover:text-ink hover:scale-110 active:scale-95 cursor-pointer"
+              aria-label={`Quick view ${product.name}`}
               title="Quick view"
             >
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" strokeLinecap="round" strokeLinejoin="round" />
-                <circle cx="12" cy="12" r="3" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
+              <IoEyeOutline size={18} />
             </button>
           )}
         </div>

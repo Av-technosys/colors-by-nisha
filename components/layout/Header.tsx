@@ -22,7 +22,7 @@ export interface HeaderProps {
 export function Header({
   savedCount,
   cartCount,
-  onShop,
+  onShop: _onShop,
   onPanel,
   solid = false,
   activeNav,
@@ -30,7 +30,7 @@ export function Header({
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
   const isHome = pathname === "/";
-  const { cart, wishlist, setMenuOpen, setCartOpen } = useStore();
+  const { cart, wishlist, setMenuOpen, setCartOpen, setSearchOpen } = useStore();
   const isMounted = useSyncExternalStore(noopSubscribe, () => true, () => false);
 
   useEffect(() => {
@@ -51,13 +51,18 @@ export function Header({
   const isEffectiveSolid = solid || !isHome || scrolled;
 
   const handleMenuClick = () => {
-    if (onPanel) onPanel("Menu");
     setMenuOpen(true);
+    if (onPanel) onPanel("Menu");
   };
 
   const handlePanelClick = (name: string, panelName?: string) => {
+    if (name === "Search") {
+      setSearchOpen(true);
+      return;
+    }
     if (name === "Cart" || panelName === "Shopping bag") {
       setCartOpen(true);
+      return;
     }
     onPanel?.(panelName || name);
   };
@@ -99,6 +104,11 @@ export function Header({
           href="/"
           className="relative col-start-2 block h-[60px] md:h-[80px] lg:h-[90px] w-[56px] md:w-[72px] lg:col-start-auto"
           aria-label="Colors by Nisha home"
+          onClick={() => {
+            if (pathname === "/") {
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }
+          }}
         >
           <Image
             src={images[2]}
@@ -130,6 +140,11 @@ export function Header({
               currentNav === "home" ? "font-semibold underline" : ""
             }`}
             href="/"
+            onClick={() => {
+              if (pathname === "/") {
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }
+            }}
           >
             Home
           </Link>

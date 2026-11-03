@@ -55,7 +55,12 @@ export function MobileMenuDrawer() {
           <div className="py-2 space-y-1">
             <Link
               href="/"
-              onClick={() => setMenuOpen(false)}
+              onClick={() => {
+                setMenuOpen(false);
+                if (typeof window !== "undefined") {
+                  window.scrollTo({ top: 0, behavior: "smooth" });
+                }
+              }}
               className="flex items-center justify-between py-2.5 text-base font-semibold text-ink hover:text-[#a66c40] transition"
             >
               <span>Home</span>

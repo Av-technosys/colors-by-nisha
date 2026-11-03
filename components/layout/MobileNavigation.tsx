@@ -7,7 +7,7 @@ import { useStore } from "@/components/store/StoreContext";
 
 const noopSubscribe = () => () => {};
 
-export function MobileNavigation({ onPanel }: { onShop?: () => void; onPanel?: (name: string) => void }) {
+export function MobileNavigation({ onPanel: _onPanel }: { onShop?: () => void; onPanel?: (name: string) => void } = {}) {
   const { cart, wishlist, setCartOpen } = useStore();
   const isMounted = useSyncExternalStore(noopSubscribe, () => true, () => false);
 
@@ -16,7 +16,15 @@ export function MobileNavigation({ onPanel }: { onShop?: () => void; onPanel?: (
 
   return (
     <nav className="fixed inset-x-0 bottom-0 z-40 flex items-center justify-around bg-white px-1 py-2.5 pb-[max(10px,env(safe-area-inset-bottom))] text-ink shadow-[0_-1px_8px_#0001] md:hidden" aria-label="Mobile navigation">
-      <Link href="/" className="flex min-w-12 flex-col items-center gap-1">
+      <Link
+        href="/"
+        className="flex min-w-12 flex-col items-center gap-1"
+        onClick={() => {
+          if (typeof window !== "undefined") {
+            window.scrollTo({ top: 0, behavior: "smooth" });
+          }
+        }}
+      >
         <Icon name="home" size={20} />
         <span className="text-[10px]">Home</span>
       </Link>
@@ -24,11 +32,11 @@ export function MobileNavigation({ onPanel }: { onShop?: () => void; onPanel?: (
         <Icon name="grid" size={20} />
         <span className="text-[10px]">Shop</span>
       </Link>
-      <button className="flex min-w-12 flex-col items-center gap-1" onClick={() => onPanel?.("Account")}>
+      <Link href="/dashboard" className="flex min-w-12 flex-col items-center gap-1">
         <Icon name="user" size={20} />
         <span className="text-[10px]">Account</span>
-      </button>
-      <button className="relative flex min-w-12 flex-col items-center gap-1" onClick={() => onPanel?.("Wishlist")}>
+      </Link>
+      <Link href="/wishlist" className="relative flex min-w-12 flex-col items-center gap-1">
         <Icon name="heart" size={20} />
         {wishlistCount > 0 && (
           <span className="absolute -right-1 -top-1 size-3.5 rounded-full bg-[#d0473e] text-center font-display text-[9px] leading-3.5 text-white font-medium">
@@ -36,18 +44,19 @@ export function MobileNavigation({ onPanel }: { onShop?: () => void; onPanel?: (
           </span>
         )}
         <span className="text-[10px]">Wishlist</span>
-      </button>
+      </Link>
       <button
         className="relative flex min-w-12 flex-col items-center gap-1"
         onClick={() => {
           setCartOpen(true);
-          onPanel?.("Shopping bag");
         }}
       >
         <Icon name="bag" size={20} />
-        <span className="absolute -right-1 -top-1 size-3.5 rounded-full bg-[#d0473e] text-center font-display text-[9px] leading-3.5 text-white font-medium">
-          {cartCount}
-        </span>
+        {cartCount > 0 && (
+          <span className="absolute -right-1 -top-1 size-3.5 rounded-full bg-[#d0473e] text-center font-display text-[9px] leading-3.5 text-white font-medium">
+            {cartCount}
+          </span>
+        )}
         <span className="text-[10px]">Cart</span>
       </button>
     </nav>

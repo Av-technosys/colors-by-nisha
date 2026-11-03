@@ -7,16 +7,18 @@ import { QuickViewModal } from "./QuickViewModal";
 
 interface ShopPageContentProps {
   initialCategory?: string;
+  initialSearch?: string;
   products: ProductItem[];
 }
 
-export function ShopPageContent({ initialCategory, products: allProducts }: ShopPageContentProps) {
+export function ShopPageContent({ initialCategory, initialSearch, products: allProducts }: ShopPageContentProps) {
   const maxPrice = Math.max(1, ...allProducts.map(product => product.price));
   const categoryOptions = [{ key: "all", label: "All Products", count: allProducts.length },
     ...Array.from(new Map(allProducts.filter(product => product.categorySlug).map(product => [product.categorySlug!, product.category])).entries()).map(([key, label]) => ({ key, label, count: allProducts.filter(product => product.categorySlug === key).length }))];
 
   // Filter States
   const [selectedCategory, setSelectedCategory] = useState<string>(initialCategory || "all");
+  const [searchQuery, setSearchQuery] = useState<string>(initialSearch || "");
   const [inStockOnly, setInStockOnly] = useState<boolean>(false);
   const [priceRange, setPriceRange] = useState<[number, number]>([0, maxPrice]);
   const [tempPriceMax, setTempPriceMax] = useState<number>(maxPrice);
@@ -53,6 +55,16 @@ export function ShopPageContent({ initialCategory, products: allProducts }: Shop
   const filteredProducts = useMemo(() => {
     return allProducts
       .filter((p) => {
+        // Search
+        if (searchQuery.trim()) {
+          const q = searchQuery.trim().toLowerCase();
+          const match =
+            p.name.toLowerCase().includes(q) ||
+            p.category.toLowerCase().includes(q) ||
+            (p.collection && p.collection.toLowerCase().includes(q)) ||
+            (p.description && p.description.toLowerCase().includes(q));
+          if (!match) return false;
+        }
         // Category
         if (selectedCategory !== "all" && p.categorySlug !== selectedCategory && p.category.toLowerCase() !== selectedCategory.toLowerCase()) {
           return false;
@@ -75,7 +87,7 @@ export function ShopPageContent({ initialCategory, products: allProducts }: Shop
         if (sortBy === "created-descending") return (b.createdAt || "").localeCompare(a.createdAt || "");
         return 0; // featured default
       });
-  }, [allProducts, selectedCategory, inStockOnly, priceRange, sortBy]);
+  }, [allProducts, searchQuery, selectedCategory, inStockOnly, priceRange, sortBy]);
 
   // Total pages
   const totalPages = Math.ceil(filteredProducts.length / pageSize) || 1;
@@ -86,9 +98,14 @@ export function ShopPageContent({ initialCategory, products: allProducts }: Shop
 
   // Active filters count
   const hasActiveFilters =
-    selectedCategory !== "all" || inStockOnly || priceRange[0] > 0 || priceRange[1] < maxPrice;
+    Boolean(searchQuery.trim()) ||
+    selectedCategory !== "all" ||
+    inStockOnly ||
+    priceRange[0] > 0 ||
+    priceRange[1] < maxPrice;
 
   const resetFilters = () => {
+    setSearchQuery("");
     setSelectedCategory("all");
     setInStockOnly(false);
     setPriceRange([0, maxPrice]);
@@ -309,6 +326,20 @@ export function ShopPageContent({ initialCategory, products: allProducts }: Shop
             {hasActiveFilters && (
               <div className="flex flex-wrap items-center gap-2 pb-5">
                 <span className="text-xs font-medium text-neutral-400">Active filters:</span>
+                {searchQuery.trim() && (
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-neutral-100 px-3 py-1 text-xs font-medium text-ink">
+                    Search: &ldquo;{searchQuery}&rdquo;
+                    <button
+                      onClick={() => {
+                        setSearchQuery("");
+                        setCurrentPage(1);
+                      }}
+                      className="hover:text-red-600"
+                    >
+                      ✕
+                    </button>
+                  </span>
+                )}
                 {selectedCategory !== "all" && (
                   <span className="inline-flex items-center gap-1.5 rounded-full bg-neutral-100 px-3 py-1 text-xs font-medium text-ink">
                     Category: <span className="capitalize">{selectedCategory}</span>
