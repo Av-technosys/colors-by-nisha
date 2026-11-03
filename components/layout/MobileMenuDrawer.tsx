@@ -7,7 +7,8 @@ import { useStore } from "@/components/store/StoreContext";
 import { images } from "@/data/home";
 
 export function MobileMenuDrawer() {
-  const { menuOpen, setMenuOpen, setCartOpen, wishlist } = useStore();
+  const { cart, menuOpen, setMenuOpen, setCartOpen, wishlist } = useStore();
+  const cartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -128,7 +129,7 @@ export function MobileMenuDrawer() {
               }}
               className="flex w-full items-center justify-between py-2 px-1 text-sm text-neutral-700 hover:text-ink text-left"
             >
-              <span>Shopping Bag</span>
+              <span>Shopping Cart ({cartCount})</span>
               <span className="text-xs text-neutral-400">View</span>
             </button>
             <Link

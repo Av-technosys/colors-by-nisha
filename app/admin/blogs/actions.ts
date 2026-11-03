@@ -70,6 +70,8 @@ export async function saveBlogAction(form: FormData): Promise<MutationResult<{ i
   revalidatePath("/admin/blogs");
   revalidatePath("/admin/categories");
   if (id) revalidatePath(`/admin/blogs/${id}/edit`);
+  revalidatePath("/blog");
+  revalidatePath(`/blog/${fields.slug}`);
   return { success: true, data: { id: savedId } };
 }
 
@@ -93,6 +95,7 @@ export async function deleteBlog(id: string): Promise<ActionState> {
   await deleteImages(keys);
   revalidatePath("/admin/blogs");
   revalidatePath("/admin/categories");
+  revalidatePath("/blog");
   return {};
 }
 

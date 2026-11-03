@@ -40,7 +40,7 @@ export default function Storefront() {
 
   return <>
     <a className="fixed left-3 -top-16 z-100 bg-white p-2.5 focus:top-2.5" href="#main">Skip to content</a>
-    <Header savedCount={saved.length} cartCount={cart.length} onShop={shop} onPanel={openPanel} />
+    <Header onShop={shop} onPanel={openPanel} />
     <main id="main">
       <HeroBanner onShop={shop} paused={!!dialog} />
       <CollectionSection onShop={shop} />

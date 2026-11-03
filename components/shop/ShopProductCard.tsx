@@ -44,8 +44,8 @@ export function ShopProductCard({ product, onQuickView }: ShopProductCardProps) 
     onQuickView?.(product);
   };
 
-  const primaryImage = product.images[0];
-  const secondaryImage = product.images[1] || product.images[0];
+  const primaryImage = product.images?.[0] || "/Home/images/015_kesari_rang__IMG_0124.jpg";
+  const secondaryImage = product.images?.[1] || primaryImage;
 
   return (
     <article className="group relative flex flex-col text-center">
@@ -59,20 +59,20 @@ export function ShopProductCard({ product, onQuickView }: ShopProductCardProps) 
           {/* First image */}
           <Image
             src={primaryImage}
-              unoptimized={primaryImage.startsWith("http")}
+            unoptimized={typeof primaryImage === "string" && (primaryImage.startsWith("http") || primaryImage.startsWith("data:"))}
             alt={product.name}
             fill
             sizes="(min-width: 1200px) 25vw, (min-width: 768px) 33vw, 50vw"
             className={`object-cover object-top transition-transform duration-700 ease-out group-hover:scale-105 ${
-              product.images.length > 1 ? "group-hover:opacity-0" : ""
+              (product.images?.length ?? 0) > 1 ? "group-hover:opacity-0" : ""
             }`}
           />
 
           {/* Secondary image on hover */}
-          {product.images.length > 1 && (
+          {(product.images?.length ?? 0) > 1 && (
             <Image
               src={secondaryImage}
-              unoptimized={secondaryImage.startsWith("http")}
+              unoptimized={typeof secondaryImage === "string" && (secondaryImage.startsWith("http") || secondaryImage.startsWith("data:"))}
               alt={`${product.name} alternate view`}
               fill
               sizes="(min-width: 1200px) 25vw, (min-width: 768px) 33vw, 50vw"

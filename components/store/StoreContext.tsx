@@ -58,7 +58,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [notification, setNotification] = useState<string | null>(null);
 
-  // Save on change
+  // Save to localStorage whenever cart or wishlist updates
   useEffect(() => {
     try {
       localStorage.setItem("cbn_cart", JSON.stringify(cart));
@@ -75,15 +75,26 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     }
   }, [wishlist]);
 
-  const addToCart = (product: ProductItem, size = "M", quantity = 1) => {
+  const addToCart = (product: ProductItem, size = "Standard", quantity = 1) => {
     if (!product.inStock) return;
     const limit = product.stockCount ?? Infinity;
-    quantity = Math.min(limit, Math.max(1, Math.floor(quantity)));
+    const qty = Math.min(limit, Math.max(1, Math.floor(quantity)));
+    const finalPrice = typeof product.price === "number" ? product.price : Number(product.price) || 0;
+    const finalImage = product.images?.[0] || "/Home/images/015_kesari_rang__IMG_0124.jpg";
+
     setCart((prev) => {
-      const existing = prev.findIndex((item) => item.slug === product.slug && item.variantId === product.variantId && item.size === size);
+      const existing = prev.findIndex(
+        (item) => item.slug === product.slug && (item.variantId || "") === (product.variantId || "") && item.size === size
+      );
       if (existing !== -1) {
         const copy = [...prev];
-        copy[existing] = { ...copy[existing], price: product.price, stockCount: product.stockCount, quantity: Math.min(limit, copy[existing].quantity + quantity) };
+        copy[existing] = {
+          ...copy[existing],
+          price: finalPrice,
+          image: finalImage,
+          stockCount: product.stockCount,
+          quantity: Math.min(limit, copy[existing].quantity + qty),
+        };
         return copy;
       }
       return [
@@ -92,16 +103,17 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
           id: product.id,
           slug: product.slug,
           name: product.name,
-          price: product.price,
-          image: product.images[0],
+          price: finalPrice,
+          image: finalImage,
           size,
           variantId: product.variantId,
           stockCount: product.stockCount,
-          quantity,
+          quantity: qty,
         },
       ];
     });
-    setNotification(`Added "${product.name}" to shopping bag!`);
+    setCartOpen(true);
+    setNotification(`Added "${product.name}" to shopping cart!`);
     setTimeout(() => setNotification(null), 3500);
   };
 

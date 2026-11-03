@@ -55,14 +55,19 @@ export function StickyBottomBar({ product, quantity, onQuantityChange: setQuanti
         {/* Desktop Left Side: Thumbnail & Product Name */}
         <div className="hidden md:flex items-center gap-3.5 min-w-0">
           <div className="relative size-11 shrink-0 overflow-hidden rounded-md border border-neutral-200 bg-neutral-100">
-            <Image
-              src={product.images[0]}
-              unoptimized={product.images[0].startsWith("http")}
-              alt={product.name}
-              fill
-              sizes="48px"
-              className="object-cover object-top"
-            />
+            {(() => {
+              const img = product.images?.[0] || "/Home/images/015_kesari_rang__IMG_0124.jpg";
+              return (
+                <Image
+                  src={img}
+                  unoptimized={typeof img === "string" && (img.startsWith("http") || img.startsWith("data:"))}
+                  alt={product.name}
+                  fill
+                  sizes="48px"
+                  className="object-cover object-top"
+                />
+              );
+            })()}
           </div>
           <span className="font-display font-semibold text-sm lg:text-base text-ink uppercase tracking-wide truncate max-w-xs lg:max-w-md">
             {product.name}

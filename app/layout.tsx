@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { StoreProvider } from "@/components/store/StoreContext";
 import { MobileMenuDrawer } from "@/components/layout/MobileMenuDrawer";
+import { CartDrawer } from "@/components/store/CartDrawer";
 
 const montserrat = localFont({
   src: "../public/fonts/montserrat-regular.woff2",
@@ -28,6 +29,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <StoreProvider>
           {children}
           <MobileMenuDrawer />
+          <CartDrawer />
         </StoreProvider>
       </body>
     </html>

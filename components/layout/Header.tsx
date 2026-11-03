@@ -4,8 +4,10 @@ import { Icon } from "@/components/ui/Icon";
 import { images } from "@/data/home";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import { useStore } from "@/components/store/StoreContext";
+
+const noopSubscribe = () => () => {};
 
 interface HeaderProps {
   savedCount?: number;
@@ -16,9 +18,10 @@ interface HeaderProps {
   activeNav?: "home" | "shop" | "about" | "contact" | "blogs";
 }
 
-export function Header({ savedCount = 0, cartCount = 0, onPanel, solid = false, activeNav }: HeaderProps) {
+export function Header({ savedCount, cartCount, onPanel, solid = false, activeNav }: HeaderProps) {
   const [scrolled, setScrolled] = useState(false);
-  const { setMenuOpen, setCartOpen } = useStore();
+  const { cart, wishlist, setMenuOpen, setCartOpen } = useStore();
+  const isMounted = useSyncExternalStore(noopSubscribe, () => true, () => false);
 
   useEffect(() => {
     if (solid) return;
@@ -27,6 +30,13 @@ export function Header({ savedCount = 0, cartCount = 0, onPanel, solid = false, 
     window.addEventListener("scroll", update, { passive: true });
     return () => window.removeEventListener("scroll", update);
   }, [solid]);
+
+  const liveCartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+  const liveWishlistCount = wishlist.length;
+
+  // Auto-updating cart & wishlist counts from global StoreContext
+  const displayCartCount = isMounted ? liveCartCount : (cartCount ?? 0);
+  const displayWishlistCount = isMounted ? liveWishlistCount : (savedCount ?? 0);
 
   const isSolid = solid || scrolled;
 
@@ -62,18 +72,18 @@ export function Header({ savedCount = 0, cartCount = 0, onPanel, solid = false, 
         {[
           { name: "Search", icon: "search", mobile: true },
           { name: "Account", icon: "user", mobile: false },
-          { name: "Wishlist", icon: "heart", mobile: false, count: savedCount },
-          { name: "Cart", panel: "Shopping bag", icon: "cart", mobile: true, count: cartCount },
+          { name: "Wishlist", icon: "heart", mobile: false, count: displayWishlistCount },
+          { name: "Cart", panel: "Shopping bag", icon: "cart", mobile: true, count: displayCartCount },
         ].map(item => <button key={item.name} className={`relative min-h-9 min-w-8 items-center justify-center cursor-pointer ${item.mobile ? "inline-flex" : "hidden lg:inline-flex"}`} aria-label={item.name} onClick={() => handlePanelClick(item.name, item.panel)}>
           <Icon name={item.icon} size={21} />
           {item.name === "Cart" && (
             <span className="absolute -right-1 -top-px size-4 rounded-full bg-[#d0473e] text-center font-display text-[10px] leading-4 text-white font-medium">
-              {cartCount}
+              {displayCartCount}
             </span>
           )}
-          {item.name === "Wishlist" && savedCount > 0 && (
+          {item.name === "Wishlist" && displayWishlistCount > 0 && (
             <span className="absolute -right-1 -top-px size-4 rounded-full bg-[#d0473e] text-center font-display text-[10px] leading-4 text-white font-medium">
-              {savedCount}
+              {displayWishlistCount}
             </span>
           )}
         </button>)}

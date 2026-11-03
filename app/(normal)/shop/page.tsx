@@ -4,7 +4,6 @@ import { Suspense } from "react";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { ShopPageContent } from "@/components/shop/ShopPageContent";
-import { CartDrawer } from "@/components/store/CartDrawer";
 
 export const metadata: Metadata = {
   title: "Shop Designer Lehengas, Sarees & Ethnic Wear | Colors by Nisha Vijay",
@@ -40,7 +39,6 @@ export default function ShopPage(props: {
           <ShopLoader searchParamsPromise={props.searchParams} />
         </Suspense>
       </div>
-      <CartDrawer />
       <Footer />
     </div>
   );

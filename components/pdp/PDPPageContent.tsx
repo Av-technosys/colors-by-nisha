@@ -7,7 +7,6 @@ import { type ProductItem } from "@/data/products";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { MobileNavigation } from "@/components/layout/MobileNavigation";
-import { CartDrawer } from "@/components/store/CartDrawer";
 import { useStore } from "@/components/store/StoreContext";
 import { ProductGallery } from "./ProductGallery";
 import { ProductDetailsInfo } from "./ProductDetailsInfo";
@@ -117,9 +116,6 @@ export function PDPPageContent({ product: originalProduct, relatedProducts }: PD
           if (panel === "Shopping bag" || panel === "Cart") setCartOpen(true);
         }}
       />
-
-      {/* Cart Drawer */}
-      <CartDrawer />
 
       {/* Quick View Modal */}
       <QuickViewModal key={quickViewProduct?.id || "closed"} product={quickViewProduct} onClose={() => setQuickViewProduct(null)} />
