@@ -3,6 +3,7 @@
 import { Icon } from "@/components/ui/Icon";
 import { Modal } from "@/components/ui/Modal";
 import { videos, type Product } from "@/data/home";
+import { useRouter } from "next/navigation";
 import type { ProductActions } from "./ProductCard";
 import { ProductDetails, type CartItem } from "./ProductDetails";
 import { ProductListPanel } from "./ProductListPanel";
@@ -26,6 +27,8 @@ const messages: Record<string, string> = {
 };
 
 export function StoreDialog({ dialog, cart, onClose, onPanel, onShop, onAdd, onRemove, ...productActions }: StoreDialogProps) {
+  const router = useRouter();
+
   if (dialog.kind === "video") return <Modal title="Fashion video" onClose={onClose} className="w-auto max-w-full bg-ink">
     <video className="block max-h-[85dvh] max-w-full" src={videos[dialog.id]} autoPlay controls playsInline />
   </Modal>;
@@ -38,8 +41,18 @@ export function StoreDialog({ dialog, cart, onClose, onPanel, onShop, onAdd, onR
   const navigate = (name: string) => {
     if (name === "Blogs") return onPanel("Blogs");
     onClose();
-    if (name === "Shop") return onShop();
-    if (name === "Home") return window.scrollTo({ top: 0, behavior: "smooth" });
+    if (name === "Shop") {
+      if (onShop) {
+        onShop();
+        return;
+      }
+      router.push("/shop");
+      return;
+    }
+    if (name === "Home") {
+      router.push("/");
+      return;
+    }
     document.getElementById(name === "Contact" ? "footer" : "our-story")?.scrollIntoView({ behavior: "smooth" });
   };
 

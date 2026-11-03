@@ -11,7 +11,7 @@ export default function TermsAndConditionsPage() {
     <main className="min-h-screen bg-white">
       {/* 1. Header/Title Container */}
       <section
-        className="w-full py-4 md:py-6 lg:py-7"
+        className="w-full py-6 md:py-8 lg:py-10"
         aria-label="Page Header"
       >
         <div className="mx-auto w-full max-w-[1328px] px-5 lg:px-8">

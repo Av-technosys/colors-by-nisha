@@ -1,0 +1,17 @@
+"use client";
+
+import type { ProductItem } from "@/data/products";
+import { ShopProductCard } from "@/components/shop/ShopProductCard";
+
+export function RelatedProductsSection({ products, onQuickView }: {
+  products: ProductItem[];
+  onQuickView?: (product: ProductItem) => void;
+}) {
+  if (!products.length) return null;
+  return <section className="py-12 border-t border-neutral-200">
+    <h2 className="mb-8 text-center font-display text-2xl md:text-3xl font-bold tracking-tight text-ink">You May Also Like</h2>
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6">
+      {products.map(product => <ShopProductCard key={product.id} product={product} onQuickView={onQuickView} />)}
+    </div>
+  </section>;
+}

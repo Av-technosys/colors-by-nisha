@@ -5,7 +5,7 @@ import { Photo } from "@/components/ui/Photo";
 import Link from "next/link";
 import { useState } from "react";
 
-interface FooterProps {
+export interface FooterProps {
   onShop?: () => void;
   onPanel?: (name: string) => void;
 }
@@ -17,7 +17,7 @@ export function Footer({ onShop, onPanel }: FooterProps = {}) {
     if (onShop) {
       onShop();
     } else {
-      window.location.href = "/#currently-obsessed";
+      window.location.href = "/shop";
     }
   };
 
@@ -51,29 +51,55 @@ export function Footer({ onShop, onPanel }: FooterProps = {}) {
             Quick Links
           </h3>
           <Link href="/">Home</Link>
-          <button onClick={handleShop}>Shop</button>
+          {onShop ? (
+            <button onClick={handleShop}>Shop</button>
+          ) : (
+            <Link href="/shop">Shop</Link>
+          )}
           <Link href="/about">About us</Link>
-          <a href="mailto:colorbynishavijay@gmail.com">Contact</a>
-          <button onClick={() => onPanel?.("Blogs")}>Blogs</button>
+          <Link href="/contact">Contact</Link>
+          {onPanel ? (
+            <button onClick={() => onPanel("Blogs")}>Blogs</button>
+          ) : (
+            <Link href="/blog">Blogs</Link>
+          )}
         </div>
         <div className="flex flex-col items-start gap-2">
           <h3 className="mb-4 font-display text-[17px] md:mb-5 md:text-lg">
             Categories
           </h3>
-          {["Lehenga", "Saree", "Ethnic"].map((x) => (
-            <button key={x} onClick={handleShop}>
-              {x}
-            </button>
-          ))}
+          {["Lehenga", "Saree", "Ethnic"].map((x) =>
+            onShop ? (
+              <button key={x} onClick={handleShop}>
+                {x}
+              </button>
+            ) : (
+              <Link key={x} href={`/shop?category=${x.toLowerCase()}`}>
+                {x}
+              </Link>
+            )
+          )}
         </div>
         <div className="flex flex-col items-start gap-2">
           <h3 className="mb-4 font-display text-[17px] md:mb-5 md:text-lg">
             Legal Links
           </h3>
-          <Link href="/privacy-policy">Privacy Policy</Link>
-          <Link href="/terms-and-conditions">Terms & Conditions</Link>
-          <Link href="/return-and-refund">Return & Refund</Link>
-          <Link href="/customization">Customization</Link>
+          {[
+            { name: "Privacy Policy", href: "/privacy-policy" },
+            { name: "Terms & Conditions", href: "/terms-and-conditions" },
+            { name: "Return & Refund", href: "/return-and-refund" },
+            { name: "Customization", href: "/customization" },
+          ].map((item) =>
+            onPanel ? (
+              <button key={item.name} onClick={() => onPanel(item.name)}>
+                {item.name}
+              </button>
+            ) : (
+              <Link key={item.name} href={item.href} className="hover:underline">
+                {item.name}
+              </Link>
+            )
+          )}
         </div>
         <div className="col-span-2 md:col-start-2 lg:col-span-1 lg:col-start-auto">
           <h3 className="mb-4 font-display text-[17px] md:mb-5 md:text-lg">

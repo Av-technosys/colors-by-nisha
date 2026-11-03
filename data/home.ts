@@ -149,6 +149,7 @@ export const masterpieces: Product[] = [
     "second": 52
   }
 ];
+
 export const money = (price: number) => `Rs. ${price.toLocaleString("en-US", { minimumFractionDigits: 2 })}`;
 
 export const handpicked = [

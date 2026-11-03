@@ -3,32 +3,38 @@
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Photo } from "@/components/ui/Photo";
 import { Reveal } from "@/components/ui/Reveal";
+import { useLoopingRail } from "@/components/ui/useLoopingRail";
 import { money, testimonials, type Product } from "@/data/home";
 
+const reviews = [...testimonials.slice(-1), ...testimonials.slice(0, -1)];
+
 export function TestimonialsSection({ onSelect }: { onSelect: (product: Product) => void }) {
+  const { rail } = useLoopingRail(reviews.length);
+
   return (
     <Reveal>
-      <section className="bg-ice py-10 md:py-14">
+      <section className="bg-ice py-8 md:pb-10">
         <div className="mx-auto w-full max-w-[1328px] px-5 lg:px-6">
           <SectionHeading>Spotted in Colors by Nisha</SectionHeading>
-          <div className="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-4 [scrollbar-width:thin] md:gap-8">{testimonials.map(item => <article className="flex basis-[90%] shrink-0 snap-start overflow-hidden rounded-md bg-white md:basis-[calc((100%_-_30px)/2)]" key={item.name}>
-            <div className="relative hidden min-h-[340px] basis-[42%] shrink-0 lg:block">
+          <div ref={rail} className="relative flex snap-x snap-mandatory items-stretch gap-4 overflow-x-auto [scrollbar-width:none] lg:gap-5">{[0, 1, 2].flatMap(copy => reviews.map(item => <article aria-hidden={copy !== 1 || undefined} className="flex basis-full shrink-0 snap-start flex-col overflow-hidden rounded-md bg-white sm:basis-[calc((100%_-_16px)/2)] lg:basis-[calc((100%_-_60px)/4)]" key={`${copy}-${item.name}`}>
+            <div className="relative aspect-4/3 shrink-0">
               <Photo id={item.image} alt={item.name} />
             </div>
-            <div className="min-w-0 flex-1 p-6">
-              <div className="mb-3 tracking-[3px] text-[#ff9c05]" aria-label="5 out of 5 stars">★★★★★</div>
-              <h3 className="font-display text-lg">{item.name}</h3>
-              <small className="text-[11px]">✓ Verified Buyer</small>
-              <p className="mb-5 mt-4 min-h-[70px] text-[13px] md:min-h-0">{item.text}</p>
-              <button className="flex w-full items-center gap-3 border-t border-neutral-100 pt-4 text-left font-display text-[13px]" onClick={() => onSelect({ name: item.product, price: item.price, image: item.productImage })}>
-                <span className="relative h-[65px] w-12 shrink-0">
+            <div className="flex min-h-[370px] min-w-0 flex-1 flex-col p-6 xl:p-[30px]">
+              <div className="mb-2 text-lg leading-none text-[#ff9c05]" aria-label="5 out of 5 stars">★★★★★</div>
+              <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1 text-[13px]">
+                <h3 className="font-display font-medium">{item.name}</h3>
+                <span className="italic text-neutral-500">✓ Verified Buyer</span>
+              </div>
+              <p className="mt-5 text-sm leading-[1.75] xl:text-[15px]">{item.text}</p>
+              <button tabIndex={copy === 1 ? undefined : -1} className="mt-auto flex w-full items-center gap-3.5 pt-6 text-left font-display text-sm font-medium xl:text-[15px]" onClick={() => onSelect({ name: item.product, price: item.price, image: item.productImage })}>
+                <span className="relative h-[90px] w-[60px] shrink-0 overflow-hidden rounded-md">
                   <Photo id={item.productImage} alt={item.product} />
                 </span>
-                <div>{item.product}<small className="mt-2 block font-sans text-[11px]">{money(item.price)}</small>
-                </div>
+                <span className="leading-snug">{item.product}<span className="mt-1 block text-sm">{money(item.price)}</span></span>
               </button>
             </div>
-          </article>)}</div>
+          </article>))}</div>
         </div>
       </section>
     </Reveal>
