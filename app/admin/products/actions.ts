@@ -67,7 +67,6 @@ export async function saveProduct(_state: ActionState, form: FormData): Promise<
         if (row.variantRef && !variantId) throw new Error("An image refers to a removed variant.");
         const values = {
           key,
-          altText: row.altText,
           position: row.position,
           variantId: variantId ?? null,
         };
@@ -90,6 +89,8 @@ export async function saveProduct(_state: ActionState, form: FormData): Promise<
   await deleteImages(removedKeys);
   revalidatePath("/admin/products");
   revalidatePath("/admin/categories");
+  revalidatePath("/shop");
+  revalidatePath("/products/[handle]", "page");
   redirect("/admin/products");
 }
 
@@ -110,6 +111,8 @@ export async function deleteProduct(id: string): Promise<ActionState> {
   await deleteImages(keys);
   revalidatePath("/admin/products");
   revalidatePath("/admin/categories");
+  revalidatePath("/shop");
+  revalidatePath("/products/[handle]", "page");
   return {};
 }
 

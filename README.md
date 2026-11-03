@@ -67,15 +67,14 @@ AWS_ACCESS_KEY_ID=
 AWS_SECRET_ACCESS_KEY=
 AWS_S3_BUCKET=avtdev
 AWS_S3_PREFIX=public/cbn001
-IMAGE_UPLOAD_SECRET=
 AWS_S3_PUBLIC_URL=https://dg2suxnbcr839.cloudfront.net
 ```
 
 `AWS_S3_BUCKET` is only the bucket name. `AWS_S3_PREFIX` is the optional folder
 prefix; do not include it in the bucket name. The credentials need permission to
-put, get, and delete objects below that prefix. `IMAGE_UPLOAD_SECRET` must contain
-at least 32 random characters and is used to verify completed uploads. IAM role
-credentials also work; `AWS_SESSION_TOKEN` is supported for temporary credentials.
+put, get, and delete objects below that prefix. Completed uploads are verified
+using a server-side signature derived from the configured AWS secret key. `AWS_SESSION_TOKEN` is supported for temporary credentials. The immediate-upload
+workflow requires the AWS access key and secret key configured above.
 Leave `AWS_S3_PUBLIC_URL` empty for private buckets with signed viewing URLs, or
 set it to your public bucket/CDN base URL.
 
@@ -108,3 +107,8 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+Products use an unrestricted text short description. Product type, custom
+attributes, and editable image descriptions have been removed from the local
+schema and admin forms. Review the generated migration before applying these
+column removals yourself.

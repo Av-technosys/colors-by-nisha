@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { productStatuses } from "@/helpers/admin/product-input";
 import { CatalogTable } from "@/components/admin/CatalogTable";
 import { deleteProduct, loadProducts } from "./actions";
 
@@ -12,7 +13,7 @@ export default function ProductsPage() {
       description="Manage your collection, product details, and variants."
       basePath="/admin/products"
       columns={["SKU", "Category", "Price"]}
-      statuses={["draft", "active", "archived"]}
+      statuses={productStatuses}
       loadAction={loadProducts}
       deleteAction={deleteProduct}
     />

@@ -21,6 +21,7 @@ export function PageHeading({ eyebrow, title, description, action }: PageHeading
 }
 
 export function StatusBadge({ status }: { status: string }) {
+  status = status.charAt(0).toUpperCase() + status.slice(1).replace(/_/g, " ");
   let color = "bg-neutral-100 text-neutral-500";
 
   if (["Delivered", "Paid", "Active", "Published", "Resolved"].includes(status)) {
@@ -33,7 +34,7 @@ export function StatusBadge({ status }: { status: string }) {
     color = "bg-[#faf3e6] text-[#9c7a3f]";
   } else if (["Draft", "Inactive", "Read"].includes(status)) {
     color = "bg-[#f1f0ed] text-[#8a8477]";
-  } else if (["Refunded", "Failed"].includes(status)) {
+  } else if (["Refunded", "Failed", "Out of stock"].includes(status)) {
     color = "bg-[#f7eeec] text-[#a16b60]";
   }
 

@@ -10,7 +10,6 @@ export type ProductImage = {
   id: string;
   clientId: string;
   url: string;
-  altText: string;
   file?: File;
   uploadToken?: string;
   status: "uploading" | "uploaded" | "failed";
@@ -115,7 +114,7 @@ export function ProductImages({ images, onChange, onBusyChange, disabled }: Prod
           throw new Error(`“${file.name}” could not be opened as an image.`);
         }
         if (!mounted.current) return;
-        added.push({ id: "", clientId: crypto.randomUUID(), url, altText: "", file, status: "uploading" });
+        added.push({ id: "", clientId: crypto.randomUUID(), url, file, status: "uploading" });
       }
       if (mounted.current && commit([...currentImages.current, ...added]) === false) {
         added.forEach(image => { URL.revokeObjectURL(image.url); urls.current.delete(image.url); });
@@ -162,7 +161,7 @@ export function ProductImages({ images, onChange, onBusyChange, disabled }: Prod
         {images.map((image, index) => (
           <div key={image.clientId} className="overflow-hidden rounded-lg border border-[#e5e1da] bg-white">
             <div className="relative aspect-4/3 bg-[#f7f6f3]">
-              <Image src={image.url} alt={image.altText || `Product image ${index + 1}`} fill unoptimized className="object-contain" onError={() => {
+              <Image src={image.url} alt={`Product image ${index + 1}`} fill unoptimized className="object-contain" onError={() => {
                 if (image.status === "uploaded") commit(currentImages.current.map(item => item.clientId === image.clientId ? { ...item, status: "failed", error: "The image could not be loaded. Please re-upload the image." } : item));
               }} />
               {image.status === "uploading" && <div role="status" className="absolute inset-0 flex items-center justify-center gap-2 bg-white/75 text-xs text-purple"><LoaderCircle size={17} className="motion-safe:animate-spin" />Uploading…</div>}
@@ -175,8 +174,7 @@ export function ProductImages({ images, onChange, onBusyChange, disabled }: Prod
                 <p role="alert" className="text-[11px] text-[#a16b60]">{image.error || "Image upload failed. Please re-upload the image."}</p>
                 {image.file ? <button type="button" disabled={disabled || reading} onClick={() => void reupload(image)} className="inline-flex min-h-9 items-center gap-2 text-xs text-purple"><RefreshCw size={13} />Re-upload image</button> : <label className="inline-flex cursor-pointer items-center gap-2 text-xs text-purple"><RefreshCw size={13} />Re-upload image<input type="file" accept={IMAGE_TYPES.join(",")} disabled={disabled || reading} className="sr-only" onChange={event => { const file = event.target.files?.[0]; event.target.value = ""; if (file) void reupload(image, file); }} /></label>}
               </div>}
-              <label className="block text-[11px] text-neutral-500">Image description<input disabled={disabled || reading} maxLength={255} value={image.altText} onChange={event => commit(images.map((item, imageIndex) => imageIndex === index ? { ...item, altText: event.target.value } : item))} placeholder="Describe the image" className="mt-1.5 min-h-10 w-full rounded-md border border-[#e5e1da] px-2.5 text-xs" /></label>
-              <div className="flex items-center justify-between"><span className="text-[10px] text-neutral-400">Image {index + 1}</span><div className="flex gap-1"><button type="button" disabled={disabled || reading || index === 0} onClick={() => move(index, -1)} aria-label={`Move image ${index + 1} earlier`} className="grid size-8 place-items-center rounded-md border border-[#e5e1da] text-purple disabled:opacity-30"><ChevronLeft size={13} /></button><button type="button" disabled={disabled || reading || index === images.length - 1} onClick={() => move(index, 1)} aria-label={`Move image ${index + 1} later`} className="grid size-8 place-items-center rounded-md border border-[#e5e1da] text-purple disabled:opacity-30"><ChevronRight size={13} /></button></div></div>
+              <div className="flex items-center justify-between"><span className="sr-only">Image {index + 1}</span><div className="flex gap-1"><button type="button" disabled={disabled || reading || index === 0} onClick={() => move(index, -1)} aria-label={`Move image ${index + 1} earlier`} className="grid size-8 place-items-center rounded-md border border-[#e5e1da] text-purple disabled:opacity-30"><ChevronLeft size={13} /></button><button type="button" disabled={disabled || reading || index === images.length - 1} onClick={() => move(index, 1)} aria-label={`Move image ${index + 1} later`} className="grid size-8 place-items-center rounded-md border border-[#e5e1da] text-purple disabled:opacity-30"><ChevronRight size={13} /></button></div></div>
             </div>
           </div>
         ))}

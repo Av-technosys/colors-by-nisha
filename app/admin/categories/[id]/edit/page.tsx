@@ -16,7 +16,7 @@ async function EditCategory({ params }: PageProps) {
   try { validateId(id); } catch { notFound(); }
   const category = await getCategory(id);
   if (!category) notFound();
-  return <CategoryForm category={category} />;
+  return <CategoryForm key={category.id} category={category} />;
 }
 
 export default function EditCategoryPage({ params }: PageProps) {

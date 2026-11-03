@@ -94,7 +94,7 @@ export function CatalogTable({ title, singular, description, basePath, columns, 
               <span className="sr-only">Search {title.toLowerCase()}</span><Search size={16} className="absolute left-3 top-3.5 text-neutral-400" aria-hidden="true" />
               <input value={query} onChange={event => { setQuery(event.target.value); setPage(1); }} placeholder={`Search ${title.toLowerCase()}…`} className="min-h-11 w-full rounded-lg border border-[#e5e1da] pl-9 pr-3 text-xs" />
             </label>
-            {!!statuses.length && <label><span className="sr-only">Status</span><select value={status} onChange={event => { setStatus(event.target.value); setPage(1); }} className="min-h-11 rounded-lg border border-[#e5e1da] px-3 text-xs"><option value="">All statuses</option>{statuses.map(value => <option key={value} value={value}>{value.charAt(0).toUpperCase() + value.slice(1)}</option>)}</select></label>}
+            {!!statuses.length && <label><span className="sr-only">Status</span><select value={status} onChange={event => { setStatus(event.target.value); setPage(1); }} className="min-h-11 rounded-lg border border-[#e5e1da] px-3 text-xs"><option value="">All statuses</option>{statuses.map(value => <option key={value} value={value}>{value.charAt(0).toUpperCase() + value.slice(1).replace(/_/g, " ")}</option>)}</select></label>}
             {showCategoryFilter && (
               <label>
                 <span className="sr-only">Category</span>

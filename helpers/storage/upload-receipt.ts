@@ -5,19 +5,19 @@ import { createHmac, timingSafeEqual } from "node:crypto";
 
 type UploadReceipt = { key: string; folder: "products" | "blogs"; expires: number };
 
-function signingSecret() {
-  const secret = process.env.IMAGE_UPLOAD_SECRET;
-  if (!secret || secret.length < 32) throw new Error("Add IMAGE_UPLOAD_SECRET with at least 32 random characters to the environment.");
-  return secret;
+function uploadSigningKey() {
+  const secret = process.env.AWS_SECRET_ACCESS_KEY;
+  if (!secret) throw new Error("Add AWS_SECRET_ACCESS_KEY to the environment before uploading images.");
+  return createHmac("sha256", secret).update("colors-by-nisha:image-uploads:v1").digest();
 }
 
 export function checkUploadConfiguration() {
-  signingSecret();
+  uploadSigningKey();
 }
 
 export function createUploadReceipt(key: string, folder: "products" | "blogs") {
   const payload = Buffer.from(JSON.stringify({ key, folder, expires: Date.now() + 24 * 60 * 60 * 1000 })).toString("base64url");
-  const signature = createHmac("sha256", signingSecret()).update(payload).digest("base64url");
+  const signature = createHmac("sha256", uploadSigningKey()).update(payload).digest("base64url");
   return `${payload}.${signature}`;
 }
 
@@ -27,7 +27,7 @@ export function readUploadReceipt(token: string, folder: "products" | "blogs") {
   const parts = token.split(".");
   if (parts.length !== 2) throw new Error(message);
   const [payload, signature] = parts;
-  const expected = createHmac("sha256", signingSecret()).update(payload).digest();
+  const expected = createHmac("sha256", uploadSigningKey()).update(payload).digest();
   const supplied = Buffer.from(signature, "base64url");
   if (supplied.length !== expected.length || !timingSafeEqual(supplied, expected)) throw new Error(message);
   let receipt: UploadReceipt;

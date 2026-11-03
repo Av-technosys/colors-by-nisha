@@ -5,12 +5,11 @@ import { getCategoryList } from "@/helpers/admin/categories";
 
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
 import { categories } from "@/lib/db/schema";
 import { actionError, requiredText, validateId, validateSlug, type ActionState } from "@/helpers/admin/validation";
 
-export async function saveCategory(_state: ActionState, form: FormData): Promise<ActionState> {
+export async function saveCategory(_state: ActionState, form: FormData): Promise<{ success?: boolean; error?: string }> {
   try {
     const id = String(form.get("id") ?? "");
     const values = {
@@ -30,9 +29,11 @@ export async function saveCategory(_state: ActionState, form: FormData): Promise
   }
 
   revalidatePath("/admin/categories");
+  revalidatePath("/shop");
+  revalidatePath("/products/[handle]", "page");
   revalidatePath("/admin/products");
   revalidatePath("/admin/blogs");
-  redirect("/admin/categories");
+  return { success: true };
 }
 
 export async function deleteCategory(id: string): Promise<ActionState> {
@@ -44,6 +45,8 @@ export async function deleteCategory(id: string): Promise<ActionState> {
     return { error: actionError(error) };
   }
   revalidatePath("/admin/categories");
+  revalidatePath("/shop");
+  revalidatePath("/products/[handle]", "page");
   revalidatePath("/admin/products");
   revalidatePath("/admin/blogs");
   return {};

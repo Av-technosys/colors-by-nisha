@@ -7,17 +7,20 @@ import {
   numeric,
   integer,
   timestamp,
-  jsonb,
   boolean,
   date,
 } from "drizzle-orm/pg-core";
 
+
+// -----------------Categories table-----------------
 export const categories = pgTable("categories", {
   id: uuid("id").defaultRandom().primaryKey(),
   name: varchar("name", { length: 255 }).notNull(),
   slug: varchar("slug", { length: 255 }).notNull().unique(),
 });
 
+
+// -----------------Products table-----------------
 export const products = pgTable("products", {
   id: uuid("id").defaultRandom().primaryKey(),
   name: varchar("name", { length: 255 }).notNull(),
@@ -26,11 +29,10 @@ export const products = pgTable("products", {
   description: text("description"),
   price: numeric("price", { precision: 10, scale: 2 }).notNull(),
   categoryId: uuid("category_id").references(() => categories.id),
-  productType: varchar("product_type", { length: 100 }),
+  shortDescription: text("short_description"),
   status: varchar("status", { length: 20 }).notNull().default("draft"),
   metaTitle: varchar("meta_title", { length: 255 }),
   metaDescription: text("meta_description"),
-  attributes: jsonb("attributes"),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp("updated_at", { withTimezone: true })
     .defaultNow()
@@ -38,6 +40,8 @@ export const products = pgTable("products", {
     .notNull(),
 });
 
+
+// -----------------Product Variants table-----------------
 export const productVariants = pgTable("product_variants", {
   id: uuid("id").defaultRandom().primaryKey(),
   productId: uuid("product_id")
@@ -49,6 +53,8 @@ export const productVariants = pgTable("product_variants", {
   stock: integer("stock"),
 });
 
+
+// -----------------Product Media table-----------------
 export const productMedia = pgTable("product_media", {
   id: uuid("id").defaultRandom().primaryKey(),
   productId: uuid("product_id")
@@ -56,10 +62,11 @@ export const productMedia = pgTable("product_media", {
     .references(() => products.id, { onDelete: "cascade" }),
   variantId: uuid("variant_id").references(() => productVariants.id, { onDelete: "cascade" }),
   key: text("key").notNull(),
-  altText: varchar("alt_text", { length: 255 }),
   position: integer("position").notNull().default(0),
 });
 
+
+// -----------------Blogs table-----------------
 export const blogs = pgTable("blogs", {
   id: uuid("id").defaultRandom().primaryKey(),
   title: varchar("title", { length: 300 }).notNull(),

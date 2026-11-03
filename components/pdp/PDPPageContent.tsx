@@ -1,5 +1,6 @@
 "use client";
 
+import { selectVariant } from "@/helpers/store/variant";
 import React, { useState } from "react";
 import Link from "next/link";
 import { type ProductItem } from "@/data/products";
@@ -17,9 +18,13 @@ import { QuickViewModal } from "@/components/shop/QuickViewModal";
 
 interface PDPPageContentProps {
   product: ProductItem;
+  relatedProducts: ProductItem[];
 }
 
-export function PDPPageContent({ product }: PDPPageContentProps) {
+export function PDPPageContent({ product: originalProduct, relatedProducts }: PDPPageContentProps) {
+  const [variantId, setVariantId] = useState(originalProduct.variants?.find(variant => variant.stock !== 0)?.id || originalProduct.variants?.[0]?.id || "");
+  const [quantity, setQuantity] = useState(1);
+  const product = selectVariant(originalProduct, variantId);
   const { cart, wishlist, setCartOpen, notification } = useStore();
   const [quickViewProduct, setQuickViewProduct] = useState<ProductItem | null>(null);
 
@@ -73,7 +78,7 @@ export function PDPPageContent({ product }: PDPPageContentProps) {
           <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-5 lg:gap-14 items-start">
             {/* Left: Gallery - Normal block on mobile, sticky only on desktop! */}
             <div className="relative lg:sticky lg:top-28">
-              <ProductGallery
+              <ProductGallery key={`${product.id}-${variantId}`}
                 images={product.images}
                 productName={product.name}
                 productSlug={product.slug}
@@ -82,7 +87,7 @@ export function PDPPageContent({ product }: PDPPageContentProps) {
 
             {/* Right: Details & Purchase Form directly below image on mobile */}
             <div className="pt-3 md:pt-0">
-              <ProductDetailsInfo product={product} />
+              <ProductDetailsInfo product={product} variantId={variantId} onVariantChange={id => { setVariantId(id); setQuantity(1); }} quantity={quantity} onQuantityChange={setQuantity} />
             </div>
           </div>
 
@@ -93,14 +98,18 @@ export function PDPPageContent({ product }: PDPPageContentProps) {
 
           {/* Related Products */}
           <RelatedProductsSection
-            currentProduct={product}
+            products={relatedProducts}
             onQuickView={(p) => setQuickViewProduct(p)}
           />
         </section>
       </main>
 
       {/* Sticky Bottom Add to Cart Bar (Desktop & Mobile) with Dynamic Scroll Fill Button */}
-      <StickyBottomBar product={product} />
+      <StickyBottomBar product={product} quantity={quantity} onQuantityChange={setQuantity} onAdd={() => {
+        const terms = document.getElementById("terms-check") as HTMLInputElement | null;
+        if (!terms?.checked) document.getElementById("pdp-main-buy-actions")?.scrollIntoView({ behavior: "smooth", block: "center" });
+        document.getElementById("pdp-add-to-cart")?.click();
+      }} />
 
       {/* Mobile Bottom Navigation Bar */}
       <MobileNavigation
@@ -113,7 +122,7 @@ export function PDPPageContent({ product }: PDPPageContentProps) {
       <CartDrawer />
 
       {/* Quick View Modal */}
-      <QuickViewModal product={quickViewProduct} onClose={() => setQuickViewProduct(null)} />
+      <QuickViewModal key={quickViewProduct?.id || "closed"} product={quickViewProduct} onClose={() => setQuickViewProduct(null)} />
 
       {/* Footer */}
       <Footer />

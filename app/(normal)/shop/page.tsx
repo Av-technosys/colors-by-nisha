@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { getShopProducts } from "@/helpers/store/products";
 import { Suspense } from "react";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
@@ -18,7 +19,8 @@ async function ShopLoader({
 }) {
   const searchParams = await searchParamsPromise;
   const initialCategory = searchParams?.category || "all";
-  return <ShopPageContent initialCategory={initialCategory} />;
+  const products = await getShopProducts();
+  return <ShopPageContent key={initialCategory} products={products} initialCategory={initialCategory} />;
 }
 
 export default function ShopPage(props: {

@@ -24,10 +24,6 @@ export type BlogErrors = Partial<Record<keyof BlogFields, string>>;
 export type MutationResult<T = undefined> = { success: true; data: T } | { success: false; message: string; errors?: BlogErrors };
 export const MAX_BANNER_BYTES = 1024 * 1024;
 
-export function slugify(value: string) {
-  return value.normalize("NFKD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
-}
-
 export const emptyBlog: BlogFields = {
   title: "", slug: "", categoryId: "", publishDate: "", mainBannerImage: "",
   authorName: "", metaTitle: "", metaDescription: "", content: "", isDraft: false,

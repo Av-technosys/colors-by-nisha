@@ -6,9 +6,10 @@ import { ArrowLeft, Plus, Trash2 } from "lucide-react";
 import { saveProduct } from "@/app/admin/products/actions";
 import type { categories } from "@/lib/db/schema";
 import type { ProductDetails } from "@/helpers/admin/products";
-import type { MediaInput, VariantInput } from "@/helpers/admin/product-input";
+import { productStatuses, type MediaInput, type VariantInput } from "@/helpers/admin/product-input";
 import { discardImageUploadAction } from "@/app/admin/images/actions";
 import { MAX_PRODUCT_IMAGES } from "@/helpers/storage/image-limits";
+import { slugify } from "@/helpers/admin/slugify";
 import { PageHeading } from "./AdminUI";
 import { ProductImages, type ProductImage } from "./ProductImages";
 
@@ -21,6 +22,30 @@ type SelectedImage = ProductImage & { variantRef: string };
 
 export function ProductForm({ product, categoryOptions }: ProductFormProps) {
   const formRef = useRef<HTMLFormElement>(null);
+  const [details, setDetails] = useState({
+    name: product?.name ?? "",
+    slug: product?.slug || slugify(product?.name ?? ""),
+    description: product?.description ?? "",
+    metaTitle: product?.metaTitle || product?.name || "",
+    metaDescription: product?.metaDescription || product?.description || "",
+  });
+
+  function updateName(name: string) {
+    setDetails(current => ({
+      ...current,
+      name,
+      slug: !current.slug || current.slug === slugify(current.name) ? slugify(name) : current.slug,
+      metaTitle: !current.metaTitle || current.metaTitle === current.name ? name : current.metaTitle,
+    }));
+  }
+
+  function updateDescription(description: string) {
+    setDetails(current => ({
+      ...current,
+      description,
+      metaDescription: !current.metaDescription || current.metaDescription === current.description ? description : current.metaDescription,
+    }));
+  }
   const [error, setError] = useState("");
   const [pending, startTransition] = useTransition();
   const [readingCount, setReadingCount] = useState(0);
@@ -36,7 +61,6 @@ export function ProductForm({ product, categoryOptions }: ProductFormProps) {
     id: row.id,
     clientId: row.id,
     url: row.url,
-    altText: row.altText ?? "",
     variantRef: row.variantId ?? "",
     status: "uploaded",
   })) ?? []);
@@ -81,7 +105,7 @@ export function ProductForm({ product, categoryOptions }: ProductFormProps) {
     const media: MediaInput[] = [];
     for (const variantRef of ["", ...variants.map(variant => variant.clientId)]) {
       images.filter(image => image.variantRef === variantRef).forEach((image, index) => {
-        media.push({ id: image.id, uploadToken: image.uploadToken ?? "", variantRef, altText: image.altText, position: String(index) });
+        media.push({ id: image.id, uploadToken: image.uploadToken ?? "", variantRef, position: String(index) });
       });
     }
     form.set("media", JSON.stringify(media));
@@ -108,35 +132,37 @@ export function ProductForm({ product, categoryOptions }: ProductFormProps) {
             <div className="grid gap-5 sm:grid-cols-2">
               <label className="text-xs text-neutral-500 sm:col-span-2">
                 Product name
-                <input name="name" required maxLength={255} defaultValue={product?.name} className="mt-2 min-h-11 w-full rounded-lg border border-[#e5e1da] px-3 text-sm" />
+                <input name="name" required maxLength={255} value={details.name} onChange={event => updateName(event.target.value)} className="mt-2 min-h-11 w-full rounded-lg border border-[#e5e1da] px-3 text-sm" />
               </label>
               <label className="text-xs text-neutral-500">
                 Slug
-                <input name="slug" required maxLength={255} pattern="[a-z0-9]+(-[a-z0-9]+)*" placeholder="noori-lehenga" defaultValue={product?.slug} className="mt-2 min-h-11 w-full rounded-lg border border-[#e5e1da] px-3 text-sm" />
+                <input name="slug" required maxLength={255} pattern="[a-z0-9]+(-[a-z0-9]+)*" placeholder="noori-lehenga" value={details.slug} onChange={event => setDetails(current => ({ ...current, slug: event.target.value }))} className="mt-2 min-h-11 w-full rounded-lg border border-[#e5e1da] px-3 text-sm" />
               </label>
               <label className="text-xs text-neutral-500">
                 SKU
                 <input name="sku" maxLength={100} defaultValue={product?.sku ?? ""} className="mt-2 min-h-11 w-full rounded-lg border border-[#e5e1da] px-3 text-sm" />
               </label>
-              <label className="text-xs text-neutral-500">
-                Price (₹)
-                <input name="price" type="number" min="0" max="99999999.99" step="0.01" required defaultValue={product?.price} className="mt-2 min-h-11 w-full rounded-lg border border-[#e5e1da] px-3 text-sm" />
-              </label>
-              <label className="text-xs text-neutral-500">
-                Category
-                <select name="categoryId" defaultValue={product?.categoryId ?? ""} className="mt-2 min-h-11 w-full rounded-lg border border-[#e5e1da] bg-white px-3 text-sm"><option value="">Uncategorised</option>{categoryOptions.map(category => <option key={category.id} value={category.id}>{category.name}</option>)}</select>
-              </label>
-              <label className="text-xs text-neutral-500">
-                Product type
-                <input name="productType" maxLength={100} placeholder="e.g. Lehenga set" defaultValue={product?.productType ?? ""} className="mt-2 min-h-11 w-full rounded-lg border border-[#e5e1da] px-3 text-sm" />
-              </label>
-              <label className="text-xs text-neutral-500">
-                Status
-                <select name="status" defaultValue={product?.status ?? "draft"} className="mt-2 min-h-11 w-full rounded-lg border border-[#e5e1da] bg-white px-3 text-sm"><option value="draft">Draft</option><option value="active">Active</option><option value="archived">Archived</option></select>
+              <div className="grid gap-5 sm:col-span-2 sm:grid-cols-3">
+                <label className="text-xs text-neutral-500">
+                  Price (₹)
+                  <input name="price" type="number" min="0" max="99999999.99" step="0.01" required defaultValue={product?.price} className="mt-2 min-h-11 w-full rounded-lg border border-[#e5e1da] px-3 text-sm" />
+                </label>
+                <label className="text-xs text-neutral-500">
+                  Category
+                  <select name="categoryId" defaultValue={product?.categoryId ?? ""} className="mt-2 min-h-11 w-full rounded-lg border border-[#e5e1da] bg-white px-3 text-sm"><option value="">Uncategorised</option>{categoryOptions.map(category => <option key={category.id} value={category.id}>{category.name}</option>)}</select>
+                </label>
+                <label className="text-xs text-neutral-500">
+                  Status
+                  <select name="status" defaultValue={product?.status ?? "draft"} className="mt-2 min-h-11 w-full rounded-lg border border-[#e5e1da] bg-white px-3 text-sm">{productStatuses.map(status => <option key={status} value={status}>{status === "out_of_stock" ? "Out of stock" : status.charAt(0).toUpperCase() + status.slice(1)}</option>)}</select>
+                </label>
+              </div>
+              <label className="text-xs text-neutral-500 sm:col-span-2">
+                Short description
+                <textarea name="shortDescription" rows={3} defaultValue={product?.shortDescription ?? ""} className="mt-2 w-full rounded-lg border border-[#e5e1da] p-3 text-sm" />
               </label>
               <label className="text-xs text-neutral-500 sm:col-span-2">
                 Description
-                <textarea name="description" rows={5} defaultValue={product?.description ?? ""} className="mt-2 w-full rounded-lg border border-[#e5e1da] p-3 text-sm" />
+                <textarea name="description" rows={5} value={details.description} onChange={event => updateDescription(event.target.value)} className="mt-2 w-full rounded-lg border border-[#e5e1da] p-3 text-sm" />
               </label>
             </div>
             <div className="mt-7 border-t border-[#eeeae4] pt-6">
@@ -174,14 +200,11 @@ export function ProductForm({ product, categoryOptions }: ProductFormProps) {
           <section className="rounded-xl border border-[#e8e5df] bg-white p-5 sm:p-7">
             <h2 className="mb-6 font-display text-xl">Search information</h2>
             <div className="space-y-5">
-              <label className="block text-xs text-neutral-500">Meta title<input name="metaTitle" maxLength={255} defaultValue={product?.metaTitle ?? ""} className="mt-2 min-h-11 w-full rounded-lg border border-[#e5e1da] px-3 text-sm" /></label>
-              <label className="block text-xs text-neutral-500">Meta description<textarea name="metaDescription" rows={3} defaultValue={product?.metaDescription ?? ""} className="mt-2 w-full rounded-lg border border-[#e5e1da] p-3 text-sm" /></label>
+              <label className="block text-xs text-neutral-500">Meta title<input name="metaTitle" maxLength={255} value={details.metaTitle} onChange={event => setDetails(current => ({ ...current, metaTitle: event.target.value }))} className="mt-2 min-h-11 w-full rounded-lg border border-[#e5e1da] px-3 text-sm" /></label>
+              <label className="block text-xs text-neutral-500">Meta description<textarea name="metaDescription" rows={3} value={details.metaDescription} onChange={event => setDetails(current => ({ ...current, metaDescription: event.target.value }))} className="mt-2 w-full rounded-lg border border-[#e5e1da] p-3 text-sm" /></label>
             </div>
           </section>
-          <section className="rounded-xl border border-[#e8e5df] bg-white p-5 sm:p-7">
-            <h2 className="mb-2 font-display text-xl">Attributes</h2>
-            <label className="block text-xs text-neutral-500">Additional product attributes (JSON)<textarea name="attributes" rows={5} defaultValue={product?.attributes != null ? JSON.stringify(product.attributes, null, 2) : ""} placeholder={'{"fabric": "Silk", "care": "Dry clean"}'} className="mt-2 w-full rounded-lg border border-[#e5e1da] p-3 font-mono text-xs" /></label>
-          </section>
+
           {error && <p role="alert" className="rounded-lg bg-[#f7eeec] p-4 text-sm text-[#a16b60]">{error}</p>}
           <div className="flex flex-wrap items-center justify-end gap-3 pb-4">
             {pending && <p role="status" className="mr-auto text-xs text-neutral-500">Saving product…</p>}

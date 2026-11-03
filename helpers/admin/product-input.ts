@@ -1,8 +1,10 @@
 import { MAX_PRODUCT_IMAGES } from "@/helpers/storage/image-limits";
 import { optionalText, requiredText, validateId, validatePrice, validateSlug } from "./validation";
 
+export const productStatuses = ["draft", "active", "out_of_stock", "archived"];
+
 export type VariantInput = { id: string; clientId: string; name: string; sku: string; price: string; stock: string };
-export type MediaInput = { id: string; uploadToken: string; variantRef: string; altText: string; position: string };
+export type MediaInput = { id: string; uploadToken: string; variantRef: string; position: string };
 
 function readRows(form: FormData, key: string): Record<string, unknown>[] {
   let rows: unknown;
@@ -33,15 +35,8 @@ export function parseProduct(form: FormData) {
   if (id) validateId(id);
   const categoryId = optionalText(form, "categoryId");
   if (categoryId) validateId(categoryId);
-  const status = requiredText(form, "status", "Status", 20);
-  if (!["draft", "active", "archived"].includes(status)) throw new Error("Choose a valid product status.");
-
-  const attributesText = optionalText(form, "attributes");
-  let attributes: unknown = null;
-  if (attributesText) {
-    try { attributes = JSON.parse(attributesText); }
-    catch { throw new Error("Additional attributes must contain valid JSON."); }
-  }
+  let status = requiredText(form, "status", "Status", 20);
+  if (!productStatuses.includes(status)) throw new Error("Choose a valid product status.");
 
   const variants = readRows(form, "variants").map((row, index) => {
     const rowId = rowText(row, "id", 36);
@@ -57,6 +52,8 @@ export function parseProduct(form: FormData) {
     };
   });
 
+  if (status === "active" && variants.length && variants.every(variant => variant.stock === 0)) status = "out_of_stock";
+
   const variantRefs = variants.map(row => row.clientId);
   if (new Set(variantRefs).size !== variantRefs.length) throw new Error("A variant was included more than once.");
   const media = readRows(form, "media").map((row, index) => {
@@ -70,7 +67,6 @@ export function parseProduct(form: FormData) {
       id: rowId,
       variantRef,
       uploadToken,
-      altText: rowText(row, "altText", 255) || null,
       position: wholeNumber(rowText(row, "position", 10) || String(index), "Media position"),
     };
   });
@@ -90,11 +86,10 @@ export function parseProduct(form: FormData) {
       description: optionalText(form, "description"),
       price: validatePrice(requiredText(form, "price", "Price", 20)),
       categoryId,
-      productType: optionalText(form, "productType", 100),
+      shortDescription: optionalText(form, "shortDescription"),
       status,
       metaTitle: optionalText(form, "metaTitle", 255),
       metaDescription: optionalText(form, "metaDescription"),
-      attributes,
     },
     variants,
     media,

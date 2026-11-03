@@ -8,9 +8,16 @@ import { ArrowLeft, ImagePlus, LoaderCircle, Save, X } from "lucide-react";
 import { toast } from "sonner";
 import { discardImageUploadAction, uploadImageAction } from "@/app/admin/images/actions";
 import { saveBlogAction } from "@/app/admin/blogs/actions";
-import { emptyBlog, MAX_BANNER_BYTES, slugify, validateBlogFields, type AdminBlog, type BlogCategory, type BlogFields } from "./blog-fields";
+import { slugify } from "@/helpers/admin/slugify";
+import { getBlogContentText } from "@/helpers/admin/blog-content";
+import { emptyBlog, MAX_BANNER_BYTES, validateBlogFields, type AdminBlog, type BlogCategory, type BlogFields } from "./blog-fields";
 
 const BlogEditor = dynamic(() => import("./BlogEditor"), { ssr: false, loading: () => <div aria-label="Loading editor" className="h-[420px] rounded-xl bg-[#f2eff6] motion-safe:animate-pulse" /> });
+
+function articleDescription(content: string) {
+  const paragraph = content.match(/<p(?:\s[^>]*)?>([\s\S]*?)<\/p>/i)?.[1] ?? content;
+  return getBlogContentText(paragraph).slice(0, 2000);
+}
 
 type FormErrors = Partial<Record<keyof BlogFields, string>>;
 
@@ -25,10 +32,9 @@ function Field({ id, label, error, children }: { id: string; label: string; erro
 export default function BlogForm({ initialBlog, categories }: { initialBlog?: AdminBlog; categories: BlogCategory[] }) {
   const existing = initialBlog;
   const blogId = existing?.id;
-  const [initial] = useState<BlogFields>(() => existing ? { title: existing.title, slug: existing.slug, categoryId: existing.categoryId, publishDate: existing.publishDate, mainBannerImage: existing.mainBannerImage, authorName: existing.authorName, metaTitle: existing.metaTitle, metaDescription: existing.metaDescription, content: existing.content, isDraft: existing.isDraft } : { ...emptyBlog });
+  const [initial] = useState<BlogFields>(() => existing ? { title: existing.title, slug: existing.slug, categoryId: existing.categoryId, publishDate: existing.publishDate, mainBannerImage: existing.mainBannerImage, authorName: existing.authorName, metaTitle: existing.metaTitle || existing.title, metaDescription: existing.metaDescription || articleDescription(existing.content), content: existing.content, isDraft: existing.isDraft } : { ...emptyBlog });
   const [values, setValues] = useState<BlogFields>(initial);
   const [editorVersion, setEditorVersion] = useState(0);
-  const [manualSlug, setManualSlug] = useState(Boolean(blogId));
   const [errors, setErrors] = useState<FormErrors>({});
   const [readingImage, setReadingImage] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -68,7 +74,20 @@ export default function BlogForm({ initialBlog, categories }: { initialBlog?: Ad
   function update<K extends keyof BlogFields>(key: K, value: BlogFields[K]) {
     allowNavigation.current = false;
     setSubmitError("");
-    setValues(current => ({ ...current, [key]: value, ...(key === "title" && !manualSlug ? { slug: slugify(String(value)) } : {}) }));
+    setValues(current => {
+      const next = { ...current, [key]: value };
+      if (key === "title") {
+        if (!current.slug || current.slug === slugify(current.title)) next.slug = slugify(String(value));
+        if (!current.metaTitle || current.metaTitle === current.title) next.metaTitle = String(value);
+      }
+      if (key === "content") {
+        const previousText = articleDescription(current.content);
+        if (!current.metaDescription || current.metaDescription === previousText) {
+          next.metaDescription = articleDescription(String(value));
+        }
+      }
+      return next;
+    });
     setErrors(current => ({ ...current, [key]: undefined }));
   }
 
@@ -165,7 +184,6 @@ export default function BlogForm({ initialBlog, categories }: { initialBlog?: Ad
       toast.success(blogId ? "Blog updated." : "Blog created.");
       if (!blogId) {
         setValues({ ...emptyBlog });
-        setManualSlug(false);
         setEditorVersion(value => value + 1);
         imageUpload.current = "";
         form.current?.reset();
@@ -186,7 +204,7 @@ export default function BlogForm({ initialBlog, categories }: { initialBlog?: Ad
       <section aria-labelledby="blog-details-heading" className="space-y-6 rounded-2xl border border-[#e5e1da] bg-white p-4 sm:p-6 lg:p-8">
         <h2 id="blog-details-heading" className="text-lg font-display text-purple">Blog details</h2>
         <Field id="blog-title" label="Title" error={errors.title}><input id="blog-title" required value={values.title} onChange={event => update("title", event.target.value)} aria-invalid={Boolean(errors.title)} aria-describedby={errors.title ? "blog-title-error" : undefined} className="h-11 w-full rounded-lg border border-[#e5e1da] px-3 text-base sm:text-sm outline-none aria-invalid:border-red-400 focus:border-purple focus:ring-2 focus:ring-purple/10" /></Field>
-        <Field id="blog-slug" label="Slug" error={errors.slug}><input id="blog-slug" required value={values.slug} onChange={event => { setManualSlug(true); update("slug", event.target.value); }} aria-invalid={Boolean(errors.slug)} aria-describedby={`blog-slug-hint${errors.slug ? " blog-slug-error" : ""}`} className="h-11 w-full rounded-lg border border-[#e5e1da] px-3 text-base sm:text-sm outline-none aria-invalid:border-red-400 focus:border-purple focus:ring-2 focus:ring-purple/10" /><p id="blog-slug-hint" className="mt-2 break-all text-xs text-neutral-400">Article URL: /blog/{values.slug || "your-blog-title"}</p></Field>
+        <Field id="blog-slug" label="Slug" error={errors.slug}><input id="blog-slug" required value={values.slug} onChange={event => update("slug", event.target.value)} aria-invalid={Boolean(errors.slug)} aria-describedby={`blog-slug-hint${errors.slug ? " blog-slug-error" : ""}`} className="h-11 w-full rounded-lg border border-[#e5e1da] px-3 text-base sm:text-sm outline-none aria-invalid:border-red-400 focus:border-purple focus:ring-2 focus:ring-purple/10" /><p id="blog-slug-hint" className="mt-2 break-all text-xs text-neutral-400">Article URL: /blog/{values.slug || "your-blog-title"}</p></Field>
         <div className="grid min-w-0 gap-5 md:grid-cols-2 xl:grid-cols-3">
           <Field id="blog-category" label="Category" error={errors.categoryId}><select id="blog-category" required value={values.categoryId} onChange={event => update("categoryId", event.target.value)} aria-invalid={Boolean(errors.categoryId)} aria-describedby={errors.categoryId ? "blog-category-error" : undefined} className="h-11 w-full rounded-lg border border-[#e5e1da] bg-white px-3 text-base sm:text-sm outline-none aria-invalid:border-red-400 focus:border-purple focus:ring-2 focus:ring-purple/10"><option value="">Select category</option>{categories.map(category => <option key={category.id} value={category.id}>{category.name}</option>)}</select>{!categories.length && <p className="mt-2 text-xs text-neutral-500">Add a category on the Categories page first.</p>}</Field>
           <Field id="blog-author" label="Author name" error={errors.authorName}><input id="blog-author" required value={values.authorName} onChange={event => update("authorName", event.target.value)} aria-invalid={Boolean(errors.authorName)} aria-describedby={errors.authorName ? "blog-author-error" : undefined} className="h-11 w-full rounded-lg border border-[#e5e1da] px-3 text-base sm:text-sm outline-none aria-invalid:border-red-400 focus:border-purple focus:ring-2 focus:ring-purple/10" /></Field>

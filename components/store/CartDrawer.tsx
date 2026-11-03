@@ -92,7 +92,7 @@ export function CartDrawer() {
             cart.map((item, index) => (
               <div key={`${item.slug}-${item.size}-${index}`} className="flex gap-4 border-b border-neutral-100 pb-5">
                 <div className="relative aspect-2/3 w-20 shrink-0 overflow-hidden rounded bg-neutral-100">
-                  <Image src={item.image} alt={item.name} fill sizes="80px" className="object-cover object-top" />
+                  <Image src={item.image} unoptimized={item.image.startsWith("http")} alt={item.name} fill sizes="80px" className="object-cover object-top" />
                 </div>
                 <div className="flex flex-1 flex-col justify-between">
                   <div>

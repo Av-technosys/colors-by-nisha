@@ -1,5 +1,7 @@
 export const MAX_BLOG_CONTENT_LENGTH = 100000;
 
+const htmlEntities: Record<string, string> = { amp: "&", lt: "<", gt: ">", quot: '"', apos: "'", "#39": "'" };
+
 function escapeHtml(value: string) {
   return value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
 }
@@ -23,7 +25,7 @@ export function getBlogContentText(content: string) {
   return content.replace(/<[^>]*>/g, " ")
     .replace(/&(nbsp|#0*160|#x0*a0|#0*32|#x0*20|ZeroWidthSpace|#0*8203|#x0*200b);/gi, " ")
     .replace(/[\u200b-\u200d\uFEFF]/g, "")
-    .replace(/&(?:amp|lt|gt|quot|apos|#39);/gi, "x")
+    .replace(/&(amp|lt|gt|quot|apos|#39);/gi, (_match, entity: string) => htmlEntities[entity.toLowerCase()] ?? _match)
     .replace(/\s+/g, " ").trim();
 }
 
