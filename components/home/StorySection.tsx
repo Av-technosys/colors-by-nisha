@@ -2,6 +2,7 @@
 
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Reveal } from "@/components/ui/Reveal";
+import { Button } from "@/components/ui/Button";
 
 export function StorySection({ onLearnMore }: { onLearnMore: () => void }) {
   return (
@@ -10,7 +11,7 @@ export function StorySection({ onLearnMore }: { onLearnMore: () => void }) {
         <div className="mx-auto max-w-[1328px] px-5 lg:px-6">
           <p className="mb-2.5 text-xs md:text-sm">Fashion that celebrates individuality.</p>
           <SectionHeading>Our journey is built on creativity and heritage, shaping fashion that celebrates individuality and timeless beauty.</SectionHeading>
-          <button className="font-display text-sm underline underline-offset-6" onClick={onLearnMore}>Learn More</button>
+          <Button variant="hero" onClick={onLearnMore}>Learn More</Button>
         </div>
       </section>
     </Reveal>

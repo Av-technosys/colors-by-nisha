@@ -3,17 +3,17 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { formatINR, type ProductItem } from "@/data/products";
-import { useStore } from "@/components/store/StoreContext";
+
 
 interface StickyBottomBarProps {
   product: ProductItem;
+  quantity: number;
+  onQuantityChange: (value: number) => void;
+  onAdd: () => void;
 }
 
-export function StickyBottomBar({ product }: StickyBottomBarProps) {
-  const { addToCart, setCartOpen } = useStore();
-  const [quantity, setQuantity] = useState(1);
+export function StickyBottomBar({ product, quantity, onQuantityChange: setQuantity, onAdd }: StickyBottomBarProps) {
   const [priceDropdownOpen, setPriceDropdownOpen] = useState(false);
-  const [isAdding, setIsAdding] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
 
@@ -39,15 +39,6 @@ export function StickyBottomBar({ product }: StickyBottomBarProps) {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const handleAdd = () => {
-    setIsAdding(true);
-    addToCart(product, "Standard", quantity);
-    setTimeout(() => {
-      setIsAdding(false);
-      setCartOpen(true);
-    }, 350);
-  };
-
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -65,7 +56,8 @@ export function StickyBottomBar({ product }: StickyBottomBarProps) {
         <div className="hidden md:flex items-center gap-3.5 min-w-0">
           <div className="relative size-11 shrink-0 overflow-hidden rounded-md border border-neutral-200 bg-neutral-100">
             <Image
-              src={product.images[0] || "/Home/images/010_flamingo_fable__IMG_0053.jpg"}
+              src={product.images[0]}
+              unoptimized={product.images[0].startsWith("http")}
               alt={product.name}
               fill
               sizes="48px"
@@ -98,7 +90,7 @@ export function StickyBottomBar({ product }: StickyBottomBarProps) {
                   onClick={() => setPriceDropdownOpen(false)}
                   className="w-full text-left px-3 py-2 rounded-md hover:bg-neutral-100 font-medium text-ink transition cursor-pointer"
                 >
-                  Default Title - {formatINR(product.price)}
+                  {product.variants?.find(variant => variant.id === product.variantId)?.name || "Standard"} - {formatINR(product.price)}
                 </button>
               </div>
             )}
@@ -115,7 +107,8 @@ export function StickyBottomBar({ product }: StickyBottomBarProps) {
             </button>
             <span className="text-sm font-semibold text-ink select-none">{quantity}</span>
             <button
-              onClick={() => setQuantity(quantity + 1)}
+              disabled={!product.inStock || quantity >= (product.stockCount ?? Infinity)}
+              onClick={() => setQuantity(Math.min(product.stockCount ?? Infinity, quantity + 1))}
               className="text-base text-neutral-600 hover:text-ink font-medium px-1 cursor-pointer select-none"
               aria-label="Increase quantity"
             >
@@ -125,11 +118,11 @@ export function StickyBottomBar({ product }: StickyBottomBarProps) {
 
           {/* Navy ADD TO CART Button */}
           <button
-            onClick={handleAdd}
-            disabled={isAdding}
+            onClick={onAdd}
+            disabled={!product.inStock}
             className="flex-1 md:flex-none rounded-md bg-[#2d254d] hover:bg-[#231c3d] py-2.5 px-5 md:px-8 font-display text-xs md:text-sm font-bold uppercase tracking-wider text-white shadow-xs transition-colors cursor-pointer text-center"
           >
-            {isAdding ? "ADDING..." : "ADD TO CART"}
+            {product.inStock ? "ADD TO CART" : "OUT OF STOCK"}
           </button>
 
           {/* Scroll-To-Top Button INSIDE THE STRAP ONLY */}

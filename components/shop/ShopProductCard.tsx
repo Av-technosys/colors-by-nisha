@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { formatINR, type ProductItem } from "@/data/products";
+import { useRouter } from "next/navigation";
 import { useStore } from "@/components/store/StoreContext";
 
 interface ShopProductCardProps {
@@ -12,6 +13,7 @@ interface ShopProductCardProps {
 }
 
 export function ShopProductCard({ product, onQuickView }: ShopProductCardProps) {
+  const router = useRouter();
   const { toggleWishlist, isWishlisted, addToCart } = useStore();
   const [isAdding, setIsAdding] = useState(false);
   const wishlisted = isWishlisted(product.slug);
@@ -19,8 +21,14 @@ export function ShopProductCard({ product, onQuickView }: ShopProductCardProps) 
   const handleQuickAdd = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    if (!product.inStock) return;
+    if (product.variants?.length) {
+      if (onQuickView) onQuickView(product);
+      else router.push(`/products/${product.slug}`);
+      return;
+    }
     setIsAdding(true);
-    addToCart(product, "M", 1);
+    addToCart(product, "Standard", 1);
     setTimeout(() => setIsAdding(false), 800);
   };
 
@@ -51,6 +59,7 @@ export function ShopProductCard({ product, onQuickView }: ShopProductCardProps) 
           {/* First image */}
           <Image
             src={primaryImage}
+              unoptimized={primaryImage.startsWith("http")}
             alt={product.name}
             fill
             sizes="(min-width: 1200px) 25vw, (min-width: 768px) 33vw, 50vw"
@@ -63,6 +72,7 @@ export function ShopProductCard({ product, onQuickView }: ShopProductCardProps) 
           {product.images.length > 1 && (
             <Image
               src={secondaryImage}
+              unoptimized={secondaryImage.startsWith("http")}
               alt={`${product.name} alternate view`}
               fill
               sizes="(min-width: 1200px) 25vw, (min-width: 768px) 33vw, 50vw"
@@ -128,10 +138,10 @@ export function ShopProductCard({ product, onQuickView }: ShopProductCardProps) 
         <div className="absolute inset-x-2.5 bottom-2.5 z-10 hidden md:block">
           <button
             onClick={handleQuickAdd}
-            disabled={isAdding}
+            disabled={isAdding || !product.inStock}
             className="w-full translate-y-2 rounded bg-white/95 backdrop-blur-xs py-2.5 px-3 font-display text-xs font-semibold uppercase tracking-wider text-ink shadow-md opacity-0 transition-all duration-200 group-hover:translate-y-0 group-hover:opacity-100 hover:bg-ink hover:text-white"
           >
-            {isAdding ? "Adding..." : "Add to Cart"}
+            {!product.inStock ? "Out of Stock" : isAdding ? "Adding..." : product.variants?.length ? "Choose Options" : "Add to Cart"}
           </button>
         </div>
       </div>

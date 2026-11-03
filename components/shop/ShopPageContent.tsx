@@ -1,22 +1,25 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
-import { getAllProducts, formatINR, type ProductItem } from "@/data/products";
+import { formatINR, type ProductItem } from "@/data/products";
 import { ShopProductCard } from "./ShopProductCard";
 import { QuickViewModal } from "./QuickViewModal";
 
 interface ShopPageContentProps {
   initialCategory?: string;
+  products: ProductItem[];
 }
 
-export function ShopPageContent({ initialCategory }: ShopPageContentProps) {
-  const allProducts = useMemo(() => getAllProducts(), []);
+export function ShopPageContent({ initialCategory, products: allProducts }: ShopPageContentProps) {
+  const maxPrice = Math.max(1, ...allProducts.map(product => product.price));
+  const categoryOptions = [{ key: "all", label: "All Products", count: allProducts.length },
+    ...Array.from(new Map(allProducts.filter(product => product.categorySlug).map(product => [product.categorySlug!, product.category])).entries()).map(([key, label]) => ({ key, label, count: allProducts.filter(product => product.categorySlug === key).length }))];
 
   // Filter States
   const [selectedCategory, setSelectedCategory] = useState<string>(initialCategory || "all");
   const [inStockOnly, setInStockOnly] = useState<boolean>(false);
-  const [priceRange, setPriceRange] = useState<[number, number]>([0, 100000]);
-  const [tempPriceMax, setTempPriceMax] = useState<number>(100000);
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, maxPrice]);
+  const [tempPriceMax, setTempPriceMax] = useState<number>(maxPrice);
   const [sortBy, setSortBy] = useState<string>("featured");
   const [columnCount, setColumnCount] = useState<2 | 3 | 4>(3);
   const [mobileFilterOpen, setMobileFilterOpen] = useState<boolean>(false);
@@ -41,9 +44,6 @@ export function ShopPageContent({ initialCategory }: ShopPageContentProps) {
   const counts = useMemo(() => {
     return {
       all: allProducts.length,
-      lehenga: allProducts.filter((p) => p.category === "Lehenga").length,
-      saree: allProducts.filter((p) => p.category === "Saree").length,
-      ethnic: allProducts.filter((p) => p.category === "Ethnic").length,
       inStock: allProducts.filter((p) => p.inStock).length,
       outOfStock: allProducts.filter((p) => !p.inStock).length,
     };
@@ -54,7 +54,7 @@ export function ShopPageContent({ initialCategory }: ShopPageContentProps) {
     return allProducts
       .filter((p) => {
         // Category
-        if (selectedCategory !== "all" && p.category.toLowerCase() !== selectedCategory.toLowerCase()) {
+        if (selectedCategory !== "all" && p.categorySlug !== selectedCategory && p.category.toLowerCase() !== selectedCategory.toLowerCase()) {
           return false;
         }
         // Availability
@@ -72,7 +72,7 @@ export function ShopPageContent({ initialCategory }: ShopPageContentProps) {
         if (sortBy === "title-descending") return b.name.localeCompare(a.name);
         if (sortBy === "price-ascending") return a.price - b.price;
         if (sortBy === "price-descending") return b.price - a.price;
-        if (sortBy === "created-descending") return Number(b.id) - Number(a.id);
+        if (sortBy === "created-descending") return (b.createdAt || "").localeCompare(a.createdAt || "");
         return 0; // featured default
       });
   }, [allProducts, selectedCategory, inStockOnly, priceRange, sortBy]);
@@ -86,13 +86,13 @@ export function ShopPageContent({ initialCategory }: ShopPageContentProps) {
 
   // Active filters count
   const hasActiveFilters =
-    selectedCategory !== "all" || inStockOnly || priceRange[0] > 0 || priceRange[1] < 100000;
+    selectedCategory !== "all" || inStockOnly || priceRange[0] > 0 || priceRange[1] < maxPrice;
 
   const resetFilters = () => {
     setSelectedCategory("all");
     setInStockOnly(false);
-    setPriceRange([0, 100000]);
-    setTempPriceMax(100000);
+    setPriceRange([0, maxPrice]);
+    setTempPriceMax(maxPrice);
     setCurrentPage(1);
   };
 
@@ -127,12 +127,7 @@ export function ShopPageContent({ initialCategory }: ShopPageContentProps) {
                 </button>
                 {openSections.category && (
                   <ul className="mt-3 space-y-2 text-sm">
-                    {[
-                      { key: "all", label: "All Products", count: counts.all },
-                      { key: "lehenga", label: "Lehenga", count: counts.lehenga },
-                      { key: "saree", label: "Saree", count: counts.saree },
-                      { key: "ethnic", label: "Ethnic", count: counts.ethnic },
-                    ].map((cat) => (
+                    {categoryOptions.map((cat) => (
                       <li key={cat.key}>
                         <button
                           onClick={() => {
@@ -198,9 +193,9 @@ export function ShopPageContent({ initialCategory }: ShopPageContentProps) {
                     </div>
                     <input
                       type="range"
-                      min={10000}
-                      max={100000}
-                      step={2500}
+                      min={0}
+                      max={maxPrice}
+                      step={1}
                       value={tempPriceMax}
                       onChange={(e) => setTempPriceMax(Number(e.target.value))}
                       className="w-full accent-ink cursor-pointer"
@@ -215,11 +210,11 @@ export function ShopPageContent({ initialCategory }: ShopPageContentProps) {
                       >
                         Apply Price
                       </button>
-                      {(priceRange[0] > 0 || priceRange[1] < 100000) && (
+                      {(priceRange[0] > 0 || priceRange[1] < maxPrice) && (
                         <button
                           onClick={() => {
-                            setPriceRange([0, 100000]);
-                            setTempPriceMax(100000);
+                            setPriceRange([0, maxPrice]);
+                            setTempPriceMax(maxPrice);
                             setCurrentPage(1);
                           }}
                           className="rounded border border-neutral-300 px-3 text-xs text-neutral-600 hover:text-ink"
@@ -330,13 +325,13 @@ export function ShopPageContent({ initialCategory }: ShopPageContentProps) {
                     </button>
                   </span>
                 )}
-                {(priceRange[0] > 0 || priceRange[1] < 100000) && (
+                {(priceRange[0] > 0 || priceRange[1] < maxPrice) && (
                   <span className="inline-flex items-center gap-1.5 rounded-full bg-neutral-100 px-3 py-1 text-xs font-medium text-ink">
                     Price: Up to {formatINR(priceRange[1])}
                     <button
                       onClick={() => {
-                        setPriceRange([0, 100000]);
-                        setTempPriceMax(100000);
+                        setPriceRange([0, maxPrice]);
+                        setTempPriceMax(maxPrice);
                       }}
                       className="hover:text-red-600"
                     >
@@ -457,15 +452,10 @@ export function ShopPageContent({ initialCategory }: ShopPageContentProps) {
                   Products Category
                 </h3>
                 <div className="space-y-1.5">
-                  {[
-                    { key: "all", label: "All Products", count: counts.all },
-                    { key: "lehenga", label: "Lehenga", count: counts.lehenga },
-                    { key: "saree", label: "Saree", count: counts.saree },
-                    { key: "ethnic", label: "Ethnic", count: counts.ethnic },
-                  ].map((cat) => (
+                  {categoryOptions.map((cat) => (
                     <button
                       key={cat.key}
-                      onClick={() => setSelectedCategory(cat.key)}
+                      onClick={() => { setSelectedCategory(cat.key); setCurrentPage(1); }}
                       className={`flex w-full items-center justify-between rounded px-3 py-2 text-sm ${
                         selectedCategory === cat.key ? "bg-neutral-100 font-semibold text-ink" : "text-neutral-600"
                       }`}
@@ -486,7 +476,7 @@ export function ShopPageContent({ initialCategory }: ShopPageContentProps) {
                   <input
                     type="checkbox"
                     checked={inStockOnly}
-                    onChange={(e) => setInStockOnly(e.target.checked)}
+                    onChange={(e) => { setInStockOnly(e.target.checked); setCurrentPage(1); }}
                     className="size-4 rounded border-neutral-300 text-ink accent-ink"
                   />
                   <span>In stock ({counts.inStock})</span>
@@ -500,9 +490,9 @@ export function ShopPageContent({ initialCategory }: ShopPageContentProps) {
                 </h3>
                 <input
                   type="range"
-                  min={10000}
-                  max={100000}
-                  step={2500}
+                  min={0}
+                  max={maxPrice}
+                  step={1}
                   value={tempPriceMax}
                   onChange={(e) => setTempPriceMax(Number(e.target.value))}
                   className="w-full accent-ink"
@@ -514,6 +504,7 @@ export function ShopPageContent({ initialCategory }: ShopPageContentProps) {
               <button
                 onClick={() => {
                   setPriceRange([0, tempPriceMax]);
+                  setCurrentPage(1);
                   setMobileFilterOpen(false);
                 }}
                 className="w-full rounded bg-ink py-3 text-xs font-semibold uppercase tracking-wider text-white"
@@ -537,7 +528,7 @@ export function ShopPageContent({ initialCategory }: ShopPageContentProps) {
       )}
 
       {/* Quick View Modal */}
-      <QuickViewModal product={quickViewProduct} onClose={() => setQuickViewProduct(null)} />
+      <QuickViewModal key={quickViewProduct?.id || "closed"} product={quickViewProduct} onClose={() => setQuickViewProduct(null)} />
     </div>
   );
 }

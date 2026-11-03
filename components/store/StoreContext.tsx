@@ -10,6 +10,8 @@ export interface CartItem {
   price: number;
   image: string;
   size: string;
+  variantId?: string;
+  stockCount?: number;
   quantity: number;
 }
 
@@ -74,11 +76,14 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   }, [wishlist]);
 
   const addToCart = (product: ProductItem, size = "M", quantity = 1) => {
+    if (!product.inStock) return;
+    const limit = product.stockCount ?? Infinity;
+    quantity = Math.min(limit, Math.max(1, Math.floor(quantity)));
     setCart((prev) => {
-      const existing = prev.findIndex((item) => item.slug === product.slug && item.size === size);
+      const existing = prev.findIndex((item) => item.slug === product.slug && item.variantId === product.variantId && item.size === size);
       if (existing !== -1) {
         const copy = [...prev];
-        copy[existing].quantity += quantity;
+        copy[existing] = { ...copy[existing], price: product.price, stockCount: product.stockCount, quantity: Math.min(limit, copy[existing].quantity + quantity) };
         return copy;
       }
       return [
@@ -90,6 +95,8 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
           price: product.price,
           image: product.images[0],
           size,
+          variantId: product.variantId,
+          stockCount: product.stockCount,
           quantity,
         },
       ];
@@ -109,7 +116,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     }
     setCart((prev) => {
       const copy = [...prev];
-      copy[index].quantity = quantity;
+      copy[index] = { ...copy[index], quantity: Math.min(copy[index].stockCount ?? Infinity, Math.max(1, Math.floor(quantity))) };
       return copy;
     });
   };

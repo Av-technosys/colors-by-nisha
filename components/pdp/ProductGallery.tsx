@@ -79,6 +79,7 @@ export function ProductGallery({ images, productName, productSlug }: ProductGall
               >
                 <Image
                   src={img}
+              unoptimized={img.startsWith("http")}
                   alt={`${productName} thumbnail ${idx + 1}`}
                   fill
                   sizes="80px"
@@ -104,6 +105,7 @@ export function ProductGallery({ images, productName, productSlug }: ProductGall
             {/* Active Image */}
             <Image
               src={activeImage}
+              unoptimized={activeImage.startsWith("http")}
               alt={productName}
               fill
               priority
@@ -215,6 +217,7 @@ export function ProductGallery({ images, productName, productSlug }: ProductGall
           >
             <Image
               src={activeImage}
+              unoptimized={activeImage.startsWith("http")}
               alt={productName}
               fill
               className="object-contain"

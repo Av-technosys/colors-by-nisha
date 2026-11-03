@@ -1,16 +1,20 @@
 "use client";
 
+import { variantName } from "@/helpers/store/variant";
 import React, { useState } from "react";
 import { formatINR, type ProductItem } from "@/data/products";
 import { useStore } from "@/components/store/StoreContext";
 
 interface ProductDetailsInfoProps {
   product: ProductItem;
+  variantId: string;
+  onVariantChange: (id: string) => void;
+  quantity: number;
+  onQuantityChange: (value: number) => void;
 }
 
-export function ProductDetailsInfo({ product }: ProductDetailsInfoProps) {
+export function ProductDetailsInfo({ product, variantId, onVariantChange, quantity, onQuantityChange: setQuantity }: ProductDetailsInfoProps) {
   const { addToCart, setCartOpen, isWishlisted, toggleWishlist } = useStore();
-  const [quantity, setQuantity] = useState(1);
   const [agreedTerms, setAgreedTerms] = useState(false);
   const [termsError, setTermsError] = useState(false);
   const [askModalOpen, setAskModalOpen] = useState(false);
@@ -21,13 +25,14 @@ export function ProductDetailsInfo({ product }: ProductDetailsInfoProps) {
   const details = product.details || {};
 
   const handleAddToCart = () => {
+    if (!product.inStock) return;
     if (!agreedTerms) {
       setTermsError(true);
       return;
     }
     setTermsError(false);
     setIsAdding(true);
-    addToCart(product, "Standard", quantity);
+    addToCart(product, variantName(product), quantity);
     setTimeout(() => {
       setIsAdding(false);
       setCartOpen(true);
@@ -35,13 +40,14 @@ export function ProductDetailsInfo({ product }: ProductDetailsInfoProps) {
   };
 
   const handleBuyItNow = () => {
+    if (!product.inStock) return;
     if (!agreedTerms) {
       setTermsError(true);
       return;
     }
-    addToCart(product, "Standard", quantity);
+    addToCart(product, variantName(product), quantity);
     const text = encodeURIComponent(
-      `Hello Colors by Nisha! I would like to Buy Now:\n• Product: ${product.name}\n• Qty: ${quantity}\n• Total: ${formatINR(
+      `Hello Colors by Nisha! I would like to Buy Now:\n• Product: ${product.name}\n• Option: ${variantName(product)}\n• Qty: ${quantity}\n• Total: ${formatINR(
         product.price * quantity
       )}\nLink: https://colorsbynisha.com/products/${product.slug}`
     );
@@ -87,6 +93,15 @@ export function ProductDetailsInfo({ product }: ProductDetailsInfoProps) {
         )}
       </div>
 
+      {product.shortDescription && <p className="whitespace-pre-line text-sm leading-relaxed text-neutral-700">{product.shortDescription}</p>}
+      {!!product.variants?.length && <label className="space-y-2 text-sm">
+        <span className="block font-medium">Choose an option</span>
+        <select value={variantId} onChange={event => onVariantChange(event.target.value)} className="w-full rounded-md border border-neutral-300 bg-white p-3">
+          {product.variants.map(variant => <option key={variant.id} value={variant.id}>{variant.name}{variant.stock === 0 ? " — Out of stock" : ""}</option>)}
+        </select>
+      </label>}
+      <p className="text-xs text-neutral-500">{product.inStock ? "In stock" : "Out of stock"}</p>
+
       {/* Actions Section: ID used for sticky mobile bar trigger */}
       <div id="pdp-main-buy-actions" className="space-y-3.5 pt-1">
         {/* Row: Pill Quantity, Navy ADD TO CART, Wishlist Heart */}
@@ -102,7 +117,8 @@ export function ProductDetailsInfo({ product }: ProductDetailsInfoProps) {
             </button>
             <span className="text-sm font-semibold text-ink select-none">{quantity}</span>
             <button
-              onClick={() => setQuantity(quantity + 1)}
+              disabled={!product.inStock || quantity >= (product.stockCount ?? Infinity)}
+              onClick={() => setQuantity(Math.min(product.stockCount ?? Infinity, quantity + 1))}
               className="text-base text-neutral-600 hover:text-ink font-medium px-1 cursor-pointer select-none"
               aria-label="Increase quantity"
             >
@@ -113,10 +129,11 @@ export function ProductDetailsInfo({ product }: ProductDetailsInfoProps) {
           {/* Navy ADD TO CART Button */}
           <button
             onClick={handleAddToCart}
-            disabled={isAdding}
+            id="pdp-add-to-cart"
+            disabled={isAdding || !product.inStock}
             className="flex-1 rounded-md bg-[#2d254d] hover:bg-[#231c3d] py-3.5 px-4 font-display text-xs md:text-sm font-bold uppercase tracking-wider text-white shadow-xs transition-colors cursor-pointer text-center"
           >
-            {isAdding ? "ADDING..." : "ADD TO CART"}
+            {!product.inStock ? "OUT OF STOCK" : isAdding ? "ADDING..." : "ADD TO CART"}
           </button>
 
           {/* Circular Wishlist Button */}
@@ -165,6 +182,7 @@ export function ProductDetailsInfo({ product }: ProductDetailsInfoProps) {
 
         {/* Coral / Salmon Buy It Now Button */}
         <button
+          disabled={!product.inStock}
           onClick={handleBuyItNow}
           className="w-full rounded-md bg-[#dd8984] hover:bg-[#d07b76] py-3.5 px-6 font-display text-xs md:text-sm font-semibold text-white shadow-xs transition-colors cursor-pointer text-center tracking-wide"
         >

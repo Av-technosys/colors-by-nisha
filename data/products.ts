@@ -1,10 +1,25 @@
+export interface ProductVariant {
+  id: string;
+  name: string;
+  price: number;
+  stock: number | null;
+  images: string[];
+}
+
 export interface ProductItem {
   id: string;
   slug: string;
   name: string;
   price: number;
   originalPrice?: number;
-  category: "Lehenga" | "Saree" | "Ethnic";
+  category: string;
+  categorySlug?: string;
+  shortDescription?: string;
+  createdAt?: string;
+  metaTitle?: string;
+  metaDescription?: string;
+  variants?: ProductVariant[];
+  variantId?: string;
   collection?: string;
   inStock: boolean;
   stockCount?: number;
