@@ -34,7 +34,7 @@ export default function ShopPage(props: {
       <div className="flex-1">
         <Suspense
           fallback={
-            <div className="mx-auto max-w-7xl px-4 py-20 text-center text-sm text-neutral-400">
+            <div className="mx-auto w-[calc(100%-2rem)] max-w-[1328px] md:w-full py-20 text-center text-sm text-neutral-400">
               Loading curated collection...
             </div>
           }

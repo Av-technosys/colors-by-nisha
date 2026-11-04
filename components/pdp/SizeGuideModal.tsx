@@ -31,7 +31,7 @@ export function SizeGuideModal({ isOpen, onClose }: SizeGuideModalProps) {
       aria-label="Size Guide"
     >
       <div
-        className="relative w-full max-w-xl rounded-lg bg-white p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-200"
+        className="relative w-full max-w-xl rounded-md bg-white p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-200"
         style={{ overscrollBehavior: "contain" }}
         onClick={(e) => e.stopPropagation()}
       >
@@ -42,7 +42,7 @@ export function SizeGuideModal({ isOpen, onClose }: SizeGuideModalProps) {
           </div>
           <button
             onClick={onClose}
-            className="grid size-8 place-items-center rounded-full text-neutral-500 hover:bg-neutral-100"
+            className="grid size-8 place-items-center rounded-md text-neutral-500 hover:bg-neutral-100"
             aria-label="Close size guide"
           >
             ✕
@@ -54,7 +54,7 @@ export function SizeGuideModal({ isOpen, onClose }: SizeGuideModalProps) {
           <span className="text-neutral-500">Unit:</span>
           <button
             onClick={() => setUnit("inches")}
-            className={`rounded px-2.5 py-1 font-semibold transition ${
+            className={`rounded-md px-2.5 py-1 font-semibold transition ${
               unit === "inches" ? "bg-ink text-white" : "bg-neutral-100 text-neutral-700"
             }`}
           >
@@ -62,7 +62,7 @@ export function SizeGuideModal({ isOpen, onClose }: SizeGuideModalProps) {
           </button>
           <button
             onClick={() => setUnit("cm")}
-            className={`rounded px-2.5 py-1 font-semibold transition ${
+            className={`rounded-md px-2.5 py-1 font-semibold transition ${
               unit === "cm" ? "bg-ink text-white" : "bg-neutral-100 text-neutral-700"
             }`}
           >

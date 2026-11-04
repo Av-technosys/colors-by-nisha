@@ -4,6 +4,7 @@ import { Icon } from "@/components/ui/Icon";
 import { Photo } from "@/components/ui/Photo";
 import Link from "next/link";
 import { useState } from "react";
+import { Container } from "./Container";
 
 export interface FooterProps {
   onShop?: () => void;
@@ -15,7 +16,7 @@ export function Footer({ onShop: _onShop, onPanel: _onPanel }: FooterProps = {})
 
   return (
     <footer id="footer" className="bg-purple text-[13px] text-white">
-      <div className="mx-auto grid max-w-[1328px] grid-cols-2 gap-x-5 gap-y-8 px-5 pb-5 pt-9 md:grid-cols-[2fr_1fr_1fr] md:gap-8 md:px-6 md:pb-10 md:pt-12 lg:grid-cols-[2fr_1fr_1fr_1.25fr_2fr]">
+      <Container className="grid grid-cols-2 gap-x-5 gap-y-8 py-10 md:grid-cols-[2fr_1fr_1fr] md:gap-8 md:py-14 lg:grid-cols-[2fr_1fr_1fr_1.25fr_2fr]">
         <div className="col-span-2 md:col-span-1">
           <div className="relative h-[125px] w-[100px]">
             <Photo id={2} alt="Colors by Nisha Vijay" contain />
@@ -117,8 +118,8 @@ export function Footer({ onShop: _onShop, onPanel: _onPanel }: FooterProps = {})
               : ""}
           </p>
         </div>
-      </div>
-      <div className="mx-auto flex max-w-[1328px] flex-col justify-between gap-1.5 border-t border-white/15 px-5 pt-3.5 pb-24 text-center text-xs md:flex-row md:pb-3.5 md:text-sm">
+      </Container>
+      <Container className="flex flex-col justify-between gap-1.5 border-t border-white/15 pt-3.5 pb-24 text-center text-xs md:flex-row md:pb-3.5 md:text-sm">
         <span>© 2026 Colors by Nisha Vijay. All rights reserved.</span>
         <span>
           Developed by{" "}
@@ -126,7 +127,7 @@ export function Footer({ onShop: _onShop, onPanel: _onPanel }: FooterProps = {})
             AV Technosys
           </a>
         </span>
-      </div>
+      </Container>
     </footer>
   );
 }

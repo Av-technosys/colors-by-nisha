@@ -48,9 +48,9 @@ export function BlogPostDetailContent({
   };
 
   return (
-    <div className="bg-white text-ink pb-20">
+    <div className="bg-white text-ink pb-10 md:pb-14">
       {/* 1. Centered Breadcrumb (Matches Screenshot: Home · Blogs · Post Title) */}
-      <section className="mx-auto max-w-[1100px] px-4 md:px-6 pt-6 pb-4 text-center">
+      <section className="mx-auto w-[calc(100%-2rem)] max-w-[1328px] md:w-full pt-8 pb-6 md:pt-10 md:pb-8 text-center">
         <nav aria-label="Breadcrumb">
           <ol className="inline-flex items-center justify-center gap-2 text-xs text-neutral-500 font-medium font-sans flex-wrap">
             <li>
@@ -73,13 +73,13 @@ export function BlogPostDetailContent({
 
         {/* 2. Category Pill (Matches Screenshot: "News") */}
         <div className="mt-4">
-          <span className="inline-block rounded-full border border-neutral-200/90 bg-neutral-50 px-3.5 py-0.5 text-[11px] font-medium text-neutral-600 font-sans tracking-wide">
+          <span className="inline-block rounded-md border border-neutral-200/90 bg-neutral-50 px-3.5 py-0.5 text-[11px] font-medium text-neutral-600 font-sans tracking-wide">
             {post.category || "News"}
           </span>
         </div>
 
         {/* 3. Centered Main Title (Matches Screenshot) */}
-        <h1 className="font-display text-2xl md:text-3xl lg:text-[34px] font-bold text-ink text-center max-w-2xl mx-auto leading-snug mt-3">
+        <h1 className="font-display text-3xl font-normal leading-tight tracking-normal md:text-4xl text-ink text-center max-w-2xl mx-auto mt-3">
           {post.title}
         </h1>
 
@@ -94,17 +94,17 @@ export function BlogPostDetailContent({
       </section>
 
       {/* 5. Article Body (Centered narrow reading container ~680px) */}
-      <main className="mx-auto max-w-[700px] px-4 md:px-6 pt-6">
+      <main className="mx-auto max-w-[700px] px-4 md:px-6">
         {/* Article Headline in body (if not already included in rich content) */}
         {(!post.contentHtml || !post.contentHtml.includes(post.title)) && (
-          <h2 className="font-display text-lg md:text-xl font-bold text-ink mt-2 mb-4 leading-snug">
+          <h2 className="font-display text-xl md:text-2xl font-medium text-ink mb-4 leading-snug">
             {post.title}
           </h2>
         )}
 
         {/* Intro Paragraph */}
         {post.intro && (
-          <p className="text-xs md:text-sm text-neutral-600 leading-relaxed font-sans mb-6">
+          <p className="text-sm md:text-[15px] text-neutral-600 leading-relaxed font-sans mb-6">
             {post.intro}
           </p>
         )}
@@ -112,10 +112,10 @@ export function BlogPostDetailContent({
         {/* Dynamic Rich HTML Content (from Admin Database) */}
         {post.contentHtml ? (
           <div
-            className="blog-rich-content text-xs md:text-sm text-neutral-600 leading-relaxed font-sans space-y-4
-              [&_h2]:font-display [&_h2]:text-base [&_h2]:md:text-lg [&_h2]:font-bold [&_h2]:text-ink [&_h2]:mt-7 [&_h2]:mb-2.5 [&_h2]:leading-snug
-              [&_h3]:font-display [&_h3]:text-sm [&_h3]:md:text-base [&_h3]:font-bold [&_h3]:text-ink [&_h3]:mt-6 [&_h3]:mb-2 [&_h3]:leading-snug
-              [&_h4]:font-display [&_h4]:text-xs [&_h4]:md:text-sm [&_h4]:font-bold [&_h4]:text-ink [&_h4]:mt-5 [&_h4]:mb-2 [&_h4]:leading-snug
+            className="blog-rich-content text-sm md:text-[15px] text-neutral-600 leading-relaxed font-sans space-y-4
+              [&_h2]:font-display [&_h2]:text-xl md:[&_h2]:text-2xl [&_h2]:font-bold [&_h2]:text-ink [&_h2]:mt-7 [&_h2]:mb-2.5 [&_h2]:leading-snug
+              [&_h3]:font-display [&_h3]:text-lg md:[&_h3]:text-xl [&_h3]:font-bold [&_h3]:text-ink [&_h3]:mt-6 [&_h3]:mb-2 [&_h3]:leading-snug
+              [&_h4]:font-display [&_h4]:text-base md:[&_h4]:text-lg [&_h4]:font-bold [&_h4]:text-ink [&_h4]:mt-5 [&_h4]:mb-2 [&_h4]:leading-snug
               [&_p]:mb-4 [&_p]:leading-relaxed
               [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:space-y-1.5 [&_ul]:mb-5
               [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:space-y-1.5 [&_ol]:mb-5
@@ -126,7 +126,7 @@ export function BlogPostDetailContent({
               [&_table]:w-full [&_table]:border-collapse [&_table]:my-6 [&_table]:text-xs
               [&_th]:border [&_th]:border-neutral-200 [&_th]:bg-neutral-50 [&_th]:p-2.5 [&_th]:font-semibold [&_th]:text-ink
               [&_td]:border [&_td]:border-neutral-200 [&_td]:p-2.5
-              [&_img]:rounded-xl [&_img]:my-6 [&_img]:max-w-full"
+              [&_img]:rounded-md [&_img]:my-6 [&_img]:max-w-full"
             dangerouslySetInnerHTML={{ __html: post.contentHtml }}
           />
         ) : (
@@ -135,13 +135,13 @@ export function BlogPostDetailContent({
             {post.sections?.map((section, idx) => (
               <div key={idx} className="space-y-2">
                 {section.title && (
-                  <h3 className="font-display text-sm md:text-base font-bold text-ink leading-snug">
+                  <h3 className="font-display text-lg md:text-xl font-medium text-ink leading-snug">
                     {section.title}
                   </h3>
                 )}
 
                 {section.content && (
-                  <p className="text-xs md:text-sm text-neutral-600 leading-relaxed font-sans">
+                  <p className="text-sm md:text-[15px] text-neutral-600 leading-relaxed font-sans">
                     {section.content}
                   </p>
                 )}
@@ -171,7 +171,7 @@ export function BlogPostDetailContent({
             {/* Twitter / X */}
             <button
               onClick={() => handleShare("twitter")}
-              className="size-8 rounded-full border border-neutral-200 flex items-center justify-center text-neutral-600 hover:border-ink hover:text-ink transition cursor-pointer"
+              className="size-8 rounded-md border border-neutral-200 flex items-center justify-center text-neutral-600 hover:border-ink hover:text-ink transition cursor-pointer"
               aria-label="Share on X / Twitter"
               title="Share on X"
             >
@@ -183,7 +183,7 @@ export function BlogPostDetailContent({
             {/* Facebook */}
             <button
               onClick={() => handleShare("facebook")}
-              className="size-8 rounded-full border border-neutral-200 flex items-center justify-center text-neutral-600 hover:border-ink hover:text-ink transition cursor-pointer"
+              className="size-8 rounded-md border border-neutral-200 flex items-center justify-center text-neutral-600 hover:border-ink hover:text-ink transition cursor-pointer"
               aria-label="Share on Facebook"
               title="Share on Facebook"
             >
@@ -195,7 +195,7 @@ export function BlogPostDetailContent({
             {/* Pinterest */}
             <button
               onClick={() => handleShare("pinterest")}
-              className="size-8 rounded-full border border-neutral-200 flex items-center justify-center text-neutral-600 hover:border-ink hover:text-ink transition cursor-pointer"
+              className="size-8 rounded-md border border-neutral-200 flex items-center justify-center text-neutral-600 hover:border-ink hover:text-ink transition cursor-pointer"
               aria-label="Share on Pinterest"
               title="Share on Pinterest"
             >
@@ -207,7 +207,7 @@ export function BlogPostDetailContent({
             {/* Copy Link */}
             <button
               onClick={() => handleShare("copy")}
-              className="size-8 rounded-full border border-neutral-200 flex items-center justify-center text-neutral-600 hover:border-ink hover:text-ink transition cursor-pointer"
+              className="size-8 rounded-md border border-neutral-200 flex items-center justify-center text-neutral-600 hover:border-ink hover:text-ink transition cursor-pointer"
               aria-label="Copy link"
               title="Copy link"
             >
@@ -256,8 +256,8 @@ export function BlogPostDetailContent({
       </main>
 
       {/* 8. Related Posts Section (Matches Screenshot) */}
-      <section className="mx-auto max-w-[1100px] px-4 md:px-6 pt-16 md:pt-20">
-        <h2 className="font-display text-2xl md:text-3xl font-bold tracking-tight text-ink text-center mb-8">
+      <section className="mx-auto w-[calc(100%-2rem)] max-w-[1328px] md:w-full pt-10 md:pt-14">
+        <h2 className="font-display text-2xl font-medium leading-tight tracking-normal md:text-3xl text-ink text-center mb-8">
           Related Posts
         </h2>
 
@@ -267,7 +267,7 @@ export function BlogPostDetailContent({
               {/* Image */}
               <Link
                 href={`/blog/${rPost.slug}`}
-                className="relative aspect-16/10 w-full overflow-hidden rounded-xl bg-neutral-100 shadow-2xs"
+                className="relative aspect-16/10 w-full overflow-hidden rounded-md bg-neutral-100 shadow-2xs"
               >
                 <Image
                   src={rPost.image}

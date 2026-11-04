@@ -22,7 +22,7 @@ export function ProductTabs({ product }: ProductTabsProps) {
 
       {/* Tab Content */}
       <div className="pt-6 text-neutral-700 leading-relaxed text-xs md:text-sm">
-        <p className="whitespace-pre-line max-w-4xl text-neutral-700 leading-relaxed text-xs md:text-sm font-normal">
+        <p className="whitespace-pre-line max-w-4xl text-neutral-700 leading-relaxed text-sm md:text-[15px] font-normal">
           {product.description}
         </p>
       </div>

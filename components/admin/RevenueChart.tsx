@@ -30,7 +30,7 @@ export function RevenueChart() {
   const total = revenue.reduce((sum, point) => sum + point.value * 1000, 0);
 
   return (
-    <section className="overflow-hidden rounded-xl border border-[#e8e5df] bg-white p-5 sm:p-6" aria-label="Sample revenue chart">
+    <section className="overflow-hidden rounded-md border border-[#e8e5df] bg-white p-5 sm:p-6" aria-label="Sample revenue chart">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <h2 className="font-display text-lg">Revenue overview</h2>
@@ -41,7 +41,7 @@ export function RevenueChart() {
           <select
             value={period}
             onChange={event => setPeriod(event.target.value)}
-            className="min-h-9 w-auto rounded-lg border border-[#e5e1da] bg-white px-3 text-[10px] outline-none focus:border-purple focus:ring-2 focus:ring-purple/10"
+            className="min-h-9 w-auto rounded-md border border-[#e5e1da] bg-white px-3 text-[10px] outline-none focus:border-purple focus:ring-2 focus:ring-purple/10"
           >
             <option>Last 7 days</option>
             <option>Last 30 days</option>

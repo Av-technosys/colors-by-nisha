@@ -65,7 +65,7 @@ export function CartPageContent({ initialCrossSellProducts }: CartPageContentPro
   return (
     <div className="bg-white text-ink pb-24">
       {/* 1. Breadcrumb & Page Heading (Matches Screenshot) */}
-      <section className="mx-auto max-w-[1360px] px-4 md:px-6 lg:px-8 pt-6 pb-4 md:pt-10 md:pb-6 text-center">
+      <section className="mx-auto w-[calc(100%-2rem)] max-w-[1328px] md:w-full pt-8 pb-6 md:pt-10 md:pb-8 text-center">
         {/* Breadcrumb: Home · Your Shopping Cart */}
         <nav aria-label="Breadcrumb" className="mb-2">
           <ol className="inline-flex items-center gap-2 text-xs text-neutral-500 font-medium font-sans">
@@ -80,18 +80,18 @@ export function CartPageContent({ initialCrossSellProducts }: CartPageContentPro
         </nav>
 
         {/* Title: Shopping Cart */}
-        <h1 className="font-display text-3xl md:text-4xl font-normal tracking-wide text-ink">
+        <h1 className="font-display text-3xl font-normal leading-tight tracking-normal md:text-4xl text-ink">
           Shopping Cart
         </h1>
 
         {/* Subtitle */}
-        <p className="mt-2 text-xs md:text-sm text-neutral-500 font-sans max-w-lg mx-auto">
+        <p className="mt-2 text-sm md:text-[15px] text-neutral-500 font-sans max-w-lg mx-auto">
           Review your selected items before purchase. Enjoy a seamless shopping experience!
         </p>
       </section>
 
       {/* Main 2-Column Content Layout */}
-      <div className="mx-auto max-w-[1360px] px-4 md:px-6 lg:px-8">
+      <div className="mx-auto w-[calc(100%-2rem)] max-w-[1328px] md:w-full">
         {!isMounted ? (
           /* Initial loading placeholder matching server & client to prevent hydration mismatch */
           <div className="py-24 text-center max-w-md mx-auto">
@@ -103,7 +103,7 @@ export function CartPageContent({ initialCrossSellProducts }: CartPageContentPro
         ) : cart.length === 0 ? (
           /* Empty Cart View */
           <div className="py-20 text-center max-w-md mx-auto">
-            <div className="mx-auto size-20 rounded-full bg-neutral-100 text-neutral-400 flex items-center justify-center mb-4">
+            <div className="mx-auto size-20 rounded-md bg-neutral-100 text-neutral-400 flex items-center justify-center mb-4">
               <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                 <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4zM3 6h18M16 10a4 4 0 0 1-8 0" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
@@ -183,7 +183,7 @@ export function CartPageContent({ initialCrossSellProducts }: CartPageContentPro
 
                         {/* Quantity Pill Column */}
                         <td className="py-5 px-3 text-center whitespace-nowrap">
-                          <div className="inline-flex items-center justify-between rounded-full bg-[#f4f4f4] px-3.5 py-1.5 w-[105px]">
+                          <div className="inline-flex items-center justify-between rounded-md bg-[#f4f4f4] px-3.5 py-1.5 w-[105px]">
                             <button
                               onClick={() => updateQuantity(index, item.quantity - 1)}
                               className="text-base text-neutral-600 hover:text-ink font-medium px-1 cursor-pointer select-none"
@@ -216,8 +216,8 @@ export function CartPageContent({ initialCrossSellProducts }: CartPageContentPro
               {/* Trust Badges (Matches Screenshot 3 boxes: Have Questions?, Secure Shopping, Privacy Protection) */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
                 {/* 1. Have Questions */}
-                <div className="rounded-xl bg-[#f9fafb] p-4 text-center border border-neutral-100 flex flex-col items-center">
-                  <div className="mb-2 size-8 rounded-full bg-white shadow-2xs flex items-center justify-center text-neutral-700">
+                <div className="rounded-md bg-[#f9fafb] p-4 text-center border border-neutral-100 flex flex-col items-center">
+                  <div className="mb-2 size-8 rounded-md bg-white shadow-2xs flex items-center justify-center text-neutral-700">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <path d="M3 18v-6a9 9 0 0 1 18 0v6" />
                       <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z" />
@@ -230,8 +230,8 @@ export function CartPageContent({ initialCrossSellProducts }: CartPageContentPro
                 </div>
 
                 {/* 2. Secure Shopping */}
-                <div className="rounded-xl bg-[#f9fafb] p-4 text-center border border-neutral-100 flex flex-col items-center">
-                  <div className="mb-2 size-8 rounded-full bg-white shadow-2xs flex items-center justify-center text-neutral-700">
+                <div className="rounded-md bg-[#f9fafb] p-4 text-center border border-neutral-100 flex flex-col items-center">
+                  <div className="mb-2 size-8 rounded-md bg-white shadow-2xs flex items-center justify-center text-neutral-700">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
                     </svg>
@@ -243,8 +243,8 @@ export function CartPageContent({ initialCrossSellProducts }: CartPageContentPro
                 </div>
 
                 {/* 3. Privacy Protection */}
-                <div className="rounded-xl bg-[#f9fafb] p-4 text-center border border-neutral-100 flex flex-col items-center">
-                  <div className="mb-2 size-8 rounded-full bg-white shadow-2xs flex items-center justify-center text-neutral-700">
+                <div className="rounded-md bg-[#f9fafb] p-4 text-center border border-neutral-100 flex flex-col items-center">
+                  <div className="mb-2 size-8 rounded-md bg-white shadow-2xs flex items-center justify-center text-neutral-700">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                     </svg>
@@ -263,7 +263,7 @@ export function CartPageContent({ initialCrossSellProducts }: CartPageContentPro
                     You may also like...
                   </h3>
 
-                  <div className="rounded-xl border border-neutral-200/80 p-4 bg-white">
+                  <div className="rounded-md border border-neutral-200/80 p-4 bg-white">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       {crossSellProducts
                         .slice(crossSellIndex * 2, crossSellIndex * 2 + 2)
@@ -272,11 +272,11 @@ export function CartPageContent({ initialCrossSellProducts }: CartPageContentPro
                           return (
                           <div
                             key={product.id}
-                            className="flex items-center gap-3.5 p-2 rounded-lg hover:bg-neutral-50 transition"
+                            className="flex items-center gap-3.5 p-2 rounded-md hover:bg-neutral-50 transition"
                           >
                             <Link
                               href={`/products/${product.slug}`}
-                              className="relative aspect-2/3 w-16 shrink-0 overflow-hidden rounded bg-neutral-100"
+                              className="relative aspect-2/3 w-16 shrink-0 overflow-hidden rounded-md bg-neutral-100"
                             >
                               <Image
                                 src={productImage}
@@ -301,13 +301,13 @@ export function CartPageContent({ initialCrossSellProducts }: CartPageContentPro
                               <div className="mt-2 flex items-center gap-2">
                                 <button
                                   onClick={() => addToCart(product, "M", 1)}
-                                  className="rounded bg-[#2d254d] hover:bg-[#201938] px-3.5 py-1.5 font-display text-[10px] font-bold uppercase tracking-wider text-white shadow-2xs transition cursor-pointer"
+                                  className="rounded-md bg-[#2d254d] hover:bg-[#201938] px-3.5 py-1.5 font-display text-[10px] font-bold uppercase tracking-wider text-white shadow-2xs transition cursor-pointer"
                                 >
                                   ADD TO CART
                                 </button>
                                 <button
                                   onClick={() => setSelectedQuickProduct(product)}
-                                  className="size-7 grid place-items-center rounded bg-neutral-100 hover:bg-neutral-200 text-ink transition cursor-pointer"
+                                  className="size-7 grid place-items-center rounded-md bg-neutral-100 hover:bg-neutral-200 text-ink transition cursor-pointer"
                                   aria-label={`Quick view ${product.name}`}
                                   title="Quick view"
                                 >
@@ -327,7 +327,7 @@ export function CartPageContent({ initialCrossSellProducts }: CartPageContentPro
                           <button
                             key={dot}
                             onClick={() => setCrossSellIndex(dot)}
-                            className={`size-1.5 rounded-full transition-all cursor-pointer ${
+                            className={`size-1.5 rounded-md transition-all cursor-pointer ${
                               crossSellIndex === dot ? "bg-ink w-3" : "bg-neutral-300"
                             }`}
                             aria-label={`Go to slide ${dot + 1}`}
@@ -342,7 +342,7 @@ export function CartPageContent({ initialCrossSellProducts }: CartPageContentPro
 
             {/* Right Column: Order Summary Card (Matches Screenshot) */}
             <div className="lg:col-span-4 space-y-6">
-              <div className="rounded-2xl bg-[#f9fafb] p-5 md:p-6 border border-neutral-200/70 shadow-2xs space-y-5 font-sans">
+              <div className="rounded-md bg-[#f9fafb] p-5 md:p-6 border border-neutral-200/70 shadow-2xs space-y-5 font-sans">
                 {/* Free Shipping Progress Indicator */}
                 <div>
                   <div className="flex justify-between items-center text-xs font-medium text-neutral-700 mb-1.5">
@@ -360,9 +360,9 @@ export function CartPageContent({ initialCrossSellProducts }: CartPageContentPro
                     <span className="text-emerald-600">🚚</span>
                   </div>
 
-                  <div className="h-1.5 w-full overflow-hidden rounded-full bg-neutral-200">
+                  <div className="h-1.5 w-full overflow-hidden rounded-md bg-neutral-200">
                     <div
-                      className="h-full rounded-full bg-emerald-600 transition-all duration-500"
+                      className="h-full rounded-md bg-emerald-600 transition-all duration-500"
                       style={{
                         width: isFreeShipping ? "100%" : `${Math.min(100, (subtotal / freeShippingThreshold) * 100)}%`,
                       }}
@@ -381,7 +381,7 @@ export function CartPageContent({ initialCrossSellProducts }: CartPageContentPro
                     rows={3}
                     value={orderNote}
                     onChange={(e) => setOrderNote(e.target.value)}
-                    className="w-full rounded-xl border border-neutral-200 bg-white p-3 text-xs text-ink placeholder:text-neutral-400 focus:border-[#2d254d] focus:ring-1 focus:ring-[#2d254d] outline-none transition resize-none shadow-2xs"
+                    className="w-full rounded-md border border-neutral-200 bg-white p-3 text-xs text-ink placeholder:text-neutral-400 focus:border-[#2d254d] focus:ring-1 focus:ring-[#2d254d] outline-none transition resize-none shadow-2xs"
                   />
                 </div>
 
@@ -396,7 +396,7 @@ export function CartPageContent({ initialCrossSellProducts }: CartPageContentPro
                       <select
                         value={country}
                         onChange={(e) => setCountry(e.target.value)}
-                        className="w-full rounded-lg border border-neutral-200 bg-white px-3 py-2 text-xs text-ink focus:border-[#2d254d] outline-none"
+                        className="w-full rounded-md border border-neutral-200 bg-white px-3 py-2 text-xs text-ink focus:border-[#2d254d] outline-none"
                       >
                         <option value="India">India</option>
                         <option value="United States">United States</option>
@@ -412,7 +412,7 @@ export function CartPageContent({ initialCrossSellProducts }: CartPageContentPro
                       <select
                         value={province}
                         onChange={(e) => setProvince(e.target.value)}
-                        className="w-full rounded-lg border border-neutral-200 bg-white px-3 py-2 text-xs text-ink focus:border-[#2d254d] outline-none"
+                        className="w-full rounded-md border border-neutral-200 bg-white px-3 py-2 text-xs text-ink focus:border-[#2d254d] outline-none"
                       >
                         <option value="Rajasthan">Rajasthan</option>
                         <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
@@ -433,7 +433,7 @@ export function CartPageContent({ initialCrossSellProducts }: CartPageContentPro
                         placeholder="Postal/ZIP code"
                         value={zipCode}
                         onChange={(e) => setZipCode(e.target.value)}
-                        className="w-full rounded-lg border border-neutral-200 bg-white px-3 py-2 text-xs text-ink placeholder:text-neutral-400 focus:border-[#2d254d] outline-none"
+                        className="w-full rounded-md border border-neutral-200 bg-white px-3 py-2 text-xs text-ink placeholder:text-neutral-400 focus:border-[#2d254d] outline-none"
                       />
                     </div>
 
@@ -446,7 +446,7 @@ export function CartPageContent({ initialCrossSellProducts }: CartPageContentPro
                   </form>
 
                   {shippingCalculated && (
-                    <div className="mt-3 rounded-lg bg-emerald-50/80 p-2.5 text-center text-xs text-emerald-800 font-medium">
+                    <div className="mt-3 rounded-md bg-emerald-50/80 p-2.5 text-center text-xs text-emerald-800 font-medium">
                       ✓ Free Express Insured Shipping to {country} ({province})
                     </div>
                   )}
@@ -474,7 +474,7 @@ export function CartPageContent({ initialCrossSellProducts }: CartPageContentPro
                           setAgreedTerms(e.target.checked);
                           if (e.target.checked) setTermsError(false);
                         }}
-                        className="size-4 rounded border-neutral-300 accent-[#2d254d] cursor-pointer"
+                        className="size-4 rounded-md border-neutral-300 accent-[#2d254d] cursor-pointer"
                       />
                       <span>
                         I agree with <strong className="font-semibold text-ink">Terms & Conditions</strong>
@@ -496,7 +496,7 @@ export function CartPageContent({ initialCrossSellProducts }: CartPageContentPro
               </div>
 
               {/* Delivery Information & Up to 10-Day Guarantee (Matches Screenshot) */}
-              <div className="rounded-xl bg-white p-5 border border-neutral-100 shadow-2xs space-y-3 font-sans text-xs">
+              <div className="rounded-md bg-white p-5 border border-neutral-100 shadow-2xs space-y-3 font-sans text-xs">
                 <div>
                   <h5 className="font-display font-bold text-xs text-ink uppercase tracking-tight">
                     Delivery Information

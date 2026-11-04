@@ -69,7 +69,7 @@ export function ProductCard({
         className ?? defaultClass
       }`}
     >
-      <div className="group relative aspect-2/3 overflow-hidden rounded-xl md:rounded-2xl bg-neutral-100 shadow-xs">
+      <div className="group relative aspect-2/3 overflow-hidden rounded-md bg-neutral-100 shadow-xs">
         {/* Main Product Image Button */}
         <button
           tabIndex={duplicate ? -1 : undefined}
@@ -97,7 +97,7 @@ export function ProductCard({
           <div className="group/btn relative">
             <button
               tabIndex={duplicate ? -1 : undefined}
-              className={`grid size-9 md:size-10 place-items-center rounded-full shadow-[0_2px_8px_rgba(0,0,0,0.12)] transition-all duration-200 cursor-pointer ${
+              className={`grid size-9 md:size-10 place-items-center rounded-md shadow-[0_2px_8px_rgba(0,0,0,0.12)] transition-all duration-200 cursor-pointer ${
                 variant === "wishlist"
                   ? "bg-white text-[#111111] hover:bg-[#111111] hover:text-white"
                   : isSaved
@@ -125,7 +125,7 @@ export function ProductCard({
 
             {/* Tooltip on the left with triangle arrow pointing right (Desktop hover only) */}
             <div className="hidden md:block pointer-events-none absolute right-[calc(100%+10px)] top-1/2 -translate-y-1/2 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-200 z-30">
-              <div className="relative whitespace-nowrap rounded-[4px] bg-[#111111] px-3 py-1.5 font-sans text-xs font-normal text-white shadow-md">
+              <div className="relative whitespace-nowrap rounded-md bg-[#111111] px-3 py-1.5 font-sans text-xs font-normal text-white shadow-md">
                 {variant === "wishlist"
                   ? "Remove from wishlist"
                   : isSaved
@@ -140,7 +140,7 @@ export function ProductCard({
           <div className="group/eye relative">
             <button
               tabIndex={duplicate ? -1 : undefined}
-              className="grid size-9 md:size-10 place-items-center rounded-full bg-white text-[#111111] shadow-[0_2px_8px_rgba(0,0,0,0.12)] hover:bg-[#111111] hover:text-white transition-all duration-200 cursor-pointer"
+              className="grid size-9 md:size-10 place-items-center rounded-md bg-white text-[#111111] shadow-[0_2px_8px_rgba(0,0,0,0.12)] hover:bg-[#111111] hover:text-white transition-all duration-200 cursor-pointer"
               onClick={handleSelect}
               aria-label={`Quick view ${product.name}`}
             >
@@ -149,7 +149,7 @@ export function ProductCard({
 
             {/* Quick View Tooltip (Desktop hover only) */}
             <div className="hidden md:block pointer-events-none absolute right-[calc(100%+10px)] top-1/2 -translate-y-1/2 opacity-0 group-hover/eye:opacity-100 transition-opacity duration-200 z-30">
-              <div className="relative whitespace-nowrap rounded-[4px] bg-[#111111] px-3 py-1.5 font-sans text-xs font-normal text-white shadow-md">
+              <div className="relative whitespace-nowrap rounded-md bg-[#111111] px-3 py-1.5 font-sans text-xs font-normal text-white shadow-md">
                 Quick view
                 <span className="absolute left-full top-1/2 -translate-y-1/2 h-0 w-0 border-y-[5px] border-y-transparent border-l-[6px] border-l-[#111111] border-r-0" />
               </div>
@@ -161,7 +161,7 @@ export function ProductCard({
         <div className="absolute inset-x-3 bottom-3 md:inset-x-4 md:bottom-4 z-20">
           <button
             tabIndex={duplicate ? -1 : undefined}
-            className="w-full rounded-full bg-white py-2.5 md:py-3 px-4 text-center font-display text-[13px] md:text-[15px] font-medium text-[#111111] shadow-[0_4px_12px_rgba(0,0,0,0.12)] hover:bg-[#2d254d] hover:text-[#FCF1D8] transition-all duration-300 cursor-pointer active:scale-95"
+            className="w-full rounded-md bg-white py-2.5 md:py-3 px-4 text-center font-display text-[13px] md:text-[15px] font-medium text-[#111111] shadow-[0_4px_12px_rgba(0,0,0,0.12)] hover:bg-[#2d254d] hover:text-[#FCF1D8] transition-all duration-300 cursor-pointer active:scale-95"
             onClick={handleCartClick}
           >
             Add To Cart
@@ -172,12 +172,12 @@ export function ProductCard({
       {/* Product Details (Title & Price) */}
       <button
         tabIndex={duplicate ? -1 : undefined}
-        className="mt-3 font-display text-sm leading-snug md:mt-4 md:text-base hover:text-purple transition-colors cursor-pointer text-ink font-medium"
+        className="mt-3 font-display text-sm leading-snug md:mt-4 md:text-[15px] hover:text-purple transition-colors cursor-pointer text-ink font-medium"
         onClick={handleSelect}
       >
         {product.name}
       </button>
-      <p className="mt-1 font-sans text-xs text-neutral-700 md:text-sm">
+      <p className="mt-1 font-sans text-sm text-neutral-700 md:text-[15px]">
         {money(product.price)}
       </p>
     </article>

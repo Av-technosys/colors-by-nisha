@@ -119,16 +119,16 @@ export function ShopPageContent({ initialCategory, initialSearch, products: allP
   };
 
   return (
-    <div className="bg-white text-ink pb-20">
+    <div className="bg-white text-ink pb-10 md:pb-14">
       {/* Page Heading - Normal white bg with only Products */}
-      <div className="bg-white pt-8 pb-3 md:pt-12 md:pb-5 text-center">
-        <h1 className="font-display text-3xl md:text-4xl font-normal tracking-wide text-ink">
+      <div className="mx-auto w-[calc(100%-2rem)] max-w-[1328px] md:w-full pt-8 pb-6 md:pt-10 md:pb-8 text-center">
+        <h1 className="font-display text-3xl font-normal leading-tight tracking-normal md:text-4xl text-ink">
           Products
         </h1>
       </div>
 
       {/* Main Container */}
-      <div className="mx-auto max-w-[1360px] px-4 md:px-6 lg:px-8 pt-8">
+      <div className="mx-auto w-[calc(100%-2rem)] max-w-[1328px] md:w-full">
         <div className="flex gap-8 lg:gap-12">
           {/* Desktop Filter Sidebar */}
           <aside className="hidden lg:block w-[280px] shrink-0">
@@ -151,7 +151,7 @@ export function ShopPageContent({ initialCategory, initialSearch, products: allP
                             setSelectedCategory(cat.key);
                             setCurrentPage(1);
                           }}
-                          className={`flex w-full items-center justify-between rounded px-2 py-1.5 transition-colors ${
+                          className={`flex w-full items-center justify-between rounded-md px-2 py-1.5 transition-colors ${
                             selectedCategory === cat.key
                               ? "font-semibold text-ink bg-neutral-100"
                               : "text-neutral-600 hover:text-ink hover:bg-neutral-50"
@@ -185,7 +185,7 @@ export function ShopPageContent({ initialCategory, initialSearch, products: allP
                           setInStockOnly(e.target.checked);
                           setCurrentPage(1);
                         }}
-                        className="size-4 rounded border-neutral-300 text-ink accent-ink focus:ring-0"
+                        className="size-4 rounded-md border-neutral-300 text-ink accent-ink focus:ring-0"
                       />
                       <span className="text-neutral-700">In stock ({counts.inStock})</span>
                     </label>
@@ -223,7 +223,7 @@ export function ShopPageContent({ initialCategory, initialSearch, products: allP
                           setPriceRange([0, tempPriceMax]);
                           setCurrentPage(1);
                         }}
-                        className="flex-1 rounded bg-ink py-2 text-xs font-semibold uppercase tracking-wider text-white hover:bg-neutral-800 transition"
+                        className="flex-1 rounded-md bg-ink py-2 text-xs font-semibold uppercase tracking-wider text-white hover:bg-neutral-800 transition"
                       >
                         Apply Price
                       </button>
@@ -234,7 +234,7 @@ export function ShopPageContent({ initialCategory, initialSearch, products: allP
                             setTempPriceMax(maxPrice);
                             setCurrentPage(1);
                           }}
-                          className="rounded border border-neutral-300 px-3 text-xs text-neutral-600 hover:text-ink"
+                          className="rounded-md border border-neutral-300 px-3 text-xs text-neutral-600 hover:text-ink"
                         >
                           Reset
                         </button>
@@ -249,7 +249,7 @@ export function ShopPageContent({ initialCategory, initialSearch, products: allP
                 <div className="pt-5">
                   <button
                     onClick={resetFilters}
-                    className="w-full rounded border border-neutral-300 py-2.5 text-xs font-semibold uppercase tracking-wider text-neutral-700 hover:bg-neutral-100 transition"
+                    className="w-full rounded-md border border-neutral-300 py-2.5 text-xs font-semibold uppercase tracking-wider text-neutral-700 hover:bg-neutral-100 transition"
                   >
                     Clear All Filters
                   </button>
@@ -265,14 +265,14 @@ export function ShopPageContent({ initialCategory, initialSearch, products: allP
               {/* Mobile Filter Button */}
               <button
                 onClick={() => setMobileFilterOpen(true)}
-                className="flex items-center gap-2 rounded border border-neutral-300 px-4 py-2 text-xs font-semibold uppercase tracking-wider text-ink lg:hidden"
+                className="flex items-center gap-2 rounded-md border border-neutral-300 px-4 py-2 text-xs font-semibold uppercase tracking-wider text-ink lg:hidden"
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M4 6h16M6 12h12M8 18h8" strokeLinecap="round" />
                 </svg>
                 <span>Filter</span>
                 {hasActiveFilters && (
-                  <span className="size-2 rounded-full bg-[#d0473e]" />
+                  <span className="size-2 rounded-md bg-[#d0473e]" />
                 )}
               </button>
 
@@ -284,12 +284,12 @@ export function ShopPageContent({ initialCategory, initialSearch, products: allP
               {/* Right side: Layout Switcher & Sort By */}
               <div className="flex items-center gap-4 ml-auto">
                 {/* Column Switcher (desktop) */}
-                <div className="hidden sm:flex items-center gap-1 border border-neutral-200 rounded p-0.5">
+                <div className="hidden sm:flex items-center gap-1 border border-neutral-200 rounded-md p-0.5">
                   {[2, 3, 4].map((cols) => (
                     <button
                       key={cols}
                       onClick={() => setColumnCount(cols as 2 | 3 | 4)}
-                      className={`grid size-7 place-items-center rounded text-xs font-semibold transition ${
+                      className={`grid size-7 place-items-center rounded-md text-xs font-semibold transition ${
                         columnCount === cols ? "bg-ink text-white" : "text-neutral-500 hover:text-ink"
                       }`}
                       aria-label={`${cols} columns`}
@@ -309,7 +309,7 @@ export function ShopPageContent({ initialCategory, initialSearch, products: allP
                     id="shop-sort"
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value)}
-                    className="rounded border border-neutral-300 bg-white px-3 py-1.5 text-xs font-medium text-ink focus:border-ink focus:outline-none cursor-pointer"
+                    className="rounded-md border border-neutral-300 bg-white px-3 py-1.5 text-xs font-medium text-ink focus:border-ink focus:outline-none cursor-pointer"
                   >
                     <option value="featured">Featured</option>
                     <option value="title-ascending">Alphabetically, A-Z</option>
@@ -327,7 +327,7 @@ export function ShopPageContent({ initialCategory, initialSearch, products: allP
               <div className="flex flex-wrap items-center gap-2 pb-5">
                 <span className="text-xs font-medium text-neutral-400">Active filters:</span>
                 {searchQuery.trim() && (
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-neutral-100 px-3 py-1 text-xs font-medium text-ink">
+                  <span className="inline-flex items-center gap-1.5 rounded-md bg-neutral-100 px-3 py-1 text-xs font-medium text-ink">
                     Search: &ldquo;{searchQuery}&rdquo;
                     <button
                       onClick={() => {
@@ -341,7 +341,7 @@ export function ShopPageContent({ initialCategory, initialSearch, products: allP
                   </span>
                 )}
                 {selectedCategory !== "all" && (
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-neutral-100 px-3 py-1 text-xs font-medium text-ink">
+                  <span className="inline-flex items-center gap-1.5 rounded-md bg-neutral-100 px-3 py-1 text-xs font-medium text-ink">
                     Category: <span className="capitalize">{selectedCategory}</span>
                     <button onClick={() => setSelectedCategory("all")} className="hover:text-red-600">
                       ✕
@@ -349,7 +349,7 @@ export function ShopPageContent({ initialCategory, initialSearch, products: allP
                   </span>
                 )}
                 {inStockOnly && (
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-neutral-100 px-3 py-1 text-xs font-medium text-ink">
+                  <span className="inline-flex items-center gap-1.5 rounded-md bg-neutral-100 px-3 py-1 text-xs font-medium text-ink">
                     In Stock Only
                     <button onClick={() => setInStockOnly(false)} className="hover:text-red-600">
                       ✕
@@ -357,7 +357,7 @@ export function ShopPageContent({ initialCategory, initialSearch, products: allP
                   </span>
                 )}
                 {(priceRange[0] > 0 || priceRange[1] < maxPrice) && (
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-neutral-100 px-3 py-1 text-xs font-medium text-ink">
+                  <span className="inline-flex items-center gap-1.5 rounded-md bg-neutral-100 px-3 py-1 text-xs font-medium text-ink">
                     Price: Up to {formatINR(priceRange[1])}
                     <button
                       onClick={() => {
@@ -386,7 +386,7 @@ export function ShopPageContent({ initialCategory, initialSearch, products: allP
                 <p className="mt-1 text-sm text-neutral-500">Try adjusting your filters or search terms.</p>
                 <button
                   onClick={resetFilters}
-                  className="mt-5 rounded bg-ink px-6 py-2.5 text-xs font-semibold uppercase tracking-wider text-white hover:bg-neutral-800 transition"
+                  className="mt-5 rounded-md bg-ink px-6 py-2.5 text-xs font-semibold uppercase tracking-wider text-white hover:bg-neutral-800 transition"
                 >
                   Reset All Filters
                 </button>
@@ -417,7 +417,7 @@ export function ShopPageContent({ initialCategory, initialSearch, products: allP
                 <button
                   onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
                   disabled={currentPage === 1}
-                  className="grid size-10 place-items-center rounded-full border border-neutral-300 text-sm font-medium transition hover:border-ink disabled:opacity-30 disabled:pointer-events-none"
+                  className="grid size-10 place-items-center rounded-md border border-neutral-300 text-sm font-medium transition hover:border-ink disabled:opacity-30 disabled:pointer-events-none"
                   aria-label="Previous page"
                 >
                   ‹
@@ -426,7 +426,7 @@ export function ShopPageContent({ initialCategory, initialSearch, products: allP
                   <button
                     key={page}
                     onClick={() => handlePageChange(page)}
-                    className={`grid size-10 place-items-center rounded-full text-xs font-semibold transition ${
+                    className={`grid size-10 place-items-center rounded-md text-xs font-semibold transition ${
                       currentPage === page
                         ? "bg-ink text-white shadow-xs"
                         : "border border-neutral-200 text-neutral-700 hover:border-ink hover:text-ink"
@@ -439,7 +439,7 @@ export function ShopPageContent({ initialCategory, initialSearch, products: allP
                 <button
                   onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
                   disabled={currentPage === totalPages}
-                  className="grid size-10 place-items-center rounded-full border border-neutral-300 text-sm font-medium transition hover:border-ink disabled:opacity-30 disabled:pointer-events-none"
+                  className="grid size-10 place-items-center rounded-md border border-neutral-300 text-sm font-medium transition hover:border-ink disabled:opacity-30 disabled:pointer-events-none"
                   aria-label="Next page"
                 >
                   ›
@@ -469,7 +469,7 @@ export function ShopPageContent({ initialCategory, initialSearch, products: allP
               <h2 className="font-display text-base font-semibold uppercase tracking-wider text-ink">Filters</h2>
               <button
                 onClick={() => setMobileFilterOpen(false)}
-                className="grid size-8 place-items-center rounded-full text-neutral-500 hover:bg-neutral-100"
+                className="grid size-8 place-items-center rounded-md text-neutral-500 hover:bg-neutral-100"
                 aria-label="Close filters"
               >
                 ✕
@@ -487,7 +487,7 @@ export function ShopPageContent({ initialCategory, initialSearch, products: allP
                     <button
                       key={cat.key}
                       onClick={() => { setSelectedCategory(cat.key); setCurrentPage(1); }}
-                      className={`flex w-full items-center justify-between rounded px-3 py-2 text-sm ${
+                      className={`flex w-full items-center justify-between rounded-md px-3 py-2 text-sm ${
                         selectedCategory === cat.key ? "bg-neutral-100 font-semibold text-ink" : "text-neutral-600"
                       }`}
                     >
@@ -508,7 +508,7 @@ export function ShopPageContent({ initialCategory, initialSearch, products: allP
                     type="checkbox"
                     checked={inStockOnly}
                     onChange={(e) => { setInStockOnly(e.target.checked); setCurrentPage(1); }}
-                    className="size-4 rounded border-neutral-300 text-ink accent-ink"
+                    className="size-4 rounded-md border-neutral-300 text-ink accent-ink"
                   />
                   <span>In stock ({counts.inStock})</span>
                 </label>
@@ -538,7 +538,7 @@ export function ShopPageContent({ initialCategory, initialSearch, products: allP
                   setCurrentPage(1);
                   setMobileFilterOpen(false);
                 }}
-                className="w-full rounded bg-ink py-3 text-xs font-semibold uppercase tracking-wider text-white"
+                className="w-full rounded-md bg-ink py-3 text-xs font-semibold uppercase tracking-wider text-white"
               >
                 Apply Filters ({filteredProducts.length})
               </button>
@@ -548,7 +548,7 @@ export function ShopPageContent({ initialCategory, initialSearch, products: allP
                     resetFilters();
                     setMobileFilterOpen(false);
                   }}
-                  className="w-full rounded border border-neutral-300 py-2.5 text-xs font-semibold uppercase tracking-wider text-neutral-700"
+                  className="w-full rounded-md border border-neutral-300 py-2.5 text-xs font-semibold uppercase tracking-wider text-neutral-700"
                 >
                   Reset
                 </button>

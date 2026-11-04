@@ -150,8 +150,8 @@ export function ProductImages({ images, onChange, onBusyChange, disabled }: Prod
 
   return (
     <div className="space-y-4">
-      <label htmlFor={inputId} className="flex cursor-pointer flex-col items-center gap-3 rounded-xl border border-dashed border-[#d9d2e2] bg-[#faf9fc] px-5 py-7 text-center">
-        <span className="grid size-11 place-items-center rounded-full bg-[#eee8f4] text-purple"><ImagePlus size={21} aria-hidden="true" /></span>
+      <label htmlFor={inputId} className="flex cursor-pointer flex-col items-center gap-3 rounded-md border border-dashed border-[#d9d2e2] bg-[#faf9fc] px-5 py-7 text-center">
+        <span className="grid size-11 place-items-center rounded-md bg-[#eee8f4] text-purple"><ImagePlus size={21} aria-hidden="true" /></span>
         <span className="font-display text-sm text-purple">{reading ? "Uploading images…" : "Choose images"}</span>
         <span className="text-[11px] text-neutral-400">JPG, PNG, WebP, or GIF · up to 5 MB each</span>
         <input id={inputId} type="file" accept={IMAGE_TYPES.join(",")} multiple disabled={disabled || reading} onChange={event => { const files = Array.from(event.target.files ?? []); event.target.value = ""; void selectFiles(files); }} className="sr-only" />
@@ -159,14 +159,14 @@ export function ProductImages({ images, onChange, onBusyChange, disabled }: Prod
       {error && <p role="alert" className="text-xs text-[#a16b60]">{error}</p>}
       {!!images.length && <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
         {images.map((image, index) => (
-          <div key={image.clientId} className="overflow-hidden rounded-lg border border-[#e5e1da] bg-white">
+          <div key={image.clientId} className="overflow-hidden rounded-md border border-[#e5e1da] bg-white">
             <div className="relative aspect-4/3 bg-[#f7f6f3]">
               <Image src={image.url} alt={`Product image ${index + 1}`} fill unoptimized className="object-contain" onError={() => {
                 if (image.status === "uploaded") commit(currentImages.current.map(item => item.clientId === image.clientId ? { ...item, status: "failed", error: "The image could not be loaded. Please re-upload the image." } : item));
               }} />
               {image.status === "uploading" && <div role="status" className="absolute inset-0 flex items-center justify-center gap-2 bg-white/75 text-xs text-purple"><LoaderCircle size={17} className="motion-safe:animate-spin" />Uploading…</div>}
-              {index === 0 && <span className="absolute left-2 top-2 rounded-full bg-purple px-2 py-1 text-[9px] text-white">Cover image</span>}
-              <button type="button" disabled={disabled || reading} onClick={() => remove(index)} aria-label={`Remove image ${index + 1}`} className="absolute right-2 top-2 grid size-8 place-items-center rounded-full bg-white text-[#a16b60] shadow-sm"><Trash2 size={15} aria-hidden="true" /></button>
+              {index === 0 && <span className="absolute left-2 top-2 rounded-md bg-purple px-2 py-1 text-[9px] text-white">Cover image</span>}
+              <button type="button" disabled={disabled || reading} onClick={() => remove(index)} aria-label={`Remove image ${index + 1}`} className="absolute right-2 top-2 grid size-8 place-items-center rounded-md bg-white text-[#a16b60] shadow-sm"><Trash2 size={15} aria-hidden="true" /></button>
             </div>
             <div className="space-y-3 p-3">
               {image.status === "uploaded" && <p role="status" className="text-[10px] text-[#517254]">Uploaded</p>}

@@ -11,11 +11,11 @@ export default function TermsAndConditionsPage() {
     <main className="min-h-screen bg-white">
       {/* 1. Header/Title Container */}
       <section
-        className="w-full py-6 md:py-8 lg:py-10"
+        className="w-full pt-8 pb-6 md:pt-10 md:pb-8"
         aria-label="Page Header"
       >
-        <div className="mx-auto w-full max-w-[1328px] px-5 lg:px-8">
-          <h1 className="text-center font-display text-[36px] font-normal tracking-normal leading-[45px] text-ink">
+        <div className="mx-auto w-[calc(100%-2rem)] max-w-[1328px] md:w-full">
+          <h1 className="font-display text-3xl font-normal leading-tight tracking-normal md:text-4xl text-center text-ink">
             Terms & Conditions
           </h1>
         </div>
@@ -23,10 +23,10 @@ export default function TermsAndConditionsPage() {
 
       {/* 2. Content Container */}
       <section
-        className="mx-auto w-full max-w-[1328px] px-5 pb-16 md:pb-20 lg:px-8"
+        className="mx-auto w-[calc(100%-2rem)] max-w-[1328px] md:w-full pb-10 md:pb-14"
         aria-label="Policy Content"
       >
-        <div className="space-y-6 font-sans text-[15px] font-normal leading-[1.8] text-ink">
+        <div className="space-y-6 font-sans text-sm md:text-[15px] font-normal leading-relaxed text-ink">
           <p>
             By accessing and placing an order through our website, you agree to
             the following terms and conditions:
@@ -129,7 +129,7 @@ export default function TermsAndConditionsPage() {
 
           {/* Refund, Return & Exchange Policy */}
           <div className="pt-6 space-y-4">
-            <h2 className="font-display text-[26px] font-semibold leading-[31.46px] text-black tracking-normal uppercase">
+            <h2 className="font-display text-xl md:text-2xl font-medium leading-snug text-black tracking-normal uppercase">
               REFUND, RETURN & EXCHANGE POLICY
             </h2>
             <p>
@@ -157,7 +157,7 @@ export default function TermsAndConditionsPage() {
 
           {/* Customization Policy */}
           <div className="pt-6 space-y-4">
-            <h2 className="font-display text-[26px] font-semibold leading-[31.46px] text-black tracking-normal uppercase">
+            <h2 className="font-display text-xl md:text-2xl font-medium leading-snug text-black tracking-normal uppercase">
               CUSTOMIZATION POLICY
             </h2>
             <p>
