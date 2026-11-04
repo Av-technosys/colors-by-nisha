@@ -49,9 +49,9 @@ export function StickyBottomBar({ product, quantity, onQuantityChange: setQuanti
   return (
     <aside
       aria-label="Sticky Add to Cart Bar"
-      className="fixed inset-x-0 z-30 bg-white/95 backdrop-blur-md border-t border-neutral-200 shadow-[0_-4px_25px_rgba(0,0,0,0.08)] animate-in slide-in-from-bottom duration-300 bottom-[52px] md:bottom-0 px-4 md:px-8 lg:px-12 py-2.5 md:py-3"
+      className="fixed inset-x-0 z-30 bg-white/95 backdrop-blur-md border-t border-neutral-200 shadow-[0_-4px_25px_rgba(0,0,0,0.08)] animate-in slide-in-from-bottom duration-300 bottom-[52px] md:bottom-0 py-2.5 md:py-3"
     >
-      <div className="mx-auto max-w-[1400px] flex items-center justify-between gap-4">
+      <div className="mx-auto w-[calc(100%-2rem)] max-w-[1328px] md:w-full flex items-center justify-between gap-4">
         {/* Desktop Left Side: Thumbnail & Product Name */}
         <div className="hidden md:flex items-center gap-3.5 min-w-0">
           <div className="relative size-11 shrink-0 overflow-hidden rounded-md border border-neutral-200 bg-neutral-100">
@@ -80,7 +80,7 @@ export function StickyBottomBar({ product, quantity, onQuantityChange: setQuanti
           <div className="relative shrink-0">
             <button
               onClick={() => setPriceDropdownOpen(!priceDropdownOpen)}
-              className="flex items-center justify-between gap-2 md:gap-3 rounded-full border border-neutral-300 bg-white px-3.5 md:px-4 py-2 text-xs md:text-sm font-bold text-ink shadow-2xs hover:border-neutral-400 transition cursor-pointer"
+              className="flex items-center justify-between gap-2 md:gap-3 rounded-md border border-neutral-300 bg-white px-3.5 md:px-4 py-2 text-xs md:text-sm font-bold text-ink shadow-2xs hover:border-neutral-400 transition cursor-pointer"
               aria-expanded={priceDropdownOpen}
             >
               <span>{formatINR(product.price)}</span>
@@ -90,7 +90,7 @@ export function StickyBottomBar({ product, quantity, onQuantityChange: setQuanti
             </button>
 
             {priceDropdownOpen && (
-              <div className="absolute bottom-full mb-2 left-0 w-44 rounded-lg bg-white border border-neutral-200 shadow-xl p-1.5 z-50 text-xs animate-in zoom-in-95 duration-150">
+              <div className="absolute bottom-full mb-2 left-0 w-44 rounded-md bg-white border border-neutral-200 shadow-xl p-1.5 z-50 text-xs animate-in zoom-in-95 duration-150">
                 <button
                   onClick={() => setPriceDropdownOpen(false)}
                   className="w-full text-left px-3 py-2 rounded-md hover:bg-neutral-100 font-medium text-ink transition cursor-pointer"
@@ -102,7 +102,7 @@ export function StickyBottomBar({ product, quantity, onQuantityChange: setQuanti
           </div>
 
           {/* Quantity Pill (Desktop Only) */}
-          <div className="hidden md:flex items-center justify-between rounded-full bg-[#f4f4f4] px-3.5 py-1.5 w-[110px] shrink-0">
+          <div className="hidden md:flex items-center justify-between rounded-md bg-[#f4f4f4] px-3.5 py-1.5 w-[110px] shrink-0">
             <button
               onClick={() => setQuantity(Math.max(1, quantity - 1))}
               className="text-base text-neutral-600 hover:text-ink font-medium px-1 cursor-pointer select-none"
@@ -133,7 +133,7 @@ export function StickyBottomBar({ product, quantity, onQuantityChange: setQuanti
           {/* Scroll-To-Top Button INSIDE THE STRAP ONLY */}
           <button
             onClick={scrollToTop}
-            className="back-to-top relative size-10 md:size-11 shrink-0 rounded-full overflow-hidden bg-white shadow-md border border-neutral-200 flex items-center justify-center transition-all cursor-pointer hover:scale-105"
+            className="back-to-top relative size-10 md:size-11 shrink-0 rounded-md overflow-hidden bg-white shadow-md border border-neutral-200 flex items-center justify-center transition-all cursor-pointer hover:scale-105"
             aria-label="Back to top"
             title="Back to top"
           >

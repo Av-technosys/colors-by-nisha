@@ -6,7 +6,7 @@ type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
 
 export function Button({ variant = "dark", className = "", ...props }: ButtonProps) {
   const colors = {
-    hero: "min-w-40 rounded border border-[#c4a36a] bg-purple uppercase tracking-[0.12em] text-white hover:bg-[#3b315f]",
+    hero: "min-w-40 rounded-md border border-[#c4a36a] bg-purple uppercase tracking-[0.12em] text-white hover:bg-[#3b315f]",
     dark: "bg-ink text-white hover:bg-neutral-800",
     light: "bg-white text-ink hover:bg-neutral-100",
     outline: "border border-current bg-transparent text-white hover:bg-white hover:text-ink",

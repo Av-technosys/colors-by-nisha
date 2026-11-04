@@ -157,8 +157,8 @@ export default function WishlistPage() {
   };
 
   return (
-    <main className="min-h-screen bg-white py-8 md:py-12 lg:py-16">
-      <div className="mx-auto w-full max-w-[1328px] px-5 lg:px-8">
+    <main className="min-h-screen bg-white py-10 md:py-14">
+      <div className="mx-auto w-[calc(100%-2rem)] max-w-[1328px] md:w-full">
         {/* 1. Breadcrumbs */}
         <nav
           className="text-center font-sans text-xs md:text-sm text-neutral-500 mb-2"
@@ -172,7 +172,7 @@ export default function WishlistPage() {
         </nav>
 
         {/* 2. Main Title */}
-        <h1 className="text-center font-display text-[32px] md:text-[38px] font-normal leading-[45px] text-[#111111] mb-6 md:mb-8">
+        <h1 className="font-display text-3xl font-normal leading-tight tracking-normal md:text-4xl text-center text-[#111111] mb-6 md:mb-8">
           Wishlist
         </h1>
 
@@ -202,7 +202,7 @@ export default function WishlistPage() {
             </p>
             <Link
               href="/shop"
-              className="inline-flex items-center justify-center bg-[#2d254d] text-[#FCF1D8] hover:bg-[#d4af37] hover:text-[#2d254d] font-display text-[16px] font-[500] uppercase tracking-[1.5px] leading-normal px-8 py-3.5 rounded-[4px] transition-all duration-300 shadow-sm cursor-pointer"
+              className="inline-flex items-center justify-center bg-[#2d254d] text-[#FCF1D8] hover:bg-[#d4af37] hover:text-[#2d254d] font-display text-[16px] font-[500] uppercase tracking-[1.5px] leading-normal px-8 py-3.5 rounded-md transition-all duration-300 shadow-sm cursor-pointer"
             >
               BACK TO SHOPPING
             </Link>
@@ -216,7 +216,7 @@ export default function WishlistPage() {
         <section aria-labelledby="recently-viewed-title">
           <h2
             id="recently-viewed-title"
-            className="text-center font-display text-[26px] md:text-[32px] font-normal leading-[45px] text-[#111111] mb-6 md:mb-8"
+            className="text-center font-display text-2xl font-medium leading-tight tracking-normal md:text-3xl text-[#111111] mb-6 md:mb-8"
           >
             Recently Viewed Products
           </h2>

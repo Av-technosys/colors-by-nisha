@@ -13,9 +13,9 @@ export function BlogPageContent({ posts: initialPosts }: BlogPageContentProps = 
   const posts = initialPosts && initialPosts.length > 0 ? initialPosts : getAllBlogPosts();
 
   return (
-    <div className="bg-white text-ink pb-20">
+    <div className="bg-white text-ink pb-10 md:pb-14">
       {/* Top Breadcrumb & Heading (Matches Screenshot) */}
-      <section className="mx-auto max-w-[1360px] px-4 md:px-6 lg:px-8 pt-6 pb-6 md:pt-10 md:pb-8 text-center">
+      <section className="mx-auto w-[calc(100%-2rem)] max-w-[1328px] md:w-full pt-8 pb-6 md:pt-10 md:pb-8 text-center">
         {/* Breadcrumb: Home · Blogs */}
         <nav aria-label="Breadcrumb" className="mb-2">
           <ol className="inline-flex items-center gap-2 text-xs text-neutral-500 font-medium font-sans">
@@ -30,22 +30,22 @@ export function BlogPageContent({ posts: initialPosts }: BlogPageContentProps = 
         </nav>
 
         {/* Title: Blogs */}
-        <h1 className="font-display text-3xl md:text-4xl font-normal tracking-wide text-ink">
+        <h1 className="font-display text-3xl font-normal leading-tight tracking-normal md:text-4xl text-ink">
           Blogs
         </h1>
 
         {/* Subtitle */}
-        <p className="mt-2 text-xs md:text-sm text-neutral-500 font-sans max-w-lg mx-auto">
+        <p className="mt-2 text-sm md:text-[15px] text-neutral-500 font-sans max-w-lg mx-auto">
           Discover style insights and trends on our fashion lifestyle blog.
         </p>
       </section>
 
       {/* Main Content Layout: Left Sidebar (Popular Posts) + Right Main Grid */}
-      <div className="mx-auto max-w-[1360px] px-4 md:px-6 lg:px-8 pt-4 md:pt-8">
+      <div className="mx-auto w-[calc(100%-2rem)] max-w-[1328px] md:w-full">
         <div className="flex flex-col lg:flex-row gap-10 lg:gap-12 items-start">
           {/* Left Sidebar: Popular Posts */}
           <aside className="w-full lg:w-[280px] shrink-0">
-            <h2 className="font-display text-base md:text-lg font-bold tracking-tight text-ink mb-5">
+            <h2 className="font-display text-lg md:text-xl font-medium tracking-tight text-ink mb-5">
               Popular Posts
             </h2>
 
@@ -55,7 +55,7 @@ export function BlogPageContent({ posts: initialPosts }: BlogPageContentProps = 
                   {/* Square Thumbnail */}
                   <Link
                     href={`/blog/${post.slug}`}
-                    className="relative size-16 shrink-0 overflow-hidden rounded-lg bg-neutral-100"
+                    className="relative size-16 shrink-0 overflow-hidden rounded-md bg-neutral-100"
                   >
                     <Image
                       src={post.image}
@@ -90,7 +90,7 @@ export function BlogPageContent({ posts: initialPosts }: BlogPageContentProps = 
                   {/* Article Featured Image */}
                   <Link
                     href={`/blog/${post.slug}`}
-                    className="relative aspect-16/10 w-full overflow-hidden rounded-xl bg-neutral-100 shadow-2xs"
+                    className="relative aspect-16/10 w-full overflow-hidden rounded-md bg-neutral-100 shadow-2xs"
                   >
                     <Image
                       src={post.image}
@@ -103,13 +103,13 @@ export function BlogPageContent({ posts: initialPosts }: BlogPageContentProps = 
 
                   {/* Article Title */}
                   <Link href={`/blog/${post.slug}`} className="block mt-3.5">
-                    <h2 className="font-display text-base md:text-lg font-bold text-ink leading-snug group-hover:text-neutral-700 transition">
+                    <h2 className="font-display text-lg md:text-xl font-medium text-ink leading-snug group-hover:text-neutral-700 transition">
                       {post.title}
                     </h2>
                   </Link>
 
                   {/* Article Excerpt */}
-                  <p className="mt-2 text-xs md:text-sm text-neutral-500 font-sans leading-relaxed line-clamp-3">
+                  <p className="mt-2 text-sm md:text-[15px] text-neutral-500 font-sans leading-relaxed line-clamp-3">
                     {post.excerpt}
                   </p>
 

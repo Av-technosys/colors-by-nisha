@@ -46,19 +46,19 @@ export default function BlogEditor({ id, value, onChange, disabled, error }: { i
     finally { setPreviewBusy(false); }
   }
 
-  if (!editor) return <div aria-label="Loading editor" className="h-[420px] rounded-xl bg-[#f2eff6] motion-safe:animate-pulse" />;
+  if (!editor) return <div aria-label="Loading editor" className="h-[420px] rounded-md bg-[#f2eff6] motion-safe:animate-pulse" />;
   const text = getBlogContentText(value);
   const wordCount = text ? text.split(/\s+/).length : 0;
 
   return <div className="min-w-0">
     <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
       <p className="text-xs leading-5 text-neutral-500">The blog title is H1. Use H2 for sections and H3–H4 for subsections.</p>
-      <div role="group" aria-label="Content view" className="inline-flex gap-1 rounded-lg bg-[#f2eff6] p-1">
+      <div role="group" aria-label="Content view" className="inline-flex gap-1 rounded-md bg-[#f2eff6] p-1">
         <button type="button" disabled={disabled || previewBusy} aria-pressed={mode === "edit"} aria-controls={`${panelId}-editor`} onClick={() => setMode("edit")} className={`inline-flex min-h-8 items-center gap-1.5 rounded-md px-3 text-xs font-semibold ${mode === "edit" ? "bg-white text-purple shadow-sm" : "text-neutral-500"}`}><Pencil size={13} aria-hidden="true" />Edit</button>
         <button type="button" disabled={disabled || previewBusy} aria-pressed={mode === "preview"} aria-controls={`${panelId}-preview`} onClick={showPreview} className={`inline-flex min-h-8 items-center gap-1.5 rounded-md px-3 text-xs font-semibold ${mode === "preview" ? "bg-white text-purple shadow-sm" : "text-neutral-500"}`}>{previewBusy ? <LoaderCircle size={13} aria-hidden="true" className="animate-spin" /> : <Eye size={13} aria-hidden="true" />}Preview</button>
       </div>
     </div>
-    <div className={`overflow-hidden rounded-xl border ${error ? "border-red-400" : "border-[#e5e1da]"}`}>
+    <div className={`overflow-hidden rounded-md border ${error ? "border-red-400" : "border-[#e5e1da]"}`}>
       <div id={`${panelId}-editor`} hidden={mode !== "edit"}>
         <BlogEditorToolbar editor={editor} disabled={disabled || previewBusy || mode !== "edit"} />
         <div className="max-h-[600px] overflow-auto bg-white"><BlogContentFrame><EditorContent editor={editor} /></BlogContentFrame></div>

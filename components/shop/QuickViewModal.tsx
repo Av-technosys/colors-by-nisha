@@ -87,7 +87,7 @@ export function QuickViewModal({ product: originalProduct, onClose }: QuickViewM
       aria-label={product.name}
     >
       <div
-        className="relative flex w-full max-w-[960px] flex-col md:flex-row overflow-hidden rounded-xl md:rounded-2xl bg-white shadow-2xl animate-in zoom-in-95 duration-200 max-h-[90vh]"
+        className="relative flex w-full max-w-[960px] flex-col md:flex-row overflow-hidden rounded-md bg-white shadow-2xl animate-in zoom-in-95 duration-200 max-h-[90vh]"
         style={{ overscrollBehavior: "contain" }}
         onClick={(e) => e.stopPropagation()}
       >
@@ -114,7 +114,7 @@ export function QuickViewModal({ product: originalProduct, onClose }: QuickViewM
             <>
               <button
                 onClick={handlePrev}
-                className="absolute left-3 top-1/2 -translate-y-1/2 z-10 grid size-8 md:size-9 place-items-center rounded-full bg-white/90 text-ink shadow-md transition hover:bg-white hover:scale-105 cursor-pointer"
+                className="absolute left-3 top-1/2 -translate-y-1/2 z-10 grid size-8 md:size-9 place-items-center rounded-md bg-white/90 text-ink shadow-md transition hover:bg-white hover:scale-105 cursor-pointer"
                 aria-label="Previous image"
               >
                 <svg width="8" height="12" viewBox="0 0 8 12" fill="none" stroke="currentColor" strokeWidth="2">
@@ -124,7 +124,7 @@ export function QuickViewModal({ product: originalProduct, onClose }: QuickViewM
 
               <button
                 onClick={handleNext}
-                className="absolute right-3 top-1/2 -translate-y-1/2 z-10 grid size-8 md:size-9 place-items-center rounded-full bg-white/90 text-ink shadow-md transition hover:bg-white hover:scale-105 cursor-pointer"
+                className="absolute right-3 top-1/2 -translate-y-1/2 z-10 grid size-8 md:size-9 place-items-center rounded-md bg-white/90 text-ink shadow-md transition hover:bg-white hover:scale-105 cursor-pointer"
                 aria-label="Next image"
               >
                 <svg width="8" height="12" viewBox="0 0 8 12" fill="none" stroke="currentColor" strokeWidth="2">
@@ -143,7 +143,7 @@ export function QuickViewModal({ product: originalProduct, onClose }: QuickViewM
           {/* Close Button Top Right */}
           <button
             onClick={onClose}
-            className="absolute right-4 top-4 z-20 size-8 grid place-items-center rounded-full text-neutral-400 hover:text-ink transition hover:bg-neutral-100 cursor-pointer"
+            className="absolute right-4 top-4 z-20 size-8 grid place-items-center rounded-md text-neutral-400 hover:text-ink transition hover:bg-neutral-100 cursor-pointer"
             aria-label="Close dialog"
           >
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="2">
@@ -158,7 +158,7 @@ export function QuickViewModal({ product: originalProduct, onClose }: QuickViewM
               onClick={onClose}
               className="group inline-block"
             >
-              <h2 className="font-display text-2xl md:text-[28px] font-bold uppercase tracking-tight text-ink group-hover:text-neutral-700 transition leading-snug">
+              <h2 className="font-display text-2xl md:text-3xl font-bold uppercase tracking-tight text-ink group-hover:text-neutral-700 transition leading-snug">
                 {product.name}
               </h2>
             </Link>
@@ -177,7 +177,7 @@ export function QuickViewModal({ product: originalProduct, onClose }: QuickViewM
           </div>
 
           {/* Description Paragraph */}
-          <p className="text-xs md:text-sm text-neutral-600 leading-relaxed">
+          <p className="text-sm md:text-[15px] text-neutral-600 leading-relaxed">
             {product.shortDescription || product.description}
           </p>
 
@@ -191,7 +191,7 @@ export function QuickViewModal({ product: originalProduct, onClose }: QuickViewM
           <div className="space-y-3.5 pt-2">
             <div className="flex items-center gap-3">
               {/* Pill Quantity Selector */}
-              <div className="flex items-center justify-between rounded-full bg-[#f4f4f4] px-4 py-2.5 w-[115px] shrink-0">
+              <div className="flex items-center justify-between rounded-md bg-[#f4f4f4] px-4 py-2.5 w-[115px] shrink-0">
                 <button
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
                   className="text-base text-neutral-600 hover:text-ink font-medium px-1 cursor-pointer select-none"
@@ -222,7 +222,7 @@ export function QuickViewModal({ product: originalProduct, onClose }: QuickViewM
               {/* Circular Wishlist Button */}
               <button
                 onClick={() => toggleWishlist(product.slug)}
-                className={`size-11 shrink-0 rounded-full border border-neutral-300 flex items-center justify-center transition-colors cursor-pointer ${
+                className={`size-11 shrink-0 rounded-md border border-neutral-300 flex items-center justify-center transition-colors cursor-pointer ${
                   wishlisted
                     ? "border-red-400 bg-red-50 text-red-600"
                     : "bg-white text-neutral-600 hover:border-ink hover:text-ink"
@@ -253,7 +253,7 @@ export function QuickViewModal({ product: originalProduct, onClose }: QuickViewM
                   setAgreedTerms(e.target.checked);
                   if (e.target.checked) setTermsError(false);
                 }}
-                className="size-4 rounded border-neutral-300 accent-[#2d254d] cursor-pointer"
+                className="size-4 rounded-md border-neutral-300 accent-[#2d254d] cursor-pointer"
               />
               <label htmlFor="modal-terms-check" className="cursor-pointer select-none">
                 I agree with <strong className="font-semibold text-ink">Terms & Conditions</strong>

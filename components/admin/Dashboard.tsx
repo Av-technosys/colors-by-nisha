@@ -20,7 +20,7 @@ export function Dashboard() {
         title="A beautiful day to create."
         description="Welcome back, Nisha. Here’s a little perspective on your store."
         action={(
-          <Link href="/admin/products" className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-purple px-4 font-display text-sm text-white transition-colors hover:bg-[#40345f]">
+          <Link href="/admin/products" className="inline-flex min-h-11 items-center justify-center gap-2 rounded-md bg-purple px-4 font-display text-sm text-white transition-colors hover:bg-[#40345f]">
             <Plus size={17} aria-hidden="true" />Add to your collection
           </Link>
         )}
@@ -28,10 +28,10 @@ export function Dashboard() {
 
       <div className="mb-7 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {stats.map(stat => (
-          <div key={stat.label} className="overflow-hidden rounded-xl border border-[#e8e5df] bg-white p-5">
+          <div key={stat.label} className="overflow-hidden rounded-md border border-[#e8e5df] bg-white p-5">
             <div className="mb-4 flex items-center justify-between">
               <p className="text-xs text-neutral-500">{stat.label}</p>
-              <span className="rounded-lg bg-[#f5f2f8] p-2 text-[#8e7ba7]"><stat.icon size={17} aria-hidden="true" /></span>
+              <span className="rounded-md bg-[#f5f2f8] p-2 text-[#8e7ba7]"><stat.icon size={17} aria-hidden="true" /></span>
             </div>
             <p className="font-display text-[30px] leading-none text-purple">{stat.value}</p>
             <p className="mt-3 text-[10px] text-neutral-400">{stat.note}</p>
@@ -41,7 +41,7 @@ export function Dashboard() {
 
       <div className="mb-7 grid gap-5 xl:grid-cols-[minmax(0,1.8fr)_minmax(280px,1fr)]">
         <RevenueChart />
-        <section className="flex flex-col overflow-hidden rounded-xl border border-[#e8e5df] bg-white p-5 sm:p-6">
+        <section className="flex flex-col overflow-hidden rounded-md border border-[#e8e5df] bg-white p-5 sm:p-6">
           <div className="flex items-center justify-between">
             <h2 className="font-display text-lg">The collection edit</h2>
             <span className="text-[#b18b53]"><Package size={20} aria-hidden="true" /></span>
@@ -68,7 +68,7 @@ export function Dashboard() {
         </section>
       </div>
 
-      <section className="mb-7 overflow-hidden rounded-xl border border-[#e8e5df] bg-white">
+      <section className="mb-7 overflow-hidden rounded-md border border-[#e8e5df] bg-white">
         <div className="flex items-center justify-between gap-4 px-5 py-5 sm:px-6">
           <div>
             <h2 className="font-display text-lg">Recent orders</h2>
@@ -104,16 +104,16 @@ export function Dashboard() {
       </section>
 
       <div className="grid gap-4 md:grid-cols-2">
-        <Link href="/admin/blogs" className="group flex items-center gap-4 overflow-hidden rounded-xl border border-[#e8e5df] bg-white p-5">
-          <span className="rounded-lg bg-[#f2edf6] p-3 text-[#8c779d]"><FileText size={20} aria-hidden="true" /></span>
+        <Link href="/admin/blogs" className="group flex items-center gap-4 overflow-hidden rounded-md border border-[#e8e5df] bg-white p-5">
+          <span className="rounded-md bg-[#f2edf6] p-3 text-[#8c779d]"><FileText size={20} aria-hidden="true" /></span>
           <span className="flex-1">
             <span className="block font-display text-base">Tell your next story</span>
             <span className="text-[11px] text-neutral-400">One journal draft is waiting for your touch.</span>
           </span>
           <ArrowRight size={18} aria-hidden="true" />
         </Link>
-        <Link href="/admin/contact" className="group flex items-center gap-4 overflow-hidden rounded-xl border border-[#e8e5df] bg-white p-5">
-          <span className="rounded-lg bg-[#f7f0e3] p-3 text-[#ad8c56]"><Mail size={20} aria-hidden="true" /></span>
+        <Link href="/admin/contact" className="group flex items-center gap-4 overflow-hidden rounded-md border border-[#e8e5df] bg-white p-5">
+          <span className="rounded-md bg-[#f7f0e3] p-3 text-[#ad8c56]"><Mail size={20} aria-hidden="true" /></span>
           <span className="flex-1">
             <span className="block font-display text-base">A conversation awaits</span>
             <span className="text-[11px] text-neutral-400">2 new messages from your community.</span>

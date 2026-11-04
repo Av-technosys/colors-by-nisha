@@ -19,7 +19,7 @@ export function RecordDetails({ data, record, onClose, onEdit, onStatusChange }:
       <p className="mb-5 mt-1 text-xs text-neutral-400">{record.subtitle}</p>
 
       {record.image && (
-        <div className="relative mb-5 h-56 overflow-hidden rounded-lg bg-[#f7f6f3]">
+        <div className="relative mb-5 h-56 overflow-hidden rounded-md bg-[#f7f6f3]">
           <Photo id={record.image} alt={record.title} contain />
         </div>
       )}
@@ -38,10 +38,10 @@ export function RecordDetails({ data, record, onClose, onEdit, onStatusChange }:
       </dl>
 
       {record.detail && (
-        <p className="mb-6 rounded-lg bg-[#f7f6f3] p-4 text-xs leading-relaxed text-neutral-600">{record.detail}</p>
+        <p className="mb-6 rounded-md bg-[#f7f6f3] p-4 text-xs leading-relaxed text-neutral-600">{record.detail}</p>
       )}
       {data.canEdit && (
-        <button onClick={onEdit} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-purple px-4 font-display text-sm text-white transition-colors hover:bg-[#40345f]">
+        <button onClick={onEdit} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-md bg-purple px-4 font-display text-sm text-white transition-colors hover:bg-[#40345f]">
           Edit {data.singular}
         </button>
       )}
@@ -51,7 +51,7 @@ export function RecordDetails({ data, record, onClose, onEdit, onStatusChange }:
           <select
             value={record.status}
             onChange={event => onStatusChange(event.target.value)}
-            className="mt-2 min-h-11 w-full rounded-lg border border-[#e5e1da] bg-white px-3 text-xs outline-none focus:border-purple focus:ring-2 focus:ring-purple/10"
+            className="mt-2 min-h-11 w-full rounded-md border border-[#e5e1da] bg-white px-3 text-xs outline-none focus:border-purple focus:ring-2 focus:ring-purple/10"
           >
             {data.statuses.map(status => <option key={status}>{status}</option>)}
           </select>

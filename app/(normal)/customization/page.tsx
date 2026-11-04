@@ -11,11 +11,11 @@ export default function CustomizationPage() {
     <main className="min-h-screen bg-white">
       {/* 1. Header/Title Container */}
       <section
-        className="w-full py-6 md:py-8 lg:py-10"
+        className="w-full pt-8 pb-6 md:pt-10 md:pb-8"
         aria-label="Page Header"
       >
-        <div className="mx-auto w-full max-w-[1328px] px-5 lg:px-8">
-          <h1 className="text-center font-display text-[36px] font-normal tracking-normal leading-[45px] text-ink">
+        <div className="mx-auto w-[calc(100%-2rem)] max-w-[1328px] md:w-full">
+          <h1 className="font-display text-3xl font-normal leading-tight tracking-normal md:text-4xl text-center text-ink">
             Customization
           </h1>
         </div>
@@ -23,10 +23,10 @@ export default function CustomizationPage() {
 
       {/* 2. Content Container */}
       <section
-        className="mx-auto w-full max-w-[1328px] px-5 pb-16 md:pb-20 lg:px-8"
+        className="mx-auto w-[calc(100%-2rem)] max-w-[1328px] md:w-full pb-10 md:pb-14"
         aria-label="Customization Content"
       >
-        <div className="space-y-6 font-sans text-[15px] font-normal leading-[1.8] text-ink">
+        <div className="space-y-6 font-sans text-sm md:text-[15px] font-normal leading-relaxed text-ink">
           <p>
             At Colors by Nisha Vijay, we offer customization services on
             selected garments from our existing collections, including lehengas,
@@ -50,7 +50,7 @@ export default function CustomizationPage() {
           </div>
 
           <div>
-            <h2 className="font-display text-[18px] font-semibold leading-[22px] text-ink tracking-normal">
+            <h2 className="font-display text-lg md:text-xl font-medium leading-snug text-ink tracking-normal">
               Customization Timeline
             </h2>
             <p className="mt-1">
@@ -64,7 +64,7 @@ export default function CustomizationPage() {
           </div>
 
           <div>
-            <h2 className="font-display text-[18px] font-semibold leading-[22px] text-ink tracking-normal">
+            <h2 className="font-display text-lg md:text-xl font-medium leading-snug text-ink tracking-normal">
               Additional Charges
             </h2>
             <p className="mt-1">
@@ -76,7 +76,7 @@ export default function CustomizationPage() {
           </div>
 
           <div>
-            <h2 className="font-display text-[18px] font-semibold leading-[22px] text-ink tracking-normal">
+            <h2 className="font-display text-lg md:text-xl font-medium leading-snug text-ink tracking-normal">
               Custom Measurements
             </h2>
             <p className="mt-1">
@@ -90,7 +90,7 @@ export default function CustomizationPage() {
           </div>
 
           <div>
-            <h2 className="font-display text-[18px] font-semibold leading-[22px] text-ink tracking-normal">
+            <h2 className="font-display text-lg md:text-xl font-medium leading-snug text-ink tracking-normal">
               No Cancellation, Return or Exchange
             </h2>
             <p className="mt-1">
@@ -102,7 +102,7 @@ export default function CustomizationPage() {
           </div>
 
           <div>
-            <h2 className="font-display text-[18px] font-semibold leading-[22px] text-ink tracking-normal">
+            <h2 className="font-display text-lg md:text-xl font-medium leading-snug text-ink tracking-normal">
               Design Restrictions
             </h2>
             <p className="mt-1">
@@ -114,7 +114,7 @@ export default function CustomizationPage() {
           </div>
 
           <div>
-            <h2 className="font-display text-[18px] font-semibold leading-[22px] text-ink tracking-normal">
+            <h2 className="font-display text-lg md:text-xl font-medium leading-snug text-ink tracking-normal">
               Right to Refuse Customization
             </h2>
             <p className="mt-1">

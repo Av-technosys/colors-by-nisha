@@ -50,17 +50,17 @@ function SearchPageContent() {
 
   return (
     <main className="min-h-screen bg-white">
-      <div className="mx-auto w-full max-w-[1360px] px-4 md:px-6 lg:px-8 py-8 md:py-14 relative min-h-[70vh] flex flex-col">
+      <div className="mx-auto w-[calc(100%-2rem)] max-w-[1328px] md:w-full py-10 md:py-14 relative min-h-[70vh] flex flex-col">
         {/* Title (Shown on Empty Search matching Image 1) */}
         {!normalizedQuery && (
-          <h1 className="text-center font-display text-[26px] md:text-[34px] font-normal text-[#111111] mb-6 md:mb-8 pt-4">
+          <h1 className="font-display text-3xl font-normal leading-tight tracking-normal md:text-4xl text-center text-[#111111] mb-6 md:mb-8">
             Search Our Site
           </h1>
         )}
 
         {/* Search Input Bar (Pill Shape matching Screenshot) */}
         <div className="w-full max-w-[620px] mx-auto mb-8 md:mb-12 pt-2">
-          <form onSubmit={handleSearchSubmit} className="relative flex items-center rounded-full border border-neutral-300 focus-within:border-black bg-white px-5 py-3 md:py-3.5 shadow-xs transition-colors">
+          <form onSubmit={handleSearchSubmit} className="relative flex items-center rounded-md border border-neutral-300 focus-within:border-black bg-white px-5 py-3 md:py-3.5 shadow-xs transition-colors">
             <input
               autoFocus
               type="text"
@@ -112,7 +112,7 @@ function SearchPageContent() {
                       className="group flex flex-col text-center cursor-pointer"
                       onClick={() => setSelectedProduct(product)}
                     >
-                      <div className="relative aspect-2/3 w-full overflow-hidden rounded-xl bg-neutral-100 shadow-xs">
+                      <div className="relative aspect-2/3 w-full overflow-hidden rounded-md bg-neutral-100 shadow-xs">
                         <Image
                           src={
                             product.images[0] ||
@@ -128,7 +128,7 @@ function SearchPageContent() {
                       <h3 className="mt-3 font-display text-[14px] md:text-[15px] font-medium text-ink uppercase tracking-wide group-hover:text-purple transition-colors">
                         {product.name}
                       </h3>
-                      <p className="mt-1 font-sans text-xs md:text-sm text-neutral-600">
+                      <p className="mt-1 font-sans text-sm md:text-[15px] text-neutral-600">
                         {money(product.price)}
                       </p>
                     </article>
@@ -139,7 +139,7 @@ function SearchPageContent() {
                 <div className="mt-10 mb-12 flex justify-center">
                   <Link
                     href={`/shop?search=${encodeURIComponent(query)}`}
-                    className="inline-flex items-center justify-center bg-[#201a3c] hover:bg-[#d4af37] text-[#FCF1D8] hover:text-[#201a3c] font-display text-[14px] md:text-[15px] font-semibold uppercase tracking-[1.5px] px-8 py-3.5 rounded-[4px] transition-all duration-300 shadow-sm cursor-pointer"
+                    className="inline-flex items-center justify-center bg-[#201a3c] hover:bg-[#d4af37] text-[#FCF1D8] hover:text-[#201a3c] font-display text-[14px] md:text-[15px] font-semibold uppercase tracking-[1.5px] px-8 py-3.5 rounded-md transition-all duration-300 shadow-sm cursor-pointer"
                   >
                     VIEW ALL RESULTS
                   </Link>
