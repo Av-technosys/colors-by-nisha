@@ -2,18 +2,20 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import { submitContactAction } from "@/app/(normal)/contact/actions";
 
 export function ContactPageContent() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
+    phone: "",
     message: "",
     agreedPrivacy: false,
   });
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name.trim()) {
       setStatus("error");
@@ -39,16 +41,31 @@ export function ContactPageContent() {
     setStatus("submitting");
     setErrorMessage("");
 
-    setTimeout(() => {
-      setStatus("success");
-    }, 600);
+    try {
+      const res = await submitContactAction({
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        message: formData.message,
+      });
+
+      if (res.success) {
+        setStatus("success");
+      } else {
+        setStatus("error");
+        setErrorMessage(res.error || "Failed to submit enquiry. Please try again.");
+      }
+    } catch {
+      setStatus("error");
+      setErrorMessage("An unexpected error occurred. Please try again or reach out on WhatsApp.");
+    }
   };
 
   const handleWhatsAppDirect = () => {
     const text = encodeURIComponent(
       `Hello Colors by Nisha! I have an enquiry:\n• Name: ${formData.name || "Customer"}\n• Email: ${
         formData.email || "Not specified"
-      }\n• Message: ${formData.message || "General Enquiry"}`
+      }\n• Phone: ${formData.phone || "Not specified"}\n• Message: ${formData.message || "General Enquiry"}`
     );
     window.open(`https://wa.me/919799330455?text=${text}`, "_blank");
   };
@@ -239,16 +256,16 @@ export function ContactPageContent() {
                   <div className="mt-6 flex flex-wrap gap-3 justify-center">
                     <button
                       onClick={() => {
-                        setFormData({ name: "", email: "", message: "", agreedPrivacy: false });
+                        setFormData({ name: "", email: "", phone: "", message: "", agreedPrivacy: false });
                         setStatus("idle");
                       }}
-                      className="rounded-md border border-neutral-300 px-5 py-2.5 text-xs font-semibold uppercase tracking-wider text-neutral-700 hover:bg-neutral-50 transition"
+                      className="rounded-md border border-neutral-300 px-5 py-2.5 text-xs font-semibold uppercase tracking-wider text-neutral-700 hover:bg-neutral-50 transition cursor-pointer"
                     >
                       Send Another Message
                     </button>
                     <button
                       onClick={handleWhatsAppDirect}
-                      className="rounded-md bg-[#25D366] px-5 py-2.5 text-xs font-semibold uppercase tracking-wider text-white shadow-xs hover:bg-[#20ba59] transition"
+                      className="rounded-md bg-[#25D366] px-5 py-2.5 text-xs font-semibold uppercase tracking-wider text-white shadow-xs hover:bg-[#20ba59] transition cursor-pointer"
                     >
                       Continue on WhatsApp
                     </button>
@@ -256,23 +273,34 @@ export function ContactPageContent() {
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-4 font-sans">
-                  {/* Two column inputs: Your name & Your Email */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Form inputs: Your name & Your Email & Phone */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                     <div>
                       <input
                         type="text"
-                        placeholder="Your name"
+                        placeholder="Your name *"
                         value={formData.name}
                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                         className="w-full rounded-xl md:rounded-2xl border border-neutral-200/90 bg-white px-5 py-3.5 text-sm text-ink placeholder:text-neutral-400 focus:border-[#2d254d] focus:ring-1 focus:ring-[#2d254d] outline-none transition shadow-2xs font-sans"
+                        required
                       />
                     </div>
                     <div>
                       <input
                         type="email"
-                        placeholder="Your Email"
+                        placeholder="Your Email *"
                         value={formData.email}
                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                        className="w-full rounded-xl md:rounded-2xl border border-neutral-200/90 bg-white px-5 py-3.5 text-sm text-ink placeholder:text-neutral-400 focus:border-[#2d254d] focus:ring-1 focus:ring-[#2d254d] outline-none transition shadow-2xs font-sans"
+                        required
+                      />
+                    </div>
+                    <div className="sm:col-span-2 md:col-span-1">
+                      <input
+                        type="tel"
+                        placeholder="Phone Number"
+                        value={formData.phone}
+                        onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                         className="w-full rounded-xl md:rounded-2xl border border-neutral-200/90 bg-white px-5 py-3.5 text-sm text-ink placeholder:text-neutral-400 focus:border-[#2d254d] focus:ring-1 focus:ring-[#2d254d] outline-none transition shadow-2xs font-sans"
                       />
                     </div>

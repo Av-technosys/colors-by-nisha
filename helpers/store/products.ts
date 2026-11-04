@@ -6,7 +6,7 @@ import { io } from "next/cache";
 import { db } from "@/lib/db";
 import { categories, products, productMedia, productVariants } from "@/lib/db/schema";
 import { imageUrl } from "@/helpers/storage/s3";
-import type { ProductItem } from "@/data/products";
+import { productsData, type ProductItem } from "@/data/products";
 
 const published = inArray(products.status, ["active", "out_of_stock"]);
 const productRelations = {
@@ -64,19 +64,29 @@ export const getShopProducts = cache(async () => {
 
 export const getStoreProduct = cache(async (slug: string) => {
   await io();
-  const row = await readProduct(slug);
-  return row ? toProduct(row) : undefined;
+  try {
+    const row = await readProduct(slug);
+    if (row) return await toProduct(row);
+  } catch {}
+  return productsData.find(
+    (p) =>
+      p.slug.toLowerCase() === slug.toLowerCase() ||
+      p.name.toLowerCase().replace(/[^a-z0-9]+/g, "-") === slug.toLowerCase()
+  );
 });
 
 export async function getRelatedStoreProducts(product: ProductItem) {
-  const rows = await db.query.products.findMany({
-    where: and(published, ne(products.id, product.id)),
-    with: productRelations,
-    orderBy: [
-      sql`case when ${products.categoryId} in (select ${categories.id} from ${categories} where ${categories.slug} = ${product.categorySlug ?? ""}) then 0 else 1 end`,
-      desc(products.createdAt), asc(products.id),
-    ],
-    limit: 4,
-  });
-  return Promise.all(rows.map(toProduct));
+  try {
+    const rows = await db.query.products.findMany({
+      where: and(published, ne(products.id, product.id)),
+      with: productRelations,
+      orderBy: [
+        sql`case when ${products.categoryId} in (select ${categories.id} from ${categories} where ${categories.slug} = ${product.categorySlug ?? ""}) then 0 else 1 end`,
+        desc(products.createdAt), asc(products.id),
+      ],
+      limit: 4,
+    });
+    if (rows && rows.length > 0) return Promise.all(rows.map(toProduct));
+  } catch {}
+  return productsData.filter((p) => p.slug !== product.slug).slice(0, 4);
 }
