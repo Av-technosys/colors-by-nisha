@@ -41,9 +41,9 @@ npm run db:migrate
 Drizzle Studio. For local schema iteration, `npm run db:push` applies the schema
 directly without generating migrations; review its proposed changes first.
 
-The schema defines categories, products, product variants, product media, and blogs.
+The schema defines categories, products, product variants, product media, blogs, and users.
 Blogs use the existing categories table. Generate and review migrations locally,
-then apply them yourself. Database-changing commands are not run by the agent.
+then apply the reviewed migration with `npm run db:migrate`.
 
 ## Admin management
 
@@ -90,8 +90,65 @@ object in S3.
 The local `product_media.variant_id` addition requires a migration. Generate,
 review, and apply it yourself using `npm run db:generate` and `npm run db:migrate`.
 
-Login protection is deferred at the user's request. Live database mutation tests
-must not be run; use mocked database tests instead.
+Live database mutation tests must not be run; use mocked database tests instead.
+
+## Customer authentication
+
+Existing login, signup, OTP, and reset screens use Clerk custom flows. Enable
+email/password sign-in, email-code signup verification, and the Google SSO connection
+in Clerk. Google buttons on login and signup return through `/sso-callback`,
+with extra verification or missing signup details handled in the existing forms.
+Google accounts use the same database sync and admin allowlist. Mobile is a
+contact number collected with signup, not an SMS sign-in method. Full names and
+contact mobile numbers are stored in Clerk user metadata and synchronized to the
+local `users` table. Passwords and password hashes stay with Clerk;
+`password_enabled` is only a boolean status.
+
+Set these variables locally and in Vercel:
+
+```env
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
+CLERK_SECRET_KEY=
+CLERK_WEBHOOK_SIGNING_SECRET=
+ADMIN_EMAILS=jatinsankhla1@gmail.com
+```
+
+`ADMIN_EMAILS` is a comma-separated allowlist of verified Clerk email addresses.
+If it is empty, admin access is denied. There is no customer-editable role field.
+Admin pages, media endpoints, and mutation actions check authorization server-side.
+
+The webhook endpoint is `/api/webhooks/clerk`. Subscribe to `user.created`,
+`user.updated`, and `user.deleted`, and use that endpoint's signing secret.
+Webhook updates fetch the current Clerk user, reject stale database updates, and
+keep deletion tombstones so delayed events cannot recreate deleted accounts.
+The customer dashboard also synchronizes its signed-in profile immediately, so it
+does not need to wait for a webhook. Database failures are shown instead of
+pretending a profile was saved. The admin users page uses real customer records,
+search, and pagination; it does not display sample order or spending totals.
+
+Apply migration `0003_superb_bloodstorm.sql` with `npm run db:migrate` in any other
+database used by your deployment before serving customer accounts. Its only
+schema change is the `users` table. The configured local database already has it.
+
+Run profile and authorization checks with:
+
+```bash
+node tests/auth-profile.test.mjs
+node tests/clerk-webhook.test.mjs
+node tests/account.test.mjs
+```
+
+The account dashboard shows the signed-in customer’s name, email, and mobile.
+Missing contact details open a profile-completion dialog after sign-in. Changes
+synchronize to the existing user table. Contact numbers are not marked verified
+unless they match a verified Clerk phone number.
+
+Saved addresses persist in server-managed Clerk private metadata (up to five
+addresses), including edits and a single default address. Marketing preferences
+have been removed. No address or consent tables are added. Account mutations
+require the current Clerk session and reject cross-origin writes. The all-devices
+sign-out action revokes the user’s other active sessions before signing out the
+current session.
 
 ## Learn More
 

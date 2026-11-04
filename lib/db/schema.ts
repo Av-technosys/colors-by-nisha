@@ -83,6 +83,21 @@ export const blogs = pgTable("blogs", {
   updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().$onUpdate(() => new Date()).notNull(),
 });
 
+export const users = pgTable("users", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  clerkId: varchar("clerk_id", { length: 255 }).notNull().unique(),
+  fullName: varchar("full_name", { length: 255 }).notNull(),
+  email: varchar("email", { length: 320 }).notNull(),
+  mobile: varchar("mobile", { length: 20 }),
+  emailVerified: boolean("email_verified").default(false).notNull(),
+  mobileVerified: boolean("mobile_verified").default(false).notNull(),
+  passwordEnabled: boolean("password_enabled").default(false).notNull(),
+  clerkUpdatedAt: timestamp("clerk_updated_at", { withTimezone: true }).notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().$onUpdate(() => new Date()).notNull(),
+  deletedAt: timestamp("deleted_at", { withTimezone: true }),
+});
+
 export const categoriesRelations = relations(categories, ({ many }) => ({
   products: many(products),
   blogs: many(blogs),

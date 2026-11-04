@@ -16,6 +16,7 @@
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1161.0",
     "@aws-sdk/s3-request-presigner": "^3.1161.0",
+    "@clerk/nextjs": "^7.9.24",
     "@next/env": "^16.4.3",
     "@tiptap/extension-table": "^3.32.1",
     "@tiptap/pm": "^3.32.1",
