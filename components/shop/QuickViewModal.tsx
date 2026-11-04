@@ -27,6 +27,10 @@ export function QuickViewModal({ product: originalProduct, onClose }: QuickViewM
   if (!product) return null;
 
   const wishlisted = isWishlisted(product.slug);
+  const hasMultipleVariants = (product.variants?.length ?? 0) > 1 && !product.variants?.every(v => {
+    const n = v.name.toLowerCase().trim();
+    return n === "standard" || n === "default title" || n === "title";
+  });
   const images = product.images.length > 0 ? product.images : ["/Home/images/010_flamingo_fable__IMG_0053.jpg"];
   const activeImage = images[activeImageIdx] || images[0];
 
@@ -181,10 +185,10 @@ export function QuickViewModal({ product: originalProduct, onClose }: QuickViewM
             {product.shortDescription || product.description}
           </p>
 
-          {!!product.variants?.length && <label className="space-y-2 text-sm">
+          {hasMultipleVariants && <label className="space-y-2 text-sm">
             <span className="block font-medium">Choose an option</span>
             <select value={variantId} onChange={event => { setVariantId(event.target.value); setQuantity(1); setActiveImageIdx(0); }} className="w-full rounded-md border border-neutral-300 bg-white p-3">
-              {product.variants.map(variant => <option key={variant.id} value={variant.id}>{variant.name}{variant.stock === 0 ? " — Out of stock" : ""}</option>)}
+              {product.variants?.map(variant => <option key={variant.id} value={variant.id}>{variant.name}{variant.stock === 0 ? " — Out of stock" : ""}</option>)}
             </select>
           </label>}
           {/* Action Row: Pill Quantity, Navy ADD TO CART, Wishlist Heart */}

@@ -22,6 +22,10 @@ export function ProductDetailsInfo({ product, variantId, onVariantChange, quanti
   const [isAdding, setIsAdding] = useState(false);
 
   const wishlisted = isWishlisted(product.slug);
+  const hasMultipleVariants = (product.variants?.length ?? 0) > 1 && !product.variants?.every(v => {
+    const n = v.name.toLowerCase().trim();
+    return n === "standard" || n === "default title" || n === "title";
+  });
   const details = product.details || {};
   const shortDescription = product.shortDescription?.trim();
   const specifications = [
@@ -105,10 +109,10 @@ export function ProductDetailsInfo({ product, variantId, onVariantChange, quanti
         )}
       </div>
 
-      {!!product.variants?.length && <label className="space-y-2 text-sm">
+      {hasMultipleVariants && <label className="space-y-2 text-sm">
         <span className="block font-medium">Choose an option</span>
         <select value={variantId} onChange={event => onVariantChange(event.target.value)} className="w-full rounded-md border border-neutral-300 bg-white p-3">
-          {product.variants.map(variant => <option key={variant.id} value={variant.id}>{variant.name}{variant.stock === 0 ? " — Out of stock" : ""}</option>)}
+          {product.variants?.map(variant => <option key={variant.id} value={variant.id}>{variant.name}{variant.stock === 0 ? " — Out of stock" : ""}</option>)}
         </select>
       </label>}
       <p className="text-xs text-neutral-500">{product.inStock ? "In stock" : "Out of stock"}</p>

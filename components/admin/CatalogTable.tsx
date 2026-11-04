@@ -7,6 +7,7 @@ import { Modal } from "@/components/ui/Modal";
 import type { CatalogData, CatalogRow } from "@/helpers/admin/catalog";
 import type { ActionState } from "@/helpers/admin/validation";
 import { PageHeading, StatusBadge } from "./AdminUI";
+import { ProductCsvUpload } from "./ProductCsvUpload";
 
 type CatalogTableProps = {
   title: string;
@@ -83,9 +84,23 @@ export function CatalogTable({ title, singular, description, basePath, columns, 
 
   return (
     <>
-      <PageHeading eyebrow={title} title={title} description={description} action={(
-        <Link href={`${basePath}/new`} className="inline-flex min-h-11 items-center gap-2 rounded-md bg-purple px-4 font-display text-sm text-white"><Plus size={17} />Add {singular}</Link>
-      )} />
+      <PageHeading
+        eyebrow={title}
+        title={title}
+        description={description}
+        action={(
+          <div className="flex items-center gap-3">
+            {basePath === "/admin/products" && <ProductCsvUpload onImportSuccess={reload} />}
+            <Link
+              href={`${basePath}/new`}
+              className="inline-flex min-h-11 items-center gap-2 rounded-md bg-purple px-4 font-display text-sm text-white"
+            >
+              <Plus size={17} />
+              Add {singular}
+            </Link>
+          </div>
+        )}
+      />
       <div className="overflow-hidden rounded-md border border-[#e8e5df] bg-white">
         <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#eeeae4] p-5">
           <h2 className="font-display text-lg">All {title.toLowerCase()} <span className="ml-2 rounded-md bg-[#f2eff6] px-2 py-1 text-xs text-purple">{loading ? "—" : records.length}</span></h2>

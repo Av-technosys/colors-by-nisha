@@ -35,11 +35,18 @@ export function validatePrice(value: string, label = "Price") {
 }
 
 export function actionError(error: unknown) {
-  const databaseError = error as { code?: string; cause?: { code?: string } };
+  console.error("Admin action error:", error);
+  const databaseError = error as { code?: string; cause?: { code?: string; detail?: string; message?: string } };
   const code = databaseError?.cause?.code ?? databaseError?.code;
-  if (code === "23505") return "That value is already in use. Check the slug and other unique fields.";
-  if (code === "23503") return "This record is linked to another record. Update those references before deleting it.";
-  if (code) return "The database request could not be completed. Please try again.";
+  if (code === "23505") return "That value is already in use. Check the slug, SKU, and other unique fields.";
+  if (code === "23503") return "A referenced record (such as category or variant) was not found or is linked to another item.";
+  if (code === "22001") return "One or more fields exceed the character limit allowed by the database.";
+  if (code === "23502") return "A required field was missing from the database request.";
+  if (code === "22P02") return "Invalid format or identifier provided in the form.";
+  if (code) {
+    const detail = databaseError?.cause?.detail || databaseError?.cause?.message;
+    return detail ? `Database error: ${detail}` : "The database request could not be completed. Please try again.";
+  }
   if (error instanceof Error && !error.message.startsWith("Failed query:")) return error.message;
   return "Something went wrong. Please try again.";
 }
