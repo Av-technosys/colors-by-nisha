@@ -49,11 +49,11 @@ function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
               scroll={false}
               onNavigate={navigate}
               aria-current={active ? "page" : undefined}
-              className={`flex min-h-12 items-center gap-3 rounded-lg px-3 text-[13px] transition-colors ${active ? "bg-white text-purple shadow-sm" : "text-white/65 hover:bg-white/8 hover:text-white"}`}
+              className={`flex min-h-12 items-center gap-3 rounded-md px-3 text-[13px] transition-colors ${active ? "bg-white text-purple shadow-sm" : "text-white/65 hover:bg-white/8 hover:text-white"}`}
             >
               <item.icon size={19} aria-hidden="true" />
               {item.label}
-              {active && <span className="ml-auto size-1.5 rounded-full bg-[#b18b53]" />}
+              {active && <span className="ml-auto size-1.5 rounded-md bg-[#b18b53]" />}
             </Link>
           );
         })}
@@ -61,12 +61,12 @@ function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
 
       <div className="mt-auto pt-8">
         <div className="flex items-center gap-3 border-t border-white/10 px-2 pt-5">
-          <span className="grid size-10 shrink-0 place-items-center rounded-full bg-[#eeeaf5] font-display text-sm text-purple">NV</span>
+          <span className="grid size-10 shrink-0 place-items-center rounded-md bg-[#eeeaf5] font-display text-sm text-purple">NV</span>
           <div className="min-w-0 flex-1">
             <p className="font-display text-sm">Nisha Vijay</p>
             <p className="text-[10px] text-white/45">Store administrator</p>
           </div>
-          <Link href="/" onClick={onNavigate} aria-label="Exit admin" title="Exit admin" className="grid size-9 shrink-0 place-items-center rounded-lg text-white/60 transition-colors hover:bg-white/10 hover:text-white">
+          <Link href="/" onClick={onNavigate} aria-label="Exit admin" title="Exit admin" className="grid size-9 shrink-0 place-items-center rounded-md text-white/60 transition-colors hover:bg-white/10 hover:text-white">
             <DoorOpen size={19} aria-hidden="true" />
           </Link>
         </div>
@@ -84,7 +84,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
 
   return (
     <div className="min-h-dvh bg-[#f7f6f3] text-ink">
-      <Toaster position="bottom-right" richColors />
+      <Toaster position="bottom-right" richColors toastOptions={{ className: "rounded-md!" }} />
       <a href="#admin-content" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-80 focus:bg-white focus:p-3">Skip to content</a>
       <aside className="fixed inset-y-0 left-0 z-40 hidden w-[238px] lg:block"><Sidebar /></aside>
       {menuOpen && (
@@ -97,7 +97,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
           aria-label="Open navigation"
           aria-expanded={menuOpen}
           onClick={() => setMenuOpen(true)}
-          className="fixed bottom-5 right-5 z-40 grid size-12 place-items-center rounded-full bg-purple text-white shadow-lg lg:hidden"
+          className="fixed bottom-5 right-5 z-40 grid size-12 place-items-center rounded-md bg-purple text-white shadow-lg lg:hidden"
         >
           <Menu size={20} aria-hidden="true" />
         </button>

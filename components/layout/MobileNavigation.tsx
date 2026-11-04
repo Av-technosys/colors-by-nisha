@@ -39,7 +39,7 @@ export function MobileNavigation({ onPanel: _onPanel }: { onShop?: () => void; o
       <Link href="/wishlist" className="relative flex min-w-12 flex-col items-center gap-1">
         <Icon name="heart" size={20} />
         {wishlistCount > 0 && (
-          <span className="absolute -right-1 -top-1 size-3.5 rounded-full bg-[#d0473e] text-center font-display text-[9px] leading-3.5 text-white font-medium">
+          <span className="absolute -right-1 -top-1 size-3.5 rounded-md bg-[#d0473e] text-center font-display text-[9px] leading-3.5 text-white font-medium">
             {wishlistCount}
           </span>
         )}
@@ -53,7 +53,7 @@ export function MobileNavigation({ onPanel: _onPanel }: { onShop?: () => void; o
       >
         <Icon name="bag" size={20} />
         {cartCount > 0 && (
-          <span className="absolute -right-1 -top-1 size-3.5 rounded-full bg-[#d0473e] text-center font-display text-[9px] leading-3.5 text-white font-medium">
+          <span className="absolute -right-1 -top-1 size-3.5 rounded-md bg-[#d0473e] text-center font-display text-[9px] leading-3.5 text-white font-medium">
             {cartCount}
           </span>
         )}

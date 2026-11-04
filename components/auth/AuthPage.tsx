@@ -323,21 +323,21 @@ export default function AuthPage({ mode }: AuthPageProps) {
       {toast && (
         <aside
           aria-label="Notification"
-          className="fixed top-4 right-4 left-4 sm:left-auto sm:right-6 sm:top-6 z-50 flex items-start gap-3 rounded-2xl bg-[#2d254d] text-white px-4 py-3.5 shadow-2xl border border-[#d4af37]/40 sm:max-w-md animate-in slide-in-from-top-3 fade-in duration-300"
+          className="fixed top-4 right-4 left-4 sm:left-auto sm:right-6 sm:top-6 z-50 flex items-start gap-3 rounded-md bg-[#2d254d] text-white px-4 py-3.5 shadow-2xl border border-[#d4af37]/40 sm:max-w-md animate-in slide-in-from-top-3 fade-in duration-300"
         >
           <div className="shrink-0 mt-0.5">
             {toast.type === "success" && (
-              <div className="size-8 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center border border-emerald-400/30">
+              <div className="size-8 rounded-md bg-emerald-500/20 text-emerald-400 flex items-center justify-center border border-emerald-400/30">
                 <IoCheckmarkCircle className="size-5" />
               </div>
             )}
             {toast.type === "error" && (
-              <div className="size-8 rounded-full bg-red-500/20 text-red-400 flex items-center justify-center border border-red-400/30">
+              <div className="size-8 rounded-md bg-red-500/20 text-red-400 flex items-center justify-center border border-red-400/30">
                 <IoAlertCircleOutline className="size-5" />
               </div>
             )}
             {toast.type === "info" && (
-              <div className="size-8 rounded-full bg-[#d4af37]/20 text-[#FCF1D8] flex items-center justify-center border border-[#d4af37]/40">
+              <div className="size-8 rounded-md bg-[#d4af37]/20 text-[#FCF1D8] flex items-center justify-center border border-[#d4af37]/40">
                 <IoInformationCircleOutline className="size-5" />
               </div>
             )}
@@ -407,7 +407,7 @@ export default function AuthPage({ mode }: AuthPageProps) {
                 />
               </div>
             </Link>
-            <h1 className="font-display text-xl sm:text-2xl font-bold tracking-tight text-[#111111] leading-tight">
+            <h1 className="font-display text-3xl font-normal leading-tight tracking-normal md:text-4xl text-[#111111]">
               Colors by Nisha Vijay
             </h1>
             <p className="mt-1 font-sans text-xs text-neutral-500 max-w-xs line-clamp-1">
@@ -426,7 +426,7 @@ export default function AuthPage({ mode }: AuthPageProps) {
             <div className="space-y-3">
               <form onSubmit={handleOtpSubmit} className="space-y-3.5">
                   {/* Target Email Notification */}
-                  <div className="rounded-xl bg-neutral-50 border border-neutral-200/90 p-3 text-center space-y-1">
+                  <div className="rounded-md bg-neutral-50 border border-neutral-200/90 p-3 text-center space-y-1">
                     <div className="inline-flex items-center gap-1.5 text-[#2d254d] text-xs font-medium">
                       <IoShieldCheckmarkOutline className="size-4" />
                       <span>Verification Code Sent</span>
@@ -440,13 +440,13 @@ export default function AuthPage({ mode }: AuthPageProps) {
                   </div>
 
                   {resendNotice && (
-                    <div className="rounded-xl bg-emerald-50 border border-emerald-200 px-3.5 py-1.5 text-xs text-emerald-700 font-sans text-center">
+                    <div className="rounded-md bg-emerald-50 border border-emerald-200 px-3.5 py-1.5 text-xs text-emerald-700 font-sans text-center">
                       {resendNotice}
                     </div>
                   )}
 
                   {error && (
-                    <div className="rounded-xl bg-red-50 border border-red-200 px-3.5 py-1.5 text-xs text-red-600 font-sans text-center">
+                    <div className="rounded-md bg-red-50 border border-red-200 px-3.5 py-1.5 text-xs text-red-600 font-sans text-center">
                       {error}
                     </div>
                   )}
@@ -472,7 +472,7 @@ export default function AuthPage({ mode }: AuthPageProps) {
                           value={digit}
                           onChange={(e) => handleOtpChange(idx, e.target.value)}
                           onKeyDown={(e) => handleOtpKeyDown(idx, e)}
-                          className="h-11 w-10 sm:h-12 sm:w-11 rounded-xl border border-neutral-300 bg-white text-center font-display text-lg font-bold text-ink outline-none focus:border-[#2d254d] focus:ring-2 focus:ring-[#2d254d]/20 transition shadow-2xs"
+                          className="h-11 w-10 sm:h-12 sm:w-11 rounded-md border border-neutral-300 bg-white text-center font-display text-lg font-bold text-ink outline-none focus:border-[#2d254d] focus:ring-2 focus:ring-[#2d254d]/20 transition shadow-2xs"
                         />
                       ))}
                     </div>
@@ -502,7 +502,7 @@ export default function AuthPage({ mode }: AuthPageProps) {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full rounded-xl bg-[#2d254d] hover:bg-[#d4af37] text-[#FCF1D8] hover:text-[#2d254d] py-3 px-4 font-display text-xs sm:text-sm font-semibold uppercase tracking-[1.5px] transition-all duration-300 cursor-pointer shadow-sm active:scale-[0.99] disabled:opacity-70"
+                    className="w-full rounded-md bg-[#2d254d] hover:bg-[#d4af37] text-[#FCF1D8] hover:text-[#2d254d] py-3 px-4 font-display text-xs sm:text-sm font-semibold uppercase tracking-[1.5px] transition-all duration-300 cursor-pointer shadow-sm active:scale-[0.99] disabled:opacity-70"
                   >
                     {isSubmitting ? "VERIFYING..." : "VERIFY & PROCEED"}
                   </button>
@@ -524,7 +524,7 @@ export default function AuthPage({ mode }: AuthPageProps) {
             <div className="space-y-3">
               <form onSubmit={handleForgotSubmit} className="space-y-3">
                 {error && (
-                  <div className="rounded-xl bg-red-50 border border-red-200 px-3.5 py-2 text-xs text-red-600 font-sans">
+                  <div className="rounded-md bg-red-50 border border-red-200 px-3.5 py-2 text-xs text-red-600 font-sans">
                     {error}
                   </div>
                 )}
@@ -533,7 +533,7 @@ export default function AuthPage({ mode }: AuthPageProps) {
                   <label className="block font-sans text-xs font-medium text-neutral-700">
                     Email Address <span className="text-red-500">*</span>
                   </label>
-                  <div className="relative flex items-center rounded-xl border border-neutral-300 bg-white px-3.5 py-2.5 shadow-2xs focus-within:border-[#2d254d] focus-within:ring-2 focus-within:ring-[#2d254d]/15 transition">
+                  <div className="relative flex items-center rounded-md border border-neutral-300 bg-white px-3.5 py-2.5 shadow-2xs focus-within:border-[#2d254d] focus-within:ring-2 focus-within:ring-[#2d254d]/15 transition">
                     <IoMailOutline className="text-neutral-400 mr-2.5 size-4 shrink-0" />
                     <input
                       type="email"
@@ -548,7 +548,7 @@ export default function AuthPage({ mode }: AuthPageProps) {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full rounded-xl bg-[#2d254d] hover:bg-[#d4af37] text-[#FCF1D8] hover:text-[#2d254d] py-3 px-4 font-display text-xs sm:text-sm font-semibold uppercase tracking-[1.5px] transition-all duration-300 cursor-pointer shadow-sm active:scale-[0.99] disabled:opacity-70 mt-1"
+                  className="w-full rounded-md bg-[#2d254d] hover:bg-[#d4af37] text-[#FCF1D8] hover:text-[#2d254d] py-3 px-4 font-display text-xs sm:text-sm font-semibold uppercase tracking-[1.5px] transition-all duration-300 cursor-pointer shadow-sm active:scale-[0.99] disabled:opacity-70 mt-1"
                 >
                   {isSubmitting ? "SENDING..." : "SEND RESET LINK"}
                 </button>
@@ -568,11 +568,11 @@ export default function AuthPage({ mode }: AuthPageProps) {
             /*  REGULAR AUTH VIEW (SIGNUP / LOGIN) */
             <>
               {/* Route Switcher Tabs: /signup vs /login */}
-              <div className="relative p-1 bg-neutral-100 rounded-full flex items-center mb-3 sm:mb-3.5 select-none w-full border border-neutral-200/80">
+              <div className="relative p-1 bg-neutral-100 rounded-md flex items-center mb-3 sm:mb-3.5 select-none w-full border border-neutral-200/80">
                 <Link
                   href="/signup"
                   scroll={false}
-                  className={`w-1/2 py-1.5 sm:py-2 text-center font-display text-xs sm:text-sm font-semibold rounded-full transition-all duration-200 ${
+                  className={`w-1/2 py-1.5 sm:py-2 text-center font-display text-xs sm:text-sm font-semibold rounded-md transition-all duration-200 ${
                     !isLogin
                       ? "bg-white text-[#111111] shadow-xs"
                       : "text-neutral-500 hover:text-[#111111]"
@@ -583,7 +583,7 @@ export default function AuthPage({ mode }: AuthPageProps) {
                 <Link
                   href="/login"
                   scroll={false}
-                  className={`w-1/2 py-1.5 sm:py-2 text-center font-display text-xs sm:text-sm font-semibold rounded-full transition-all duration-200 ${
+                  className={`w-1/2 py-1.5 sm:py-2 text-center font-display text-xs sm:text-sm font-semibold rounded-md transition-all duration-200 ${
                     isLogin
                       ? "bg-white text-[#111111] shadow-xs"
                       : "text-neutral-500 hover:text-[#111111]"
@@ -597,7 +597,7 @@ export default function AuthPage({ mode }: AuthPageProps) {
                 /* LOGIN FORM ONLY */
                 <form onSubmit={handleSubmit} className="space-y-2.5 sm:space-y-3">
                   {error && (
-                    <div className="rounded-xl bg-red-50 border border-red-200 px-3.5 py-1.5 text-xs text-red-600 font-sans">
+                    <div className="rounded-md bg-red-50 border border-red-200 px-3.5 py-1.5 text-xs text-red-600 font-sans">
                       {error}
                     </div>
                   )}
@@ -607,7 +607,7 @@ export default function AuthPage({ mode }: AuthPageProps) {
                     <label className="block font-sans text-xs font-medium text-neutral-700">
                       Email Address <span className="text-red-500">*</span>
                     </label>
-                    <div className="relative flex items-center rounded-xl border border-neutral-300 bg-white px-3.5 py-2 sm:py-2.5 shadow-2xs focus-within:border-[#2d254d] focus-within:ring-2 focus-within:ring-[#2d254d]/15 transition">
+                    <div className="relative flex items-center rounded-md border border-neutral-300 bg-white px-3.5 py-2 sm:py-2.5 shadow-2xs focus-within:border-[#2d254d] focus-within:ring-2 focus-within:ring-[#2d254d]/15 transition">
                       <IoMailOutline className="text-neutral-400 mr-2.5 size-4 shrink-0" />
                       <input
                         type="email"
@@ -632,7 +632,7 @@ export default function AuthPage({ mode }: AuthPageProps) {
                         Forgot password?
                       </Link>
                     </div>
-                    <div className="relative flex items-center rounded-xl border border-neutral-300 bg-white px-3.5 py-2 sm:py-2.5 shadow-2xs focus-within:border-[#2d254d] focus-within:ring-2 focus-within:ring-[#2d254d]/15 transition">
+                    <div className="relative flex items-center rounded-md border border-neutral-300 bg-white px-3.5 py-2 sm:py-2.5 shadow-2xs focus-within:border-[#2d254d] focus-within:ring-2 focus-within:ring-[#2d254d]/15 transition">
                       <IoLockClosedOutline className="text-neutral-400 mr-2.5 size-4 shrink-0" />
                       <input
                         type={showPassword ? "text" : "password"}
@@ -663,7 +663,7 @@ export default function AuthPage({ mode }: AuthPageProps) {
                       id="login-remember"
                       checked={rememberMe}
                       onChange={(e) => setRememberMe(e.target.checked)}
-                      className="size-3.5 rounded border-neutral-300 accent-[#2d254d] cursor-pointer"
+                      className="size-3.5 rounded-md border-neutral-300 accent-[#2d254d] cursor-pointer"
                     />
                     <label
                       htmlFor="login-remember"
@@ -677,7 +677,7 @@ export default function AuthPage({ mode }: AuthPageProps) {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full rounded-xl bg-[#2d254d] hover:bg-[#d4af37] text-[#FCF1D8] hover:text-[#2d254d] py-3 px-4 font-display text-xs sm:text-sm font-semibold uppercase tracking-[1.5px] transition-all duration-300 cursor-pointer shadow-sm active:scale-[0.99] disabled:opacity-70 mt-1"
+                    className="w-full rounded-md bg-[#2d254d] hover:bg-[#d4af37] text-[#FCF1D8] hover:text-[#2d254d] py-3 px-4 font-display text-xs sm:text-sm font-semibold uppercase tracking-[1.5px] transition-all duration-300 cursor-pointer shadow-sm active:scale-[0.99] disabled:opacity-70 mt-1"
                   >
                     {isSubmitting ? "SIGNING IN..." : "SIGN IN"}
                   </button>
@@ -686,7 +686,7 @@ export default function AuthPage({ mode }: AuthPageProps) {
                 /* ================= SIGNUP FORM ONLY ================= */
                 <form onSubmit={handleSubmit} className="space-y-2.5">
                   {error && (
-                    <div className="rounded-xl bg-red-50 border border-red-200 px-3 py-1 text-xs text-red-600 font-sans">
+                    <div className="rounded-md bg-red-50 border border-red-200 px-3 py-1 text-xs text-red-600 font-sans">
                       {error}
                     </div>
                   )}
@@ -697,7 +697,7 @@ export default function AuthPage({ mode }: AuthPageProps) {
                       <label className="block font-sans text-xs font-medium text-neutral-700">
                         Full Name <span className="text-red-500">*</span>
                       </label>
-                      <div className="relative flex items-center rounded-xl border border-neutral-300 bg-white px-3 py-2 shadow-2xs focus-within:border-[#2d254d] focus-within:ring-2 focus-within:ring-[#2d254d]/15 transition">
+                      <div className="relative flex items-center rounded-md border border-neutral-300 bg-white px-3 py-2 shadow-2xs focus-within:border-[#2d254d] focus-within:ring-2 focus-within:ring-[#2d254d]/15 transition">
                         <IoPersonOutline className="text-neutral-400 mr-2 size-4 shrink-0" />
                         <input
                           type="text"
@@ -713,7 +713,7 @@ export default function AuthPage({ mode }: AuthPageProps) {
                       <label className="block font-sans text-xs font-medium text-neutral-700">
                         Mobile Number <span className="text-red-500">*</span>
                       </label>
-                      <div className="relative flex items-center rounded-xl border border-neutral-300 bg-white px-3 py-2 shadow-2xs focus-within:border-[#2d254d] focus-within:ring-2 focus-within:ring-[#2d254d]/15 transition">
+                      <div className="relative flex items-center rounded-md border border-neutral-300 bg-white px-3 py-2 shadow-2xs focus-within:border-[#2d254d] focus-within:ring-2 focus-within:ring-[#2d254d]/15 transition">
                         <IoCallOutline className="text-neutral-400 mr-1.5 size-4 shrink-0" />
                         <span className="font-sans text-xs font-medium text-neutral-500 mr-1.5 border-r border-neutral-200 pr-1.5">
                           +91
@@ -734,7 +734,7 @@ export default function AuthPage({ mode }: AuthPageProps) {
                     <label className="block font-sans text-xs font-medium text-neutral-700">
                       Email Address <span className="text-red-500">*</span>
                     </label>
-                    <div className="relative flex items-center rounded-xl border border-neutral-300 bg-white px-3 py-2 shadow-2xs focus-within:border-[#2d254d] focus-within:ring-2 focus-within:ring-[#2d254d]/15 transition">
+                    <div className="relative flex items-center rounded-md border border-neutral-300 bg-white px-3 py-2 shadow-2xs focus-within:border-[#2d254d] focus-within:ring-2 focus-within:ring-[#2d254d]/15 transition">
                       <IoMailOutline className="text-neutral-400 mr-2 size-4 shrink-0" />
                       <input
                         type="email"
@@ -752,7 +752,7 @@ export default function AuthPage({ mode }: AuthPageProps) {
                       <label className="block font-sans text-xs font-medium text-neutral-700">
                         Password <span className="text-red-500">*</span>
                       </label>
-                      <div className="relative flex items-center rounded-xl border border-neutral-300 bg-white px-2.5 py-2 shadow-2xs focus-within:border-[#2d254d] focus-within:ring-2 focus-within:ring-[#2d254d]/15 transition">
+                      <div className="relative flex items-center rounded-md border border-neutral-300 bg-white px-2.5 py-2 shadow-2xs focus-within:border-[#2d254d] focus-within:ring-2 focus-within:ring-[#2d254d]/15 transition">
                         <IoLockClosedOutline className="text-neutral-400 mr-1.5 size-4 shrink-0" />
                         <input
                           type={showPassword ? "text" : "password"}
@@ -776,7 +776,7 @@ export default function AuthPage({ mode }: AuthPageProps) {
                       <label className="block font-sans text-xs font-medium text-neutral-700">
                         Confirm Password <span className="text-red-500">*</span>
                       </label>
-                      <div className="relative flex items-center rounded-xl border border-neutral-300 bg-white px-2.5 py-2 shadow-2xs focus-within:border-[#2d254d] focus-within:ring-2 focus-within:ring-[#2d254d]/15 transition">
+                      <div className="relative flex items-center rounded-md border border-neutral-300 bg-white px-2.5 py-2 shadow-2xs focus-within:border-[#2d254d] focus-within:ring-2 focus-within:ring-[#2d254d]/15 transition">
                         <IoLockClosedOutline className="text-neutral-400 mr-1.5 size-4 shrink-0" />
                         <input
                           type={showConfirmPassword ? "text" : "password"}
@@ -799,7 +799,7 @@ export default function AuthPage({ mode }: AuthPageProps) {
 
                   {/* Live Password Requirements checklist */}
                   {password.length > 0 && (
-                    <div className="p-2 sm:p-2.5 rounded-xl bg-neutral-50 border border-neutral-200/90 text-[11px] font-sans space-y-1 animate-in fade-in duration-200">
+                    <div className="p-2 sm:p-2.5 rounded-md bg-neutral-50 border border-neutral-200/90 text-[11px] font-sans space-y-1 animate-in fade-in duration-200">
                       <div className="flex items-center justify-between text-[10px] font-semibold uppercase tracking-wider text-neutral-500">
                         <span>Password Requirements</span>
                         <span className={isPasswordValid ? "text-emerald-600 font-bold" : "text-neutral-400"}>
@@ -833,7 +833,7 @@ export default function AuthPage({ mode }: AuthPageProps) {
                       id="signup-terms"
                       checked={agreedTerms}
                       onChange={(e) => setAgreedTerms(e.target.checked)}
-                      className="size-3.5 mt-0.5 rounded border-neutral-300 accent-[#2d254d] cursor-pointer"
+                      className="size-3.5 mt-0.5 rounded-md border-neutral-300 accent-[#2d254d] cursor-pointer"
                     />
                     <label
                       htmlFor="signup-terms"
@@ -863,7 +863,7 @@ export default function AuthPage({ mode }: AuthPageProps) {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full rounded-xl bg-[#2d254d] hover:bg-[#d4af37] text-[#FCF1D8] hover:text-[#2d254d] py-3 px-4 font-display text-xs sm:text-sm font-semibold uppercase tracking-[1.5px] transition-all duration-300 cursor-pointer shadow-sm active:scale-[0.99] disabled:opacity-70 mt-1"
+                    className="w-full rounded-md bg-[#2d254d] hover:bg-[#d4af37] text-[#FCF1D8] hover:text-[#2d254d] py-3 px-4 font-display text-xs sm:text-sm font-semibold uppercase tracking-[1.5px] transition-all duration-300 cursor-pointer shadow-sm active:scale-[0.99] disabled:opacity-70 mt-1"
                   >
                     {isSubmitting ? "PROCESSING..." : "CREATE ACCOUNT"}
                   </button>

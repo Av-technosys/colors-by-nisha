@@ -907,21 +907,21 @@ export default function DashboardPage() {
   };
 
   return (
-    <main className="min-h-screen bg-[#faf9f6]/80 py-8 md:py-14">
-      <div className="mx-auto w-full max-w-[1240px] px-4 sm:px-6 lg:px-8">
+    <main className="min-h-screen bg-[#faf9f6]/80 py-10 md:py-14">
+      <div className="mx-auto w-[calc(100%-2rem)] max-w-[1328px] md:w-full">
         {/* Top Header Row matching Reference Image */}
         <div className="flex items-center justify-between pb-8 md:pb-12 border-b border-neutral-200/70">
           <div>
-            <h1 className="font-display text-2xl md:text-3xl font-bold tracking-tight text-[#111111]">
+            <h1 className="font-display text-3xl font-normal leading-tight tracking-normal md:text-4xl text-[#111111]">
               Colorsbynishavijay
             </h1>
-            <p className="mt-1 font-sans text-xs md:text-sm text-neutral-500">
+            <p className="mt-1 font-sans text-sm md:text-[15px] text-neutral-500">
               Manage your personal account details and preferences
             </p>
           </div>
 
           {/* Profile Circle Icon (Matches Reference Image) */}
-          <div className="size-11 md:size-12 rounded-full bg-white border border-neutral-200 shadow-2xs flex items-center justify-center text-neutral-700">
+          <div className="size-11 md:size-12 rounded-md bg-white border border-neutral-200 shadow-2xs flex items-center justify-center text-neutral-700">
             <IoPersonCircleOutline size={32} className="text-neutral-700" />
           </div>
         </div>
@@ -938,7 +938,7 @@ export default function DashboardPage() {
               <button
                 type="button"
                 onClick={() => setActivePolicy("privacy")}
-                className="w-full flex items-center justify-between text-left px-3.5 py-3 rounded-xl font-sans text-[15px] font-medium text-neutral-700 hover:text-black hover:bg-white hover:shadow-2xs transition-all cursor-pointer group"
+                className="w-full flex items-center justify-between text-left px-3.5 py-3 rounded-md font-sans text-[15px] font-medium text-neutral-700 hover:text-black hover:bg-white hover:shadow-2xs transition-all cursor-pointer group"
               >
                 <div className="flex items-center gap-2.5">
                   <IoShieldCheckmarkOutline className="text-neutral-400 group-hover:text-[#2d254d] transition-colors" />
@@ -953,7 +953,7 @@ export default function DashboardPage() {
               <button
                 type="button"
                 onClick={() => setActivePolicy("terms")}
-                className="w-full flex items-center justify-between text-left px-3.5 py-3 rounded-xl font-sans text-[15px] font-medium text-neutral-700 hover:text-black hover:bg-white hover:shadow-2xs transition-all cursor-pointer group"
+                className="w-full flex items-center justify-between text-left px-3.5 py-3 rounded-md font-sans text-[15px] font-medium text-neutral-700 hover:text-black hover:bg-white hover:shadow-2xs transition-all cursor-pointer group"
               >
                 <div className="flex items-center gap-2.5">
                   <IoDocumentTextOutline className="text-neutral-400 group-hover:text-[#2d254d] transition-colors" />
@@ -968,7 +968,7 @@ export default function DashboardPage() {
               <button
                 type="button"
                 onClick={() => setActivePolicy("refund")}
-                className="w-full flex items-center justify-between text-left px-3.5 py-3 rounded-xl font-sans text-[15px] font-medium text-neutral-700 hover:text-black hover:bg-white hover:shadow-2xs transition-all cursor-pointer group"
+                className="w-full flex items-center justify-between text-left px-3.5 py-3 rounded-md font-sans text-[15px] font-medium text-neutral-700 hover:text-black hover:bg-white hover:shadow-2xs transition-all cursor-pointer group"
               >
                 <div className="flex items-center gap-2.5">
                   <IoRefreshOutline className="text-neutral-400 group-hover:text-[#2d254d] transition-colors" />
@@ -983,7 +983,7 @@ export default function DashboardPage() {
               <button
                 type="button"
                 onClick={() => setActivePolicy("customization")}
-                className="w-full flex items-center justify-between text-left px-3.5 py-3 rounded-xl font-sans text-[15px] font-medium text-neutral-700 hover:text-black hover:bg-white hover:shadow-2xs transition-all cursor-pointer group"
+                className="w-full flex items-center justify-between text-left px-3.5 py-3 rounded-md font-sans text-[15px] font-medium text-neutral-700 hover:text-black hover:bg-white hover:shadow-2xs transition-all cursor-pointer group"
               >
                 <div className="flex items-center gap-2.5">
                   <IoColorPaletteOutline className="text-neutral-400 group-hover:text-[#2d254d] transition-colors" />
@@ -1008,14 +1008,14 @@ export default function DashboardPage() {
                 <button
                   type="button"
                   onClick={handleOpenEditProfile}
-                  className="font-sans text-xs md:text-sm font-semibold text-[#2d254d] hover:text-[#d4af37] px-3.5 py-1.5 rounded-lg border border-neutral-300 hover:border-[#2d254d] bg-white transition-all cursor-pointer shadow-2xs"
+                  className="font-sans text-xs md:text-sm font-semibold text-[#2d254d] hover:text-[#d4af37] px-3.5 py-1.5 rounded-md border border-neutral-300 hover:border-[#2d254d] bg-white transition-all cursor-pointer shadow-2xs"
                 >
                   Edit
                 </button>
               </div>
 
               {/* Pill Card for Contact */}
-              <div className="rounded-2xl border border-neutral-200/90 bg-white px-5 py-4 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div className="rounded-md border border-neutral-200/90 bg-white px-5 py-4 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                 <span className="font-sans text-xs md:text-sm text-neutral-400 font-medium select-none">
                   Email
                 </span>
@@ -1047,17 +1047,17 @@ export default function DashboardPage() {
                 <button
                   type="button"
                   onClick={() => setShowAddressModal(true)}
-                  className="font-sans text-xs md:text-sm font-semibold text-[#2d254d] hover:text-[#d4af37] px-3.5 py-1.5 rounded-lg border border-neutral-300 hover:border-[#2d254d] bg-white transition-all cursor-pointer shadow-2xs"
+                  className="font-sans text-xs md:text-sm font-semibold text-[#2d254d] hover:text-[#d4af37] px-3.5 py-1.5 rounded-md border border-neutral-300 hover:border-[#2d254d] bg-white transition-all cursor-pointer shadow-2xs"
                 >
                   Add
                 </button>
               </div>
 
               {/* Card for Addresses matching Image */}
-              <div className="rounded-2xl border border-neutral-200/90 bg-white px-5 py-4 shadow-2xs">
+              <div className="rounded-md border border-neutral-200/90 bg-white px-5 py-4 shadow-2xs">
                 {addresses.length === 0 ? (
                   <div className="flex items-center gap-3.5 text-neutral-400 py-1">
-                    <div className="size-8 rounded-full bg-neutral-100 flex items-center justify-center text-neutral-500 shrink-0">
+                    <div className="size-8 rounded-md bg-neutral-100 flex items-center justify-center text-neutral-500 shrink-0">
                       <IoLocationOutline size={18} />
                     </div>
                     <span className="font-sans text-sm md:text-[15px] text-neutral-500 font-normal">
@@ -1077,12 +1077,12 @@ export default function DashboardPage() {
                               {addr.firstName} {addr.lastName}
                             </span>
                             {addr.isDefault && (
-                              <span className="text-[10px] font-bold uppercase tracking-wider bg-[#2d254d]/10 text-[#2d254d] px-2 py-0.5 rounded-full">
+                              <span className="text-[10px] font-bold uppercase tracking-wider bg-[#2d254d]/10 text-[#2d254d] px-2 py-0.5 rounded-md">
                                 Default
                               </span>
                             )}
                           </div>
-                          <p className="font-sans text-xs md:text-sm text-neutral-600 leading-relaxed">
+                          <p className="font-sans text-sm md:text-[15px] text-neutral-600 leading-relaxed">
                             {addr.address}
                             {addr.apartment ? `, ${addr.apartment}` : ""},{" "}
                             {addr.city}, {addr.state} - {addr.pinCode}
@@ -1119,9 +1119,9 @@ export default function DashboardPage() {
                 Marketing preferences
               </h2>
 
-              <div className="rounded-2xl border border-neutral-200/90 bg-white px-5 py-4 shadow-2xs flex items-center justify-between">
+              <div className="rounded-md border border-neutral-200/90 bg-white px-5 py-4 shadow-2xs flex items-center justify-between">
                 <div className="flex items-center gap-3.5">
-                  <div className="size-8 rounded-full bg-neutral-100 flex items-center justify-center text-neutral-500 shrink-0">
+                  <div className="size-8 rounded-md bg-neutral-100 flex items-center justify-center text-neutral-500 shrink-0">
                     <IoMailOutline size={18} />
                   </div>
                   <span className="font-sans text-sm md:text-[15px] text-neutral-800 font-normal">
@@ -1135,13 +1135,13 @@ export default function DashboardPage() {
                   role="switch"
                   aria-checked={marketingEmail}
                   onClick={() => setMarketingEmail(!marketingEmail)}
-                  className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
+                  className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-md border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
                     marketingEmail ? "bg-[#2d254d]" : "bg-neutral-300"
                   }`}
                 >
                   <span
                     aria-hidden="true"
-                    className={`pointer-events-none inline-block size-5 transform rounded-full bg-white shadow-md ring-0 transition duration-200 ease-in-out ${
+                    className={`pointer-events-none inline-block size-5 transform rounded-md bg-white shadow-md ring-0 transition duration-200 ease-in-out ${
                       marketingEmail ? "translate-x-5" : "translate-x-0"
                     }`}
                   />
@@ -1154,7 +1154,7 @@ export default function DashboardPage() {
               <button
                 type="button"
                 onClick={handleSignOut}
-                className="rounded-lg border border-neutral-300 hover:border-black bg-white px-5 py-2 font-sans font-semibold text-neutral-800 hover:text-black transition-colors shadow-2xs cursor-pointer"
+                className="rounded-md border border-neutral-300 hover:border-black bg-white px-5 py-2 font-sans font-semibold text-neutral-800 hover:text-black transition-colors shadow-2xs cursor-pointer"
               >
                 Sign out
               </button>
@@ -1181,7 +1181,7 @@ export default function DashboardPage() {
           onClick={() => setShowEditProfileModal(false)}
         >
           <div
-            className="relative w-full max-w-[540px] bg-white rounded-3xl shadow-2xl p-6 md:p-8 space-y-6 border border-neutral-100 animate-in zoom-in-95 duration-200"
+            className="relative w-full max-w-[540px] bg-white rounded-md shadow-2xl p-6 md:p-8 space-y-6 border border-neutral-100 animate-in zoom-in-95 duration-200"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
@@ -1192,7 +1192,7 @@ export default function DashboardPage() {
               <button
                 type="button"
                 onClick={() => setShowEditProfileModal(false)}
-                className="size-8 rounded-full grid place-items-center text-neutral-400 hover:text-black hover:bg-neutral-100 transition cursor-pointer"
+                className="size-8 rounded-md grid place-items-center text-neutral-400 hover:text-black hover:bg-neutral-100 transition cursor-pointer"
                 aria-label="Close modal"
               >
                 <IoCloseOutline size={22} />
@@ -1203,7 +1203,7 @@ export default function DashboardPage() {
             <div className="space-y-3.5">
               {/* Row 1: First name & Last name */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div className="rounded-xl border border-neutral-300 focus-within:border-[#2d254d] focus-within:ring-2 focus-within:ring-[#2d254d]/20 px-3.5 py-3 transition">
+                <div className="rounded-md border border-neutral-300 focus-within:border-[#2d254d] focus-within:ring-2 focus-within:ring-[#2d254d]/20 px-3.5 py-3 transition">
                   <input
                     autoFocus
                     type="text"
@@ -1213,7 +1213,7 @@ export default function DashboardPage() {
                     className="w-full bg-transparent font-sans text-sm text-ink outline-none placeholder:text-neutral-400"
                   />
                 </div>
-                <div className="rounded-xl border border-neutral-300 focus-within:border-[#2d254d] focus-within:ring-2 focus-within:ring-[#2d254d]/20 px-3.5 py-3 transition">
+                <div className="rounded-md border border-neutral-300 focus-within:border-[#2d254d] focus-within:ring-2 focus-within:ring-[#2d254d]/20 px-3.5 py-3 transition">
                   <input
                     type="text"
                     value={editLastName}
@@ -1225,7 +1225,7 @@ export default function DashboardPage() {
               </div>
 
               {/* Row 2: Email input with small label */}
-              <div className="rounded-xl border border-neutral-300 focus-within:border-[#2d254d] focus-within:ring-2 focus-within:ring-[#2d254d]/20 px-3.5 py-2 transition">
+              <div className="rounded-md border border-neutral-300 focus-within:border-[#2d254d] focus-within:ring-2 focus-within:ring-[#2d254d]/20 px-3.5 py-2 transition">
                 <label className="block text-[11px] font-medium text-neutral-400 leading-tight">
                   Email
                 </label>
@@ -1251,7 +1251,7 @@ export default function DashboardPage() {
               <button
                 type="button"
                 onClick={handleSaveProfile}
-                className="rounded-xl border border-neutral-200 bg-white hover:bg-neutral-50 px-6 py-2.5 font-sans text-sm font-semibold text-neutral-800 transition cursor-pointer shadow-2xs"
+                className="rounded-md border border-neutral-200 bg-white hover:bg-neutral-50 px-6 py-2.5 font-sans text-sm font-semibold text-neutral-800 transition cursor-pointer shadow-2xs"
               >
                 Save
               </button>
@@ -1270,7 +1270,7 @@ export default function DashboardPage() {
           onClick={() => setShowAddressModal(false)}
         >
           <div
-            className="relative w-full max-w-[580px] bg-white rounded-3xl shadow-2xl p-6 md:p-8 space-y-4 border border-neutral-100 max-h-[90vh] overflow-y-auto no-scrollbar animate-in zoom-in-95 duration-200"
+            className="relative w-full max-w-[580px] bg-white rounded-md shadow-2xl p-6 md:p-8 space-y-4 border border-neutral-100 max-h-[90vh] overflow-y-auto no-scrollbar animate-in zoom-in-95 duration-200"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
@@ -1281,7 +1281,7 @@ export default function DashboardPage() {
               <button
                 type="button"
                 onClick={() => setShowAddressModal(false)}
-                className="size-8 rounded-full grid place-items-center text-neutral-400 hover:text-black hover:bg-neutral-100 transition cursor-pointer"
+                className="size-8 rounded-md grid place-items-center text-neutral-400 hover:text-black hover:bg-neutral-100 transition cursor-pointer"
                 aria-label="Close modal"
               >
                 <IoCloseOutline size={22} />
@@ -1291,7 +1291,7 @@ export default function DashboardPage() {
             {/* Form Fields matching Image 2 */}
             <div className="space-y-3">
               {/* Country/region */}
-              <div className="rounded-xl border border-neutral-300 focus-within:border-[#2d254d] px-3.5 py-2 transition">
+              <div className="rounded-md border border-neutral-300 focus-within:border-[#2d254d] px-3.5 py-2 transition">
                 <label className="block text-[11px] font-medium text-neutral-400 leading-tight">
                   Country/region
                 </label>
@@ -1318,7 +1318,7 @@ export default function DashboardPage() {
 
               {/* First name & Last name */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div className="rounded-xl border border-neutral-300 focus-within:border-[#2d254d] focus-within:ring-2 focus-within:ring-[#2d254d]/20 px-3.5 py-3 transition">
+                <div className="rounded-md border border-neutral-300 focus-within:border-[#2d254d] focus-within:ring-2 focus-within:ring-[#2d254d]/20 px-3.5 py-3 transition">
                   <input
                     type="text"
                     value={addrFirstName}
@@ -1327,7 +1327,7 @@ export default function DashboardPage() {
                     className="w-full bg-transparent font-sans text-sm text-ink outline-none placeholder:text-neutral-400"
                   />
                 </div>
-                <div className="rounded-xl border border-neutral-300 focus-within:border-[#2d254d] focus-within:ring-2 focus-within:ring-[#2d254d]/20 px-3.5 py-3 transition">
+                <div className="rounded-md border border-neutral-300 focus-within:border-[#2d254d] focus-within:ring-2 focus-within:ring-[#2d254d]/20 px-3.5 py-3 transition">
                   <input
                     type="text"
                     value={addrLastName}
@@ -1339,7 +1339,7 @@ export default function DashboardPage() {
               </div>
 
               {/* Address */}
-              <div className="rounded-xl border border-neutral-300 focus-within:border-[#2d254d] focus-within:ring-2 focus-within:ring-[#2d254d]/20 px-3.5 py-3 transition">
+              <div className="rounded-md border border-neutral-300 focus-within:border-[#2d254d] focus-within:ring-2 focus-within:ring-[#2d254d]/20 px-3.5 py-3 transition">
                 <input
                   type="text"
                   value={addrLine}
@@ -1350,7 +1350,7 @@ export default function DashboardPage() {
               </div>
 
               {/* Apartment, suite, etc (optional) */}
-              <div className="rounded-xl border border-neutral-300 focus-within:border-[#2d254d] focus-within:ring-2 focus-within:ring-[#2d254d]/20 px-3.5 py-3 transition">
+              <div className="rounded-md border border-neutral-300 focus-within:border-[#2d254d] focus-within:ring-2 focus-within:ring-[#2d254d]/20 px-3.5 py-3 transition">
                 <input
                   type="text"
                   value={addrApartment}
@@ -1362,7 +1362,7 @@ export default function DashboardPage() {
 
               {/* City, State, PIN code (3 columns) */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <div className="rounded-xl border border-neutral-300 focus-within:border-[#2d254d] focus-within:ring-2 focus-within:ring-[#2d254d]/20 px-3.5 py-3 transition">
+                <div className="rounded-md border border-neutral-300 focus-within:border-[#2d254d] focus-within:ring-2 focus-within:ring-[#2d254d]/20 px-3.5 py-3 transition">
                   <input
                     type="text"
                     value={addrCity}
@@ -1371,7 +1371,7 @@ export default function DashboardPage() {
                     className="w-full bg-transparent font-sans text-sm text-ink outline-none placeholder:text-neutral-400"
                   />
                 </div>
-                <div className="rounded-xl border border-neutral-300 focus-within:border-[#2d254d] px-3.5 py-2 transition">
+                <div className="rounded-md border border-neutral-300 focus-within:border-[#2d254d] px-3.5 py-2 transition">
                   <label className="block text-[11px] font-medium text-neutral-400 leading-tight">
                     State
                   </label>
@@ -1387,7 +1387,7 @@ export default function DashboardPage() {
                     ))}
                   </select>
                 </div>
-                <div className="rounded-xl border border-neutral-300 focus-within:border-[#2d254d] focus-within:ring-2 focus-within:ring-[#2d254d]/20 px-3.5 py-3 transition">
+                <div className="rounded-md border border-neutral-300 focus-within:border-[#2d254d] focus-within:ring-2 focus-within:ring-[#2d254d]/20 px-3.5 py-3 transition">
                   <input
                     type="text"
                     value={addrPinCode}
@@ -1399,7 +1399,7 @@ export default function DashboardPage() {
               </div>
 
               {/* Phone with dynamic country code and interactive flag dropdown */}
-              <div className="rounded-xl border border-neutral-300 focus-within:border-[#2d254d] px-3.5 py-2 flex items-center justify-between transition">
+              <div className="rounded-md border border-neutral-300 focus-within:border-[#2d254d] px-3.5 py-2 flex items-center justify-between transition">
                 <div className="flex-1">
                   <label className="block text-[11px] font-medium text-neutral-400 leading-tight">
                     Phone
@@ -1419,7 +1419,7 @@ export default function DashboardPage() {
                 </div>
 
                 {/* Country Flag Dropdown with all countries */}
-                <div className="relative flex items-center gap-1.5 pl-3 border-l border-neutral-200 text-neutral-700 cursor-pointer hover:bg-neutral-50 rounded-r-lg py-1 px-1 transition">
+                <div className="relative flex items-center gap-1.5 pl-3 border-l border-neutral-200 text-neutral-700 cursor-pointer hover:bg-neutral-50 rounded-r-md py-1 px-1 transition">
                   <span className="text-xl select-none">{addrPhoneFlag}</span>
                   <span className="text-[10px] text-neutral-400 select-none">▼</span>
                   <select
@@ -1472,7 +1472,7 @@ export default function DashboardPage() {
               <button
                 type="button"
                 onClick={handleSaveAddress}
-                className="rounded-xl border border-neutral-200 bg-white hover:bg-neutral-50 px-6 py-2.5 font-sans text-sm font-semibold text-neutral-800 transition cursor-pointer shadow-2xs"
+                className="rounded-md border border-neutral-200 bg-white hover:bg-neutral-50 px-6 py-2.5 font-sans text-sm font-semibold text-neutral-800 transition cursor-pointer shadow-2xs"
               >
                 Save
               </button>
@@ -1491,7 +1491,7 @@ export default function DashboardPage() {
           onClick={() => setActivePolicy(null)}
         >
           <div
-            className="relative w-full max-w-2xl bg-white rounded-2xl md:rounded-3xl shadow-2xl flex flex-col max-h-[85vh] overflow-hidden animate-in zoom-in-95 duration-200 border border-neutral-100"
+            className="relative w-full max-w-2xl bg-white rounded-md shadow-2xl flex flex-col max-h-[85vh] overflow-hidden animate-in zoom-in-95 duration-200 border border-neutral-100"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modal Header */}
@@ -1501,7 +1501,7 @@ export default function DashboardPage() {
               </h2>
               <button
                 onClick={() => setActivePolicy(null)}
-                className="size-9 rounded-full grid place-items-center text-neutral-500 hover:text-black hover:bg-neutral-100 transition-colors cursor-pointer"
+                className="size-9 rounded-md grid place-items-center text-neutral-500 hover:text-black hover:bg-neutral-100 transition-colors cursor-pointer"
                 aria-label="Close modal"
               >
                 <IoCloseOutline size={26} />

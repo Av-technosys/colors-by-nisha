@@ -23,6 +23,18 @@ export function ProductDetailsInfo({ product, variantId, onVariantChange, quanti
 
   const wishlisted = isWishlisted(product.slug);
   const details = product.details || {};
+  const shortDescription = product.shortDescription?.trim();
+  const specifications = [
+    { label: "No. of Components", value: details.noOfComponents },
+    { label: "Components", value: details.components },
+    { label: "Noteworthy Features", value: details.noteworthyFeatures },
+    { label: "Occasion", value: details.occasion },
+    { label: "Style", value: details.style },
+    { label: "Pattern", value: details.pattern },
+    { label: "Type of Work", value: details.typeOfWork || details.work },
+    { label: "Fabric", value: details.fabric },
+    { label: "Colour", value: details.colour },
+  ].filter(item => item.value);
 
   const handleAddToCart = () => {
     if (!product.inStock) return;
@@ -77,7 +89,7 @@ export function ProductDetailsInfo({ product, variantId, onVariantChange, quanti
   return (
     <div className="flex flex-col space-y-4">
       {/* Product Title */}
-      <h1 className="font-display text-2xl md:text-3xl lg:text-[32px] font-bold tracking-tight text-ink uppercase leading-tight">
+      <h1 className="font-display text-3xl font-normal leading-tight tracking-normal md:text-4xl text-ink uppercase">
         {product.name}
       </h1>
 
@@ -93,7 +105,6 @@ export function ProductDetailsInfo({ product, variantId, onVariantChange, quanti
         )}
       </div>
 
-      {product.shortDescription && <p className="whitespace-pre-line text-sm leading-relaxed text-neutral-700">{product.shortDescription}</p>}
       {!!product.variants?.length && <label className="space-y-2 text-sm">
         <span className="block font-medium">Choose an option</span>
         <select value={variantId} onChange={event => onVariantChange(event.target.value)} className="w-full rounded-md border border-neutral-300 bg-white p-3">
@@ -107,7 +118,7 @@ export function ProductDetailsInfo({ product, variantId, onVariantChange, quanti
         {/* Row: Pill Quantity, Navy ADD TO CART, Wishlist Heart */}
         <div className="flex items-center gap-3">
           {/* Pill Quantity Selector */}
-          <div className="flex items-center justify-between rounded-full bg-[#f4f4f4] px-4 py-2.5 w-[115px] md:w-[125px] shrink-0">
+          <div className="flex items-center justify-between rounded-md bg-[#f4f4f4] px-4 py-2.5 w-[115px] md:w-[125px] shrink-0">
             <button
               onClick={() => setQuantity(Math.max(1, quantity - 1))}
               className="text-base text-neutral-600 hover:text-ink font-medium px-1 cursor-pointer select-none"
@@ -139,7 +150,7 @@ export function ProductDetailsInfo({ product, variantId, onVariantChange, quanti
           {/* Circular Wishlist Button */}
           <button
             onClick={() => toggleWishlist(product.slug)}
-            className={`size-11 shrink-0 rounded-full border border-neutral-300 flex items-center justify-center transition-colors cursor-pointer ${
+            className={`size-11 shrink-0 rounded-md border border-neutral-300 flex items-center justify-center transition-colors cursor-pointer ${
               wishlisted
                 ? "border-red-400 bg-red-50 text-red-600"
                 : "bg-white text-neutral-600 hover:border-ink hover:text-ink"
@@ -170,7 +181,7 @@ export function ProductDetailsInfo({ product, variantId, onVariantChange, quanti
               setAgreedTerms(e.target.checked);
               if (e.target.checked) setTermsError(false);
             }}
-            className="size-4 rounded border-neutral-300 accent-[#2d254d] cursor-pointer"
+            className="size-4 rounded-md border-neutral-300 accent-[#2d254d] cursor-pointer"
           />
           <label htmlFor="terms-check" className="cursor-pointer select-none">
             I agree with <strong className="font-semibold text-ink">Terms & Conditions</strong>
@@ -184,7 +195,11 @@ export function ProductDetailsInfo({ product, variantId, onVariantChange, quanti
         <button
           disabled={!product.inStock}
           onClick={handleBuyItNow}
-          className="w-full rounded-md bg-[#dd8984] hover:bg-[#d07b76] py-3.5 px-6 font-display text-xs md:text-sm font-semibold text-white shadow-xs transition-colors cursor-pointer text-center tracking-wide"
+          className={`w-full rounded-md py-3.5 px-6 font-display text-xs md:text-sm font-semibold text-white shadow-xs transition-colors cursor-pointer text-center tracking-wide ${
+            agreedTerms && product.inStock
+              ? "bg-[#d0473e] hover:bg-[#b93c34]"
+              : "bg-[#dd8984] hover:bg-[#d07b76]"
+          }`}
         >
           Buy It Now
         </button>
@@ -228,98 +243,23 @@ export function ProductDetailsInfo({ product, variantId, onVariantChange, quanti
       {/* Divider */}
       <hr className="border-neutral-200 my-2" />
 
-      {/* Exact Bullet Specifications */}
-      <div className="space-y-2 text-xs md:text-sm text-neutral-700 leading-relaxed pt-1">
-        {details.noOfComponents && (
-          <div className="flex items-start gap-2">
-            <span className="text-neutral-400 font-bold">•</span>
-            <p>
-              <strong className="font-semibold text-ink">No. of Components:</strong>{" "}
-              {details.noOfComponents}
-            </p>
-          </div>
-        )}
-
-        {details.components && (
-          <div className="flex items-start gap-2">
-            <span className="text-neutral-400 font-bold">•</span>
-            <p>
-              <strong className="font-semibold text-ink">Components:</strong>{" "}
-              {details.components}
-            </p>
-          </div>
-        )}
-
-        {details.noteworthyFeatures && (
-          <div className="flex items-start gap-2">
-            <span className="text-neutral-400 font-bold">•</span>
-            <p>
-              <strong className="font-semibold text-ink">Noteworthy Features:</strong>{" "}
-              {details.noteworthyFeatures}
-            </p>
-          </div>
-        )}
-
-        {details.occasion && (
-          <div className="flex items-start gap-2">
-            <span className="text-neutral-400 font-bold">•</span>
-            <p>
-              <strong className="font-semibold text-ink">Occasion:</strong>{" "}
-              {details.occasion}
-            </p>
-          </div>
-        )}
-
-        {details.style && (
-          <div className="flex items-start gap-2">
-            <span className="text-neutral-400 font-bold">•</span>
-            <p>
-              <strong className="font-semibold text-ink">Style:</strong>{" "}
-              {details.style}
-            </p>
-          </div>
-        )}
-
-        {details.pattern && (
-          <div className="flex items-start gap-2">
-            <span className="text-neutral-400 font-bold">•</span>
-            <p>
-              <strong className="font-semibold text-ink">Pattern:</strong>{" "}
-              {details.pattern}
-            </p>
-          </div>
-        )}
-
-        {(details.typeOfWork || details.work) && (
-          <div className="flex items-start gap-2">
-            <span className="text-neutral-400 font-bold">•</span>
-            <p>
-              <strong className="font-semibold text-ink">Type of Work:</strong>{" "}
-              {details.typeOfWork || details.work}
-            </p>
-          </div>
-        )}
-
-        {details.fabric && (
-          <div className="flex items-start gap-2">
-            <span className="text-neutral-400 font-bold">•</span>
-            <p>
-              <strong className="font-semibold text-ink">Fabric:</strong>{" "}
-              {details.fabric}
-            </p>
-          </div>
-        )}
-
-        {details.colour && (
-          <div className="flex items-start gap-2">
-            <span className="text-neutral-400 font-bold">•</span>
-            <p>
-              <strong className="font-semibold text-ink">Colour:</strong>{" "}
-              {details.colour}
-            </p>
-          </div>
-        )}
-      </div>
+      {/* Short description */}
+      {(shortDescription || specifications.length > 0) && (
+        <div className="space-y-2 font-sans text-sm font-normal leading-[1.7] text-neutral-800 md:text-[15px]">
+          {shortDescription && (
+            <p className="whitespace-pre-line break-words">{shortDescription}</p>
+          )}
+          {specifications.length > 0 && (
+            <ul className="list-outside list-disc space-y-1 pl-5">
+              {specifications.map(item => (
+                <li key={item.label} className="break-words">
+                  {item.label}: {item.value}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      )}
 
       {/* Ask Question Modal */}
       {askModalOpen && (
@@ -331,7 +271,7 @@ export function ProductDetailsInfo({ product, variantId, onVariantChange, quanti
           aria-modal="true"
         >
           <div
-            className="relative w-full max-w-md rounded-lg bg-white p-6 shadow-2xl animate-in zoom-in-95 duration-200"
+            className="relative w-full max-w-md rounded-md bg-white p-6 shadow-2xl animate-in zoom-in-95 duration-200"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex justify-between items-center border-b border-neutral-100 pb-3">
@@ -355,13 +295,13 @@ export function ProductDetailsInfo({ product, variantId, onVariantChange, quanti
                 )}`}
                 target="_blank"
                 rel="noreferrer"
-                className="flex items-center justify-center gap-2 rounded bg-[#25D366] hover:bg-[#20ba59] py-3 px-4 text-xs font-semibold uppercase text-white shadow-xs transition"
+                className="flex items-center justify-center gap-2 rounded-md bg-[#25D366] hover:bg-[#20ba59] py-3 px-4 text-xs font-semibold uppercase text-white shadow-xs transition"
               >
                 Chat with Stylist on WhatsApp
               </a>
               <a
                 href="mailto:colorbynishavijay@gmail.com"
-                className="flex items-center justify-center gap-2 rounded border border-neutral-300 py-2.5 px-4 text-xs font-semibold uppercase text-neutral-700 hover:bg-neutral-50 transition"
+                className="flex items-center justify-center gap-2 rounded-md border border-neutral-300 py-2.5 px-4 text-xs font-semibold uppercase text-neutral-700 hover:bg-neutral-50 transition"
               >
                 Email: colorbynishavijay@gmail.com
               </a>

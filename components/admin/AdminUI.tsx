@@ -39,8 +39,8 @@ export function StatusBadge({ status }: { status: string }) {
   }
 
   return (
-    <span className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-full px-2.5 py-1 text-[10px] ${color}`}>
-      <span className="size-1 rounded-full bg-current" />
+    <span className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-md px-2.5 py-1 text-[10px] ${color}`}>
+      <span className="size-1 rounded-md bg-current" />
       {status}
     </span>
   );

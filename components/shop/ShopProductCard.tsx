@@ -51,7 +51,7 @@ export function ShopProductCard({ product, onQuickView }: ShopProductCardProps) 
   return (
     <article className="group relative flex flex-col text-center">
       {/* Media container */}
-      <div className="relative aspect-2/3 w-full overflow-hidden rounded bg-neutral-100 shadow-2xs">
+      <div className="relative aspect-2/3 w-full overflow-hidden rounded-md bg-neutral-100 shadow-2xs">
         <Link
           href={`/products/${product.slug}`}
           className="relative block size-full"
@@ -85,7 +85,7 @@ export function ShopProductCard({ product, onQuickView }: ShopProductCardProps) 
         {/* Badge */}
         {product.badge && (
           <span
-            className={`absolute left-2.5 top-2.5 z-10 rounded px-2 py-0.5 text-[10px] font-semibold tracking-wider uppercase text-white shadow-xs ${
+            className={`absolute left-2.5 top-2.5 z-10 rounded-md px-2 py-0.5 text-[10px] font-semibold tracking-wider uppercase text-white shadow-xs ${
               product.badge === "Sale" ? "bg-[#d0473e]" : "bg-neutral-800"
             }`}
           >
@@ -97,7 +97,7 @@ export function ShopProductCard({ product, onQuickView }: ShopProductCardProps) 
         <div className="absolute right-2.5 top-2.5 z-10 flex flex-col gap-1.5 transition-opacity">
           <button
             onClick={handleWishlist}
-            className={`grid size-8 md:size-9 place-items-center rounded-full bg-white shadow-md transition-all hover:scale-110 ${
+            className={`grid size-8 md:size-9 place-items-center rounded-md bg-white shadow-md transition-all hover:scale-110 ${
               wishlisted ? "text-[#d0473e]" : "text-neutral-700 hover:text-ink"
             }`}
             aria-label={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
@@ -123,7 +123,7 @@ export function ShopProductCard({ product, onQuickView }: ShopProductCardProps) 
           {onQuickView && (
             <button
               onClick={handleQuickView}
-              className="grid size-8 md:size-9 place-items-center rounded-full bg-white text-neutral-700 shadow-md transition-all duration-200 opacity-90 md:opacity-0 md:translate-y-1 md:group-hover:opacity-100 md:group-hover:translate-y-0 hover:text-ink hover:scale-110 active:scale-95 cursor-pointer"
+              className="grid size-8 md:size-9 place-items-center rounded-md bg-white text-neutral-700 shadow-md transition-all duration-200 opacity-90 md:opacity-0 md:translate-y-1 md:group-hover:opacity-100 md:group-hover:translate-y-0 hover:text-ink hover:scale-110 active:scale-95 cursor-pointer"
               aria-label={`Quick view ${product.name}`}
               title="Quick view"
             >
@@ -137,7 +137,7 @@ export function ShopProductCard({ product, onQuickView }: ShopProductCardProps) 
           <button
             onClick={handleQuickAdd}
             disabled={isAdding || !product.inStock}
-            className="w-full translate-y-2 rounded bg-white/95 backdrop-blur-xs py-2.5 px-3 font-display text-xs font-semibold uppercase tracking-wider text-ink shadow-md opacity-0 transition-all duration-200 group-hover:translate-y-0 group-hover:opacity-100 hover:bg-ink hover:text-white"
+            className="w-full translate-y-2 rounded-md bg-white/95 backdrop-blur-xs py-2.5 px-3 font-display text-xs font-semibold uppercase tracking-wider text-ink shadow-md opacity-0 transition-all duration-200 group-hover:translate-y-0 group-hover:opacity-100 hover:bg-ink hover:text-white"
           >
             {!product.inStock ? "Out of Stock" : isAdding ? "Adding..." : product.variants?.length ? "Choose Options" : "Add to Cart"}
           </button>
@@ -148,12 +148,12 @@ export function ShopProductCard({ product, onQuickView }: ShopProductCardProps) 
       <div className="mt-3.5 flex flex-col items-center">
         <Link
           href={`/products/${product.slug}`}
-          className="font-display text-[13px] md:text-sm font-medium tracking-wide uppercase text-ink hover:text-[#a66c40] transition-colors line-clamp-1"
+          className="font-display text-sm md:text-[15px] font-medium tracking-wide uppercase text-ink hover:text-[#a66c40] transition-colors line-clamp-1"
         >
           {product.name}
         </Link>
         <div className="mt-1 flex items-center justify-center gap-2">
-          <span className="font-display text-[13px] md:text-sm font-semibold text-ink">
+          <span className="font-display text-sm md:text-[15px] font-semibold text-ink">
             {formatINR(product.price)}
           </span>
           {product.originalPrice && (

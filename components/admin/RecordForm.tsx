@@ -46,7 +46,7 @@ export function RecordForm({ data, record, onSave, onClose }: RecordFormProps) {
             required
             maxLength={120}
             defaultValue={record?.title}
-            className="mt-2 min-h-11 w-full rounded-lg border border-[#e5e1da] bg-white px-3 text-xs outline-none focus:border-purple focus:ring-2 focus:ring-purple/10"
+            className="mt-2 min-h-11 w-full rounded-md border border-[#e5e1da] bg-white px-3 text-xs outline-none focus:border-purple focus:ring-2 focus:ring-purple/10"
           />
         </label>
         <label className="block text-xs text-neutral-500">
@@ -55,7 +55,7 @@ export function RecordForm({ data, record, onSave, onClose }: RecordFormProps) {
             name="subtitle"
             maxLength={160}
             defaultValue={record?.subtitle}
-            className="mt-2 min-h-11 w-full rounded-lg border border-[#e5e1da] bg-white px-3 text-xs outline-none focus:border-purple focus:ring-2 focus:ring-purple/10"
+            className="mt-2 min-h-11 w-full rounded-md border border-[#e5e1da] bg-white px-3 text-xs outline-none focus:border-purple focus:ring-2 focus:ring-purple/10"
           />
         </label>
 
@@ -68,7 +68,7 @@ export function RecordForm({ data, record, onSave, onClose }: RecordFormProps) {
                 required
                 maxLength={80}
                 defaultValue={record?.fields[column]}
-                className="mt-2 min-h-11 w-full rounded-lg border border-[#e5e1da] bg-white px-3 text-xs outline-none focus:border-purple focus:ring-2 focus:ring-purple/10"
+                className="mt-2 min-h-11 w-full rounded-md border border-[#e5e1da] bg-white px-3 text-xs outline-none focus:border-purple focus:ring-2 focus:ring-purple/10"
               />
             </label>
           ))}
@@ -77,7 +77,7 @@ export function RecordForm({ data, record, onSave, onClose }: RecordFormProps) {
             <select
               name="status"
               defaultValue={record?.status ?? "Draft"}
-              className="mt-2 min-h-11 w-full rounded-lg border border-[#e5e1da] bg-white px-3 text-xs outline-none focus:border-purple focus:ring-2 focus:ring-purple/10"
+              className="mt-2 min-h-11 w-full rounded-md border border-[#e5e1da] bg-white px-3 text-xs outline-none focus:border-purple focus:ring-2 focus:ring-purple/10"
             >
               {data.statuses.map(status => <option key={status}>{status}</option>)}
             </select>
@@ -90,13 +90,13 @@ export function RecordForm({ data, record, onSave, onClose }: RecordFormProps) {
             name="detail"
             rows={4}
             defaultValue={record?.detail}
-            className="mt-2 min-h-11 w-full rounded-lg border border-[#e5e1da] bg-white px-3 py-3 text-xs outline-none focus:border-purple focus:ring-2 focus:ring-purple/10"
+            className="mt-2 min-h-11 w-full rounded-md border border-[#e5e1da] bg-white px-3 py-3 text-xs outline-none focus:border-purple focus:ring-2 focus:ring-purple/10"
           />
         </label>
 
         <div className="flex justify-end gap-3 border-t border-neutral-100 pt-5">
-          <button type="button" onClick={onClose} className="rounded-lg px-4 text-xs text-neutral-500">Cancel</button>
-          <button type="submit" className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-purple px-4 font-display text-sm text-white transition-colors hover:bg-[#40345f]">
+          <button type="button" onClick={onClose} className="rounded-md px-4 text-xs text-neutral-500">Cancel</button>
+          <button type="submit" className="inline-flex min-h-11 items-center justify-center gap-2 rounded-md bg-purple px-4 font-display text-sm text-white transition-colors hover:bg-[#40345f]">
             Save {data.singular}
           </button>
         </div>

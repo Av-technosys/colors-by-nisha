@@ -56,7 +56,7 @@ export function ContactPageContent() {
   return (
     <div className="bg-white text-ink">
       {/* Top Breadcrumb & Page Heading (Identical font size, family & tracking to Shop & Home) */}
-      <section className="mx-auto max-w-[1360px] px-4 md:px-6 lg:px-8 pt-6 pb-6 md:pt-10 md:pb-8 text-center">
+      <section className="mx-auto w-[calc(100%-2rem)] max-w-[1328px] md:w-full pt-8 pb-6 md:pt-10 md:pb-8 text-center">
         {/* Breadcrumb: Home · Contact (text-xs font-medium matching Shop & PDP) */}
         <nav aria-label="Breadcrumb" className="mb-2">
           <ol className="inline-flex items-center gap-2 text-xs text-neutral-500 font-medium font-sans">
@@ -71,16 +71,16 @@ export function ContactPageContent() {
         </nav>
 
         {/* Title: Contact Us (font-display text-3xl md:text-4xl font-normal tracking-wide matching Shop "Products" title) */}
-        <h1 className="font-display text-3xl md:text-4xl font-normal tracking-wide text-ink">
+        <h1 className="font-display text-3xl font-normal leading-tight tracking-normal md:text-4xl text-ink">
           Contact Us
         </h1>
       </section>
 
       {/* Google Map Section with Interactive Location Card (Matches Screenshot 1) */}
-      <section className="mx-auto max-w-[1360px] px-4 md:px-6 lg:px-8 pb-12 md:pb-16">
-        <div className="relative overflow-hidden rounded-2xl md:rounded-3xl border border-neutral-200/90 shadow-sm bg-neutral-100">
+      <section className="mx-auto w-[calc(100%-2rem)] max-w-[1328px] md:w-full pb-10 md:pb-14">
+        <div className="relative overflow-hidden rounded-md border border-neutral-200/90 shadow-sm bg-neutral-100">
           {/* Floating Google Place Card */}
-          <div className="relative md:absolute md:top-5 md:left-5 z-10 m-3 md:m-0 max-w-sm rounded-xl bg-white/95 backdrop-blur-md p-4 shadow-xl border border-neutral-100/80">
+          <div className="relative md:absolute md:top-5 md:left-5 z-10 m-3 md:m-0 max-w-sm rounded-md bg-white/95 backdrop-blur-md p-4 shadow-xl border border-neutral-100/80">
             <div className="flex items-start justify-between gap-2">
               <div>
                 <h3 className="font-display font-semibold text-sm md:text-base text-ink capitalize tracking-tight">
@@ -135,22 +135,22 @@ export function ContactPageContent() {
       </section>
 
       {/* Two-Column Section: Support Customer & Contact Us Form (Matches Screenshot 2) */}
-      <section className="bg-[#eff8f8] py-12 md:py-16 border-t border-neutral-100">
-        <div className="mx-auto max-w-[1240px] px-4 md:px-6 lg:px-8">
+      <section className="bg-[#eff8f8] py-10 md:py-14 border-t border-neutral-100">
+        <div className="mx-auto w-[calc(100%-2rem)] max-w-[1328px] md:w-full">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-start">
             {/* Left Column: Support Customer */}
             <div className="lg:col-span-5 space-y-6">
               <div>
-                <h2 className="font-display text-2xl md:text-3xl font-semibold tracking-tight text-ink">
+                <h2 className="font-display text-2xl font-medium leading-tight tracking-normal md:text-3xl text-ink">
                   Support Customer
                 </h2>
-                <p className="mt-2 text-xs md:text-sm text-neutral-600 leading-relaxed font-sans">
+                <p className="mt-2 text-sm md:text-[15px] text-neutral-600 leading-relaxed font-sans">
                   Have a question? Please contact us using the customer support channels below.
                 </p>
               </div>
 
               {/* Customer Care Box */}
-              <div className="rounded-2xl bg-white/80 backdrop-blur-xs p-5 md:p-6 border border-white shadow-2xs space-y-3 font-sans">
+              <div className="rounded-md bg-white/80 backdrop-blur-xs p-5 md:p-6 border border-white shadow-2xs space-y-3 font-sans">
                 <h3 className="font-display text-xs font-semibold uppercase tracking-wider text-neutral-700">
                   Customer Care:
                 </h3>
@@ -187,7 +187,7 @@ export function ContactPageContent() {
                     href="https://wa.me/919799330455?text=Hi%20Colors%20by%20Nisha!%20I%20have%20a%20question%20regarding%20customer%20support."
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex items-center gap-2 rounded-full bg-[#25D366] hover:bg-[#20ba59] px-4 py-2 text-xs font-semibold text-white shadow-xs transition"
+                    className="inline-flex items-center gap-2 rounded-md bg-[#25D366] hover:bg-[#20ba59] px-4 py-2 text-xs font-semibold text-white shadow-xs transition"
                   >
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
                       <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2zm5.79 14.07c-.24.68-1.4 1.25-1.92 1.33-.5.08-1.15.11-3.69-.93-3.08-1.26-5.06-4.39-5.21-4.6-.15-.2-1.25-1.66-1.25-3.17 0-1.51.79-2.25 1.07-2.55.28-.3.61-.38.81-.38.2 0 .41 0 .59.01.19.01.44-.07.69.52.25.6.86 2.08.93 2.23.08.15.13.33.03.53-.1.2-.15.33-.3.51-.15.18-.32.4-.46.54-.15.15-.31.31-.13.62.18.3 1.06 1.75 2.28 2.84 1.57 1.4 2.89 1.83 3.3 2.03.41.2.65.18.89-.1.24-.28 1.03-1.2 1.3-1.61.28-.41.56-.35.94-.2.38.15 2.42 1.14 2.83 1.35.41.2.68.3.78.47.1.17.1.99-.14 1.67z" />
@@ -198,7 +198,7 @@ export function ContactPageContent() {
               </div>
 
               {/* Business Enquiry Box */}
-              <div className="rounded-2xl bg-white/80 backdrop-blur-xs p-5 md:p-6 border border-white shadow-2xs space-y-2 font-sans">
+              <div className="rounded-md bg-white/80 backdrop-blur-xs p-5 md:p-6 border border-white shadow-2xs space-y-2 font-sans">
                 <h3 className="font-display text-xs font-semibold uppercase tracking-wider text-neutral-700">
                   Business Enquiry:
                 </h3>
@@ -217,17 +217,17 @@ export function ContactPageContent() {
             {/* Right Column: Contact Us Form */}
             <div className="lg:col-span-7 space-y-6">
               <div>
-                <h2 className="font-display text-2xl md:text-3xl font-semibold tracking-tight text-ink">
+                <h2 className="font-display text-2xl font-medium leading-tight tracking-normal md:text-3xl text-ink">
                   Contact Us
                 </h2>
-                <p className="mt-2 text-xs md:text-sm text-neutral-600 leading-relaxed font-sans">
+                <p className="mt-2 text-sm md:text-[15px] text-neutral-600 leading-relaxed font-sans">
                   Please submit all general enquiries in the contact form below and we look forward to hearing from you soon.
                 </p>
               </div>
 
               {status === "success" ? (
-                <div className="rounded-2xl bg-white p-8 text-center border border-emerald-100 shadow-sm animate-in fade-in duration-300 font-sans">
-                  <div className="mx-auto size-14 rounded-full bg-emerald-50 text-emerald-600 grid place-items-center mb-4">
+                <div className="rounded-md bg-white p-8 text-center border border-emerald-100 shadow-sm animate-in fade-in duration-300 font-sans">
+                  <div className="mx-auto size-14 rounded-md bg-emerald-50 text-emerald-600 grid place-items-center mb-4">
                     <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                       <path d="M20 6L9 17l-5-5" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
@@ -264,7 +264,7 @@ export function ContactPageContent() {
                         placeholder="Your name"
                         value={formData.name}
                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                        className="w-full rounded-xl md:rounded-2xl border border-neutral-200/90 bg-white px-5 py-3.5 text-sm text-ink placeholder:text-neutral-400 focus:border-[#2d254d] focus:ring-1 focus:ring-[#2d254d] outline-none transition shadow-2xs font-sans"
+                        className="w-full rounded-md border border-neutral-200/90 bg-white px-5 py-3.5 text-sm text-ink placeholder:text-neutral-400 focus:border-[#2d254d] focus:ring-1 focus:ring-[#2d254d] outline-none transition shadow-2xs font-sans"
                       />
                     </div>
                     <div>
@@ -273,7 +273,7 @@ export function ContactPageContent() {
                         placeholder="Your Email"
                         value={formData.email}
                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                        className="w-full rounded-xl md:rounded-2xl border border-neutral-200/90 bg-white px-5 py-3.5 text-sm text-ink placeholder:text-neutral-400 focus:border-[#2d254d] focus:ring-1 focus:ring-[#2d254d] outline-none transition shadow-2xs font-sans"
+                        className="w-full rounded-md border border-neutral-200/90 bg-white px-5 py-3.5 text-sm text-ink placeholder:text-neutral-400 focus:border-[#2d254d] focus:ring-1 focus:ring-[#2d254d] outline-none transition shadow-2xs font-sans"
                       />
                     </div>
                   </div>
@@ -285,7 +285,7 @@ export function ContactPageContent() {
                       rows={6}
                       value={formData.message}
                       onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                      className="w-full rounded-2xl border border-neutral-200/90 bg-white px-5 py-4 text-sm text-ink placeholder:text-neutral-400 focus:border-[#2d254d] focus:ring-1 focus:ring-[#2d254d] outline-none transition shadow-2xs resize-none font-sans"
+                      className="w-full rounded-md border border-neutral-200/90 bg-white px-5 py-4 text-sm text-ink placeholder:text-neutral-400 focus:border-[#2d254d] focus:ring-1 focus:ring-[#2d254d] outline-none transition shadow-2xs resize-none font-sans"
                     />
                   </div>
 
@@ -296,7 +296,7 @@ export function ContactPageContent() {
                         type="checkbox"
                         checked={formData.agreedPrivacy}
                         onChange={(e) => setFormData({ ...formData, agreedPrivacy: e.target.checked })}
-                        className="size-4 rounded border-neutral-300 accent-[#2d254d] cursor-pointer"
+                        className="size-4 rounded-md border-neutral-300 accent-[#2d254d] cursor-pointer"
                       />
                       <span>
                         I agree to the{" "}

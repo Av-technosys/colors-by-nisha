@@ -104,15 +104,15 @@ export function HeroBanner({ onShop, paused = false }: { onShop: () => void; pau
             </motion.div>
           );
         })}
-        <button className="absolute left-6 top-1/2 z-10 hidden size-[46px] place-items-center rounded-full border border-white/40 bg-white/10 opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100 md:grid" aria-label="Previous slide" onClick={() => changeSlide((slide + slides.length - 1) % slides.length)}>
+        <button className="absolute left-6 top-1/2 z-10 hidden size-[46px] place-items-center rounded-md border border-white/40 bg-white/10 opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100 md:grid" aria-label="Previous slide" onClick={() => changeSlide((slide + slides.length - 1) % slides.length)}>
           <Icon name="arrow" style={{ transform: "rotate(180deg)" }} />
         </button>
-        <button className="absolute right-6 top-1/2 z-10 hidden size-[46px] place-items-center rounded-full border border-white/40 bg-white/10 opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100 md:grid" aria-label="Next slide" onClick={() => changeSlide((slide + 1) % slides.length)}>
+        <button className="absolute right-6 top-1/2 z-10 hidden size-[46px] place-items-center rounded-md border border-white/40 bg-white/10 opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100 md:grid" aria-label="Next slide" onClick={() => changeSlide((slide + 1) % slides.length)}>
           <Icon name="arrow" />
         </button>
         <div className="absolute bottom-[85px] left-1/2 z-10 flex -translate-x-1/2 gap-3 md:bottom-6">
           {slides.map((item, index) => (
-            <button className="size-1.5 rounded-full bg-white/45 transition-colors aria-current:bg-white aria-current:outline aria-current:outline-1 aria-current:outline-offset-8 aria-current:outline-white" key={item.image} onClick={() => changeSlide(index)} aria-label={`Show ${item.title}`} aria-current={slide === index} />
+            <button className="size-1.5 rounded-md bg-white/45 transition-colors aria-current:bg-white aria-current:outline aria-current:outline-1 aria-current:outline-offset-8 aria-current:outline-white" key={item.image} onClick={() => changeSlide(index)} aria-label={`Show ${item.title}`} aria-current={slide === index} />
           ))}
         </div>
       </section>

@@ -108,7 +108,7 @@ export function CartDrawer() {
         <div className="px-6 py-3.5 border-b border-neutral-100 bg-white">
           <div className="relative my-2">
             {/* Background track */}
-            <div className="h-1 w-full bg-neutral-200 rounded-full overflow-hidden">
+            <div className="h-1 w-full bg-neutral-200 rounded-md overflow-hidden">
               <div
                 className="h-full bg-[#1b7a4d] transition-all duration-500 ease-out"
                 style={{ width: `${progressPercent}%` }}
@@ -116,7 +116,7 @@ export function CartDrawer() {
             </div>
             {/* Truck Icon at tip of progress bar */}
             <div
-              className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 size-5 rounded-full border border-[#1b7a4d] bg-white flex items-center justify-center text-[#1b7a4d] shadow-2xs transition-all duration-500"
+              className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 size-5 rounded-md border border-[#1b7a4d] bg-white flex items-center justify-center text-[#1b7a4d] shadow-2xs transition-all duration-500"
               style={{ left: `${progressPercent}%` }}
             >
               <Truck size={10} strokeWidth={2.2} />
@@ -146,7 +146,7 @@ export function CartDrawer() {
         >
           {cart.length === 0 ? (
             <div className="flex h-full flex-col items-center justify-center text-center py-16">
-              <div className="mb-4 grid size-16 place-items-center rounded-full bg-neutral-100 text-neutral-400">
+              <div className="mb-4 grid size-16 place-items-center rounded-md bg-neutral-100 text-neutral-400">
                 <Package size={28} strokeWidth={1.5} />
               </div>
               <p className="font-display text-lg text-ink font-medium">Your shopping cart is empty</p>
@@ -287,12 +287,12 @@ export function CartDrawer() {
                   }}
                   rows={2}
                   placeholder="Special instructions or tailoring preferences..."
-                  className="w-full rounded border border-neutral-300 bg-white p-2 text-xs text-ink focus:border-ink focus:outline-none"
+                  className="w-full rounded-md border border-neutral-300 bg-white p-2 text-xs text-ink focus:border-ink focus:outline-none"
                 />
                 <button
                   type="button"
                   onClick={() => setNoteSaved(true)}
-                  className="rounded bg-neutral-800 px-3 py-1.5 text-[11px] font-semibold text-white hover:bg-neutral-900 transition"
+                  className="rounded-md bg-neutral-800 px-3 py-1.5 text-[11px] font-semibold text-white hover:bg-neutral-900 transition"
                 >
                   {noteSaved ? "Saved ✓" : "Save Note"}
                 </button>
@@ -311,7 +311,7 @@ export function CartDrawer() {
                     <select
                       value={country}
                       onChange={(e) => setCountry(e.target.value)}
-                      className="w-full rounded border border-neutral-300 bg-white p-1.5 text-xs text-ink"
+                      className="w-full rounded-md border border-neutral-300 bg-white p-1.5 text-xs text-ink"
                     >
                       <option value="India">India</option>
                       <option value="United States">United States</option>
@@ -329,7 +329,7 @@ export function CartDrawer() {
                       value={province}
                       onChange={(e) => setProvince(e.target.value)}
                       placeholder="State"
-                      className="w-full rounded border border-neutral-300 bg-white p-1.5 text-xs text-ink"
+                      className="w-full rounded-md border border-neutral-300 bg-white p-1.5 text-xs text-ink"
                     />
                   </div>
                 </div>
@@ -342,13 +342,13 @@ export function CartDrawer() {
                     value={postalCode}
                     onChange={(e) => setPostalCode(e.target.value)}
                     placeholder="e.g. 302021"
-                    className="w-full rounded border border-neutral-300 bg-white p-1.5 text-xs text-ink"
+                    className="w-full rounded-md border border-neutral-300 bg-white p-1.5 text-xs text-ink"
                   />
                 </div>
                 <button
                   type="button"
                   onClick={() => setShippingCalculated(true)}
-                  className="rounded bg-neutral-800 px-3 py-1.5 text-[11px] font-semibold text-white hover:bg-neutral-900 transition"
+                  className="rounded-md bg-neutral-800 px-3 py-1.5 text-[11px] font-semibold text-white hover:bg-neutral-900 transition"
                 >
                   Calculate
                 </button>
@@ -380,7 +380,7 @@ export function CartDrawer() {
                     setTermsAgreed(e.target.checked);
                     if (e.target.checked) setTermsError(false);
                   }}
-                  className="size-3.5 rounded border-neutral-300 text-purple focus:ring-purple cursor-pointer"
+                  className="size-3.5 rounded-md border-neutral-300 text-purple focus:ring-purple cursor-pointer"
                 />
                 <span>
                   I agree with{" "}

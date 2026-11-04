@@ -78,7 +78,7 @@ export function RecordsPage({ data }: { data: AdminPageData }) {
         title={data.title}
         description={data.description}
         action={data.canEdit && (
-          <button onClick={addRecord} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-purple px-4 font-display text-sm text-white transition-colors hover:bg-[#40345f]">
+          <button onClick={addRecord} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-md bg-purple px-4 font-display text-sm text-white transition-colors hover:bg-[#40345f]">
             <Plus size={17} aria-hidden="true" />
             Add {data.singular}
           </button>
@@ -86,17 +86,17 @@ export function RecordsPage({ data }: { data: AdminPageData }) {
       />
 
       {notice && (
-        <div role="status" className="mb-5 flex items-center justify-between gap-4 rounded-lg border border-[#dce7db] bg-[#edf4ed] px-4 py-3 text-xs text-[#517254]">
+        <div role="status" className="mb-5 flex items-center justify-between gap-4 rounded-md border border-[#dce7db] bg-[#edf4ed] px-4 py-3 text-xs text-[#517254]">
           {notice}
           <button onClick={() => setNotice("")} aria-label="Dismiss message"><X size={16} aria-hidden="true" /></button>
         </div>
       )}
 
-      <div className="overflow-hidden rounded-xl border border-[#e8e5df] bg-white">
+      <div className="overflow-hidden rounded-md border border-[#e8e5df] bg-white">
         <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#eeeae4] p-5">
           <div className="flex items-center gap-2.5">
             <h2 className="font-display text-lg">All {data.title.toLowerCase()}</h2>
-            <span className="rounded-full bg-[#f2eff6] px-2 py-0.5 text-[10px] text-purple">{records.length}</span>
+            <span className="rounded-md bg-[#f2eff6] px-2 py-0.5 text-[10px] text-purple">{records.length}</span>
           </div>
           <div className="flex w-full flex-wrap gap-2 sm:w-auto">
             <label className="relative min-w-0 flex-1 sm:w-60">
@@ -106,7 +106,7 @@ export function RecordsPage({ data }: { data: AdminPageData }) {
                 value={query}
                 onChange={event => { setQuery(event.target.value); setPage(1); }}
                 placeholder={`Search ${data.title.toLowerCase()}…`}
-                className="min-h-11 w-full rounded-lg border border-[#e5e1da] bg-white pl-9 pr-3 text-xs outline-none focus:border-purple focus:ring-2 focus:ring-purple/10"
+                className="min-h-11 w-full rounded-md border border-[#e5e1da] bg-white pl-9 pr-3 text-xs outline-none focus:border-purple focus:ring-2 focus:ring-purple/10"
               />
             </label>
             <label>
@@ -114,7 +114,7 @@ export function RecordsPage({ data }: { data: AdminPageData }) {
               <select
                 value={status}
                 onChange={event => { setStatus(event.target.value); setPage(1); }}
-                className="min-h-11 min-w-32 rounded-lg border border-[#e5e1da] bg-white px-3 text-xs outline-none focus:border-purple focus:ring-2 focus:ring-purple/10"
+                className="min-h-11 min-w-32 rounded-md border border-[#e5e1da] bg-white px-3 text-xs outline-none focus:border-purple focus:ring-2 focus:ring-purple/10"
               >
                 <option>All statuses</option>
                 {data.statuses.map(status => <option key={status}>{status}</option>)}
@@ -143,7 +143,7 @@ export function RecordsPage({ data }: { data: AdminPageData }) {
                           <Photo id={record.image} alt={record.title} />
                         </span>
                       ) : (
-                        <span className="grid size-10 shrink-0 place-items-center rounded-full bg-[#f1edf5] font-display text-sm text-[#8d7a9e]">
+                        <span className="grid size-10 shrink-0 place-items-center rounded-md bg-[#f1edf5] font-display text-sm text-[#8d7a9e]">
                           {record.title.replace(/^#/, "").split(" ").slice(0, 2).map(word => word[0]).join("")}
                         </span>
                       )}

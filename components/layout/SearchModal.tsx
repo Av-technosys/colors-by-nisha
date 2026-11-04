@@ -95,11 +95,11 @@ export function SearchModal() {
         aria-modal="true"
         aria-label="Search site"
       >
-        <div className="mx-auto w-full max-w-[1360px] px-4 md:px-6 lg:px-8 py-6 md:py-12 relative min-h-screen flex flex-col">
+        <div className="mx-auto w-[calc(100%-2rem)] max-w-[1328px] md:w-full py-6 md:py-12 relative min-h-screen flex flex-col">
           {/* Desktop Top-Right Close Button (Matches Desktop Screenshot) */}
           <button
             onClick={handleClose}
-            className="hidden md:grid absolute right-8 top-8 z-30 size-10 place-items-center rounded-full text-neutral-600 hover:text-black hover:bg-neutral-100 transition cursor-pointer"
+            className="hidden md:grid absolute right-8 top-8 z-30 size-10 place-items-center rounded-md text-neutral-600 hover:text-black hover:bg-neutral-100 transition cursor-pointer"
             aria-label="Close search"
           >
             <IoCloseOutline size={28} />
@@ -107,7 +107,7 @@ export function SearchModal() {
 
           {/* Title (Shown on Empty Search matching Image 1) */}
           {!normalizedQuery && (
-            <h1 className="text-center font-display text-[24px] md:text-[32px] font-normal text-[#111111] mb-5 md:mb-8 pt-2 md:pt-4">
+            <h1 className="text-center font-display text-3xl md:text-4xl font-normal leading-tight text-[#111111] mb-5 md:mb-8 pt-2 md:pt-4">
               Search Our Site
             </h1>
           )}
@@ -115,7 +115,7 @@ export function SearchModal() {
           {/* Search Input Bar (Pill Shape with mobile close button on the side) */}
           <div className="w-full max-w-[620px] mx-auto mb-6 md:mb-10">
             <form onSubmit={handleSearchSubmit} className="flex items-center gap-2.5">
-              <div className="relative flex-1 flex items-center rounded-full border border-neutral-300 focus-within:border-black bg-white px-4 md:px-5 py-2.5 md:py-3.5 shadow-xs transition-colors">
+              <div className="relative flex-1 flex items-center rounded-md border border-neutral-300 focus-within:border-black bg-white px-4 md:px-5 py-2.5 md:py-3.5 shadow-xs transition-colors">
                 <input
                   autoFocus
                   type="text"
@@ -150,7 +150,7 @@ export function SearchModal() {
               <button
                 type="button"
                 onClick={handleClose}
-                className="md:hidden size-10 shrink-0 grid place-items-center rounded-full text-neutral-600 hover:text-black hover:bg-neutral-100 transition cursor-pointer"
+                className="md:hidden size-10 shrink-0 grid place-items-center rounded-md text-neutral-600 hover:text-black hover:bg-neutral-100 transition cursor-pointer"
                 aria-label="Close search"
               >
                 <IoCloseOutline size={26} />
@@ -178,7 +178,7 @@ export function SearchModal() {
                         className="group flex flex-col text-center cursor-pointer"
                         onClick={() => handleProductClick(product)}
                       >
-                        <div className="relative aspect-2/3 w-full overflow-hidden rounded-xl bg-neutral-100 shadow-xs">
+                        <div className="relative aspect-2/3 w-full overflow-hidden rounded-md bg-neutral-100 shadow-xs">
                           <Image
                             src={
                               product.images[0] ||
@@ -206,7 +206,7 @@ export function SearchModal() {
                     <Link
                       href={`/shop?search=${encodeURIComponent(query)}`}
                       onClick={handleClose}
-                      className="inline-flex items-center justify-center bg-[#201a3c] hover:bg-[#d4af37] text-[#FCF1D8] hover:text-[#201a3c] font-display text-[14px] md:text-[15px] font-semibold uppercase tracking-[1.5px] px-8 py-3.5 rounded-[4px] transition-all duration-300 shadow-sm cursor-pointer"
+                      className="inline-flex items-center justify-center bg-[#201a3c] hover:bg-[#d4af37] text-[#FCF1D8] hover:text-[#201a3c] font-display text-[14px] md:text-[15px] font-semibold uppercase tracking-[1.5px] px-8 py-3.5 rounded-md transition-all duration-300 shadow-sm cursor-pointer"
                     >
                       VIEW ALL RESULTS
                     </Link>
