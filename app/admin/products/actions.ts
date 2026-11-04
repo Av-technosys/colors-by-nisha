@@ -1,5 +1,7 @@
 "use server";
 
+import { requireAdmin } from "@/helpers/auth/access";
+
 import { readCatalog } from "@/helpers/admin/catalog";
 import { getProductList } from "@/helpers/admin/products";
 
@@ -15,6 +17,7 @@ import { actionError, validateId, type ActionState } from "@/helpers/admin/valid
 import { slugify } from "@/helpers/admin/slugify";
 
 export async function saveProduct(_state: ActionState, form: FormData): Promise<ActionState> {
+  await requireAdmin();
   const removedKeys: string[] = [];
   try {
     const input = parseProduct(form);
@@ -97,6 +100,7 @@ export async function saveProduct(_state: ActionState, form: FormData): Promise<
 }
 
 export async function deleteProduct(id: string): Promise<ActionState> {
+  await requireAdmin();
   let keys: string[] = [];
   try {
     validateId(id);
@@ -120,6 +124,7 @@ export async function deleteProduct(id: string): Promise<ActionState> {
 }
 
 export async function loadProducts() {
+  await requireAdmin();
   return readCatalog(async () => {
     const rows = await getProductList();
     return { records: rows.map(product => ({

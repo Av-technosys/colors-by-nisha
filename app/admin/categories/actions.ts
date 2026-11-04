@@ -1,5 +1,7 @@
 "use server";
 
+import { requireAdmin } from "@/helpers/auth/access";
+
 import { readCatalog } from "@/helpers/admin/catalog";
 import { getCategoryList } from "@/helpers/admin/categories";
 
@@ -10,6 +12,7 @@ import { categories } from "@/lib/db/schema";
 import { actionError, requiredText, validateId, validateSlug, type ActionState } from "@/helpers/admin/validation";
 
 export async function saveCategory(_state: ActionState, form: FormData): Promise<{ success?: boolean; error?: string }> {
+  await requireAdmin();
   try {
     const id = String(form.get("id") ?? "");
     const values = {
@@ -37,6 +40,7 @@ export async function saveCategory(_state: ActionState, form: FormData): Promise
 }
 
 export async function deleteCategory(id: string): Promise<ActionState> {
+  await requireAdmin();
   try {
     validateId(id);
     const deleted = await db.delete(categories).where(eq(categories.id, id)).returning({ id: categories.id });
@@ -53,6 +57,7 @@ export async function deleteCategory(id: string): Promise<ActionState> {
 }
 
 export async function loadCategories() {
+  await requireAdmin();
   return readCatalog(async () => {
     const rows = await getCategoryList();
     return { records: rows.map(category => ({
