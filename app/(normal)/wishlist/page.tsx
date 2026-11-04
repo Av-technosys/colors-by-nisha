@@ -3,7 +3,7 @@
 import { QuickViewModal } from "@/components/shop/QuickViewModal";
 import { ProductCard } from "@/components/store/ProductCard";
 import { useStore } from "@/components/store/StoreContext";
-import { images, type Product } from "@/data/home";
+import { images, resolveHomeImage, type Product } from "@/data/home";
 import { productsData, type ProductItem } from "@/data/products";
 import { allCatalogProducts, getProductByName, addRecentlyViewed, getRecentlyViewed } from "@/lib/store";
 import Link from "next/link";
@@ -12,7 +12,7 @@ import { useEffect, useState, useSyncExternalStore } from "react";
 const noopSubscribe = () => () => {};
 
 export default function WishlistPage() {
-  const { wishlist, toggleWishlist } = useStore();
+  const { wishlist, toggleWishlist, addToCart, setCartOpen } = useStore();
   const [selectedProduct, setSelectedProduct] = useState<ProductItem | null>(null);
   const [allProducts, setAllProducts] = useState<ProductItem[]>(productsData);
   const [recentlyViewed, setRecentlyViewed] = useState<string[]>([]);
@@ -30,38 +30,46 @@ export default function WishlistPage() {
       .catch(() => {});
   }, []);
 
-  // Map wishlist strings to Product objects
+  // Map wishlist strings to Product objects with actual dynamic images
   const seenWishlist = new Set<string>();
   const wishlistProducts = wishlist
     .map((identifier) => {
-      // 1. Try finding in loaded products
+      // 1. Try finding in loaded products (db search or productsData)
       const lower = identifier.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-");
       const foundInAll = allProducts.find((p) => {
-        const pSlug = p.slug.toLowerCase().trim();
+        const pSlug = p.slug.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-");
         const pNameLower = p.name.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-");
         return pSlug === lower || pNameLower === lower;
       });
       if (foundInAll) {
+        const primaryImg = foundInAll.images?.[0] || "/product-placeholder.svg";
+        const secondaryImg = foundInAll.images?.[1] || primaryImg;
         return {
           name: foundInAll.name,
           price: foundInAll.price,
-          image: 30, // fallback id
+          image: 0,
+          imageSrc: primaryImg,
+          secondSrc: secondaryImg,
           slug: foundInAll.slug,
           productItem: foundInAll,
-        } as Product & { slug: string; productItem: ProductItem };
+        } as Product & { slug: string; productItem: ProductItem; imageSrc: string; secondSrc?: string };
       }
 
       // 2. Try catalog by name or slug
       const found = getProductByName(identifier);
       if (found) {
+        const primaryImg = found.imageSrc || resolveHomeImage(found.image) || "/product-placeholder.svg";
+        const secondaryImg = found.secondSrc || resolveHomeImage(found.second);
         return {
           ...found,
-          slug: found.name.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
-        } as Product & { slug: string; productItem?: ProductItem };
+          imageSrc: primaryImg,
+          secondSrc: secondaryImg,
+          slug: found.slug || found.name.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
+        } as Product & { slug: string; productItem?: ProductItem; imageSrc: string; secondSrc?: string };
       }
       return undefined;
     })
-    .filter((p): p is Product & { slug: string; productItem?: ProductItem } => {
+    .filter((p): p is Product & { slug: string; productItem?: ProductItem; imageSrc: string; secondSrc?: string } => {
       if (!p) return false;
       const key = p.name.trim().toUpperCase();
       if (seenWishlist.has(key)) return false;
@@ -71,8 +79,40 @@ export default function WishlistPage() {
 
   const seenRecent = new Set<string>();
   const recentlyViewedProducts = recentlyViewed
-    .map((name) => getProductByName(name))
-    .filter((p): p is Product => {
+    .map((name) => {
+      const lower = name.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-");
+      const foundInAll = allProducts.find((p) => {
+        const pSlug = p.slug.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-");
+        const pNameLower = p.name.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-");
+        return pSlug === lower || pNameLower === lower;
+      });
+      if (foundInAll) {
+        const primaryImg = foundInAll.images?.[0] || "/product-placeholder.svg";
+        const secondaryImg = foundInAll.images?.[1] || primaryImg;
+        return {
+          name: foundInAll.name,
+          price: foundInAll.price,
+          image: 0,
+          imageSrc: primaryImg,
+          secondSrc: secondaryImg,
+          slug: foundInAll.slug,
+          productItem: foundInAll,
+        } as Product & { slug: string; productItem?: ProductItem; imageSrc?: string; secondSrc?: string };
+      }
+      const found = getProductByName(name);
+      if (found) {
+        const primaryImg = found.imageSrc || resolveHomeImage(found.image) || "/product-placeholder.svg";
+        const secondaryImg = found.secondSrc || resolveHomeImage(found.second);
+        return {
+          ...found,
+          imageSrc: primaryImg,
+          secondSrc: secondaryImg,
+          slug: found.slug || found.name.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
+        } as Product & { slug: string; productItem?: ProductItem; imageSrc?: string; secondSrc?: string };
+      }
+      return undefined;
+    })
+    .filter((p): p is Product & { slug: string; productItem?: ProductItem; imageSrc?: string; secondSrc?: string } => {
       if (!p) return false;
       const key = p.name.trim().toUpperCase();
       if (seenRecent.has(key)) return false;
@@ -80,14 +120,14 @@ export default function WishlistPage() {
       return true;
     });
 
-  const handleOpenProduct = (product: Product & { slug?: string; productItem?: ProductItem }) => {
+  const handleOpenProduct = (product: Product & { slug?: string; productItem?: ProductItem; imageSrc?: string; secondSrc?: string }) => {
     addRecentlyViewed(product.name);
     if (product.productItem) {
       setSelectedProduct(product.productItem);
       return;
     }
-    const imgSrc = images[product.image] || "/product-placeholder.svg";
-    const secondSrc = product.second ? images[product.second] : undefined;
+    const imgSrc = product.imageSrc || resolveHomeImage(product.image) || "/product-placeholder.svg";
+    const secondSrc = product.secondSrc || resolveHomeImage(product.second);
     const imgs = [imgSrc, secondSrc].filter(Boolean) as string[];
     setSelectedProduct({
       id: String(product.name),
@@ -101,6 +141,19 @@ export default function WishlistPage() {
       description: "Handcrafted designer heirloom created with royal heritage craftsmanship.",
       variants: [{ id: "v1", name: "Free Size", stock: 10, price: product.price, images: imgs }],
     });
+  };
+
+  const handleAddToCart = (product: Product & { slug?: string; productItem?: ProductItem; imageSrc?: string }) => {
+    if (product.productItem) {
+      if (product.productItem.variants && product.productItem.variants.length > 1) {
+        handleOpenProduct(product);
+      } else {
+        addToCart(product.productItem, "Standard", 1);
+        setCartOpen(true);
+      }
+    } else {
+      handleOpenProduct(product);
+    }
   };
 
   return (
@@ -134,6 +187,7 @@ export default function WishlistPage() {
                   saved={wishlist}
                   toggleSave={() => toggleWishlist(product.slug || product.name)}
                   onSelect={() => handleOpenProduct(product)}
+                  onAddToCart={() => handleAddToCart(product)}
                   variant="wishlist"
                   className="w-full"
                 />
@@ -174,8 +228,9 @@ export default function WishlistPage() {
                   key={product.name}
                   product={product}
                   saved={wishlist}
-                  toggleSave={() => toggleWishlist(product.name)}
-                  onSelect={handleOpenProduct}
+                  toggleSave={() => toggleWishlist(product.slug || product.name)}
+                  onSelect={() => handleOpenProduct(product)}
+                  onAddToCart={() => handleAddToCart(product)}
                   className="w-full"
                 />
               ))}

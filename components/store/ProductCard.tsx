@@ -1,7 +1,9 @@
 "use client";
 
+import Image from "next/image";
+import Link from "next/link";
 import { Photo } from "@/components/ui/Photo";
-import { money, type Product } from "@/data/home";
+import { images, money, resolveHomeImage, type Product } from "@/data/home";
 import { addRecentlyViewed } from "@/lib/store";
 import {
   IoCloseOutline,
@@ -36,9 +38,25 @@ export function ProductCard({
   className,
   onAddToCart,
 }: ProductCardProps) {
-  const isSaved = saved.includes(product.name);
+  const isSaved = saved.some((item) => {
+    const itm = item.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-");
+    const pName = product.name.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-");
+    const pSlug = product.slug ? product.slug.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-") : "";
+    return itm === pName || (pSlug ? itm === pSlug : false);
+  });
+
+  const productSlug =
+    product.slug ||
+    product.name.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-");
 
   const handleSelect = () => {
+    addRecentlyViewed(product.name);
+    onSelect(product);
+  };
+
+  const handleQuickViewClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
     addRecentlyViewed(product.name);
     onSelect(product);
   };
@@ -55,8 +73,24 @@ export function ProductCard({
 
   const handleWishlistClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    toggleSave(product.name);
+    toggleSave(product.slug || product.name);
   };
+
+  const primarySrc =
+    product.imageSrc ||
+    resolveHomeImage(product.image) ||
+    "/product-placeholder.svg";
+
+  const secondarySrc =
+    product.secondSrc ||
+    resolveHomeImage(product.second);
+
+  const isPrimaryExternal =
+    typeof primarySrc === "string" &&
+    (primarySrc.startsWith("http") || primarySrc.startsWith("data:"));
+  const isSecondaryExternal =
+    typeof secondarySrc === "string" &&
+    (secondarySrc.startsWith("http") || secondarySrc.startsWith("data:"));
 
   const defaultClass = featured
     ? "basis-full md:basis-[calc((100%_-_32px)/3)] lg:basis-[calc((100%_-_40px)/3)]"
@@ -70,26 +104,50 @@ export function ProductCard({
       }`}
     >
       <div className="group relative aspect-2/3 overflow-hidden rounded-md bg-neutral-100 shadow-xs">
-        {/* Main Product Image Button */}
-        <button
+        {/* Main Product Image - Navigates directly to PDP */}
+        <Link
           tabIndex={duplicate ? -1 : undefined}
+          href={`/products/${productSlug}`}
+          onClick={() => addRecentlyViewed(product.name)}
           className="absolute inset-0 size-full cursor-pointer"
-          onClick={handleSelect}
           aria-label={`View ${product.name}`}
         >
-          <Photo
-            id={product.image}
-            alt={product.name}
-            className="transition-transform duration-700 group-hover:scale-[1.035] motion-reduce:transition-none motion-reduce:transform-none"
-          />
-          {product.second && (
+          {primarySrc ? (
+            <Image
+              src={primarySrc}
+              alt={product.name}
+              fill
+              sizes="(max-width: 767px) 100vw, 50vw"
+              unoptimized={isPrimaryExternal}
+              className="object-cover object-top transition-transform duration-700 group-hover:scale-[1.035] motion-reduce:transition-none motion-reduce:transform-none"
+            />
+          ) : (
             <Photo
-              id={product.second}
-              alt={`${product.name}, alternate view`}
-              className="opacity-0 transition duration-500 group-hover:scale-[1.035] motion-reduce:transition-none motion-reduce:transform-none group-hover:opacity-100"
+              id={product.image}
+              alt={product.name}
+              className="transition-transform duration-700 group-hover:scale-[1.035] motion-reduce:transition-none motion-reduce:transform-none"
             />
           )}
-        </button>
+
+          {secondarySrc ? (
+            <Image
+              src={secondarySrc}
+              alt={`${product.name}, alternate view`}
+              fill
+              sizes="(max-width: 767px) 100vw, 50vw"
+              unoptimized={isSecondaryExternal}
+              className="object-cover object-top opacity-0 transition duration-500 group-hover:scale-[1.035] motion-reduce:transition-none motion-reduce:transform-none group-hover:opacity-100"
+            />
+          ) : (
+            product.second && (
+              <Photo
+                id={product.second}
+                alt={`${product.name}, alternate view`}
+                className="opacity-0 transition duration-500 group-hover:scale-[1.035] motion-reduce:transition-none motion-reduce:transform-none group-hover:opacity-100"
+              />
+            )
+          )}
+        </Link>
 
         {/* Top-Right Action Buttons (Wishlist/Remove + Quick View) */}
         <div className="absolute right-2.5 top-2.5 md:right-3.5 md:top-3.5 z-20 flex flex-col gap-2">
@@ -136,12 +194,13 @@ export function ProductCard({
             </div>
           </div>
 
-          {/* 2. Quick View (Eye) Button */}
+          {/* 2. Quick View (Eye) Button - Exclusively opens Quick View Modal */}
           <div className="group/eye relative">
             <button
+              type="button"
               tabIndex={duplicate ? -1 : undefined}
               className="grid size-9 md:size-10 place-items-center rounded-md bg-white text-[#111111] shadow-[0_2px_8px_rgba(0,0,0,0.12)] hover:bg-[#111111] hover:text-white transition-all duration-200 cursor-pointer"
-              onClick={handleSelect}
+              onClick={handleQuickViewClick}
               aria-label={`Quick view ${product.name}`}
             >
               <IoEyeOutline size={20} />
@@ -169,14 +228,15 @@ export function ProductCard({
         </div>
       </div>
 
-      {/* Product Details (Title & Price) */}
-      <button
+      {/* Product Details - Product Name Navigates Directly to PDP */}
+      <Link
         tabIndex={duplicate ? -1 : undefined}
+        href={`/products/${productSlug}`}
+        onClick={() => addRecentlyViewed(product.name)}
         className="mt-3 font-display text-sm leading-snug md:mt-4 md:text-[15px] hover:text-purple transition-colors cursor-pointer text-ink font-medium"
-        onClick={handleSelect}
       >
         {product.name}
-      </button>
+      </Link>
       <p className="mt-1 font-sans text-sm text-neutral-700 md:text-[15px]">
         {money(product.price)}
       </p>

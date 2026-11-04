@@ -1,4 +1,4 @@
-export const images: Record<number, string> = {
+export const images: Record<string | number, string> = {
   "1": "/Home/images/001_colorsbynishavijay__IMG_4986.png",
   "2": "/Home/images/002_colorsbynishavijay__ChatGPT_Image_Jul_17__2026__11_10_27_AM-removebg-preview.png",
   "3": "/Home/images/003_crafted_for_grand_celebrations__banneronenisha.png",
@@ -78,7 +78,21 @@ export const videos: Record<number, string> = {
   "74": "/Home/videos/074_homepage_video_reference__a6ea90248c6146e4878a8a0f7823151e.HD-1080p-2.5Mbps-88900748.mp4"
 };
 
-export type Product = { name: string; price: number; image: number; second?: number };
+export type Product = {
+  name: string;
+  price: number;
+  image?: number | string;
+  second?: number | string;
+  imageSrc?: string;
+  secondSrc?: string;
+  slug?: string;
+};
+
+export function resolveHomeImage(id?: number | string): string | undefined {
+  if (id === undefined || id === null || id === "") return undefined;
+  if (typeof id === "string" && (id.startsWith("/") || id.startsWith("http"))) return id;
+  return images[id as any];
+}
 export const products: Product[] = [
   {
     "name": "NOORI",

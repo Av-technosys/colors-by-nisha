@@ -97,7 +97,7 @@ export const productsRelations = relations(products, ({ one, many }) => ({
     fields: [products.categoryId],
     references: [categories.id],
   }),
-  variants: many(productVariants),
+  variants: many(productVariants), 
   media: many(productMedia),
 }));
 
@@ -116,3 +116,17 @@ export const productMediaRelations = relations(productMedia, ({ one }) => ({
   }),
   variant: one(productVariants, { fields: [productMedia.variantId], references: [productVariants.id] }),
 }));
+
+// -----------------Contact Us table-----------------
+export const contactUs = pgTable("contact_us", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  name: varchar("name"),
+  email: varchar("email"),
+  phone: varchar("phone"),
+  message: text("message"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export type ContactUs = typeof contactUs.$inferSelect;
+export type NewContactUs = typeof contactUs.$inferInsert;
+ 

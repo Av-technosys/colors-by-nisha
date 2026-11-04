@@ -7,7 +7,7 @@ import type { CartItem } from "@/components/store/ProductDetails";
 import { StoreDialog, type DialogState } from "@/components/store/StoreDialog";
 import { useStore } from "@/components/store/StoreContext";
 import { QuickViewModal } from "@/components/shop/QuickViewModal";
-import { images, type Product } from "@/data/home";
+import { images, resolveHomeImage, type Product } from "@/data/home";
 import type { ProductItem } from "@/data/products";
 import { useCallback, useEffect, useState } from "react";
 import { CollectionSection } from "./CollectionSection";
@@ -38,8 +38,8 @@ export default function Storefront() {
   const closeDialog = useCallback(() => setDialog(null), []);
   const openPanel = (name: string) => setDialog({ kind: "panel", name });
   const openProduct = (product: Product) => {
-    const imgSrc = images[product.image] || "/product-placeholder.svg";
-    const secondSrc = product.second ? images[product.second] : undefined;
+    const imgSrc = product.imageSrc || resolveHomeImage(product.image) || "/product-placeholder.svg";
+    const secondSrc = product.secondSrc || resolveHomeImage(product.second);
     const imgs = [imgSrc, secondSrc].filter(Boolean) as string[];
     const item: ProductItem = {
       id: String(product.name),
@@ -60,7 +60,7 @@ export default function Storefront() {
   const toggleSave = (name: string) => toggleWishlist(name);
   const addToCart = (item: CartItem) => {
     setCart(current => [...current, item]);
-    const imgSrc = images[item.image] || "/product-placeholder.svg";
+    const imgSrc = resolveHomeImage(item.image) || (typeof item.image === "string" ? item.image : "/product-placeholder.svg");
     globalAddToCart({
       id: String(item.name),
       name: item.name,

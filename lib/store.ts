@@ -1,21 +1,36 @@
 "use client";
 
-import { handpicked, masterpieces, products, type Product } from "@/data/home";
+import { handpicked, resolveHomeImage, masterpieces, products, type Product } from "@/data/home";
 import { productsData } from "@/data/products";
 import { useEffect, useState, useSyncExternalStore } from "react";
 
 export const allCatalogProducts: Product[] = [
-  ...products,
-  ...masterpieces,
+  ...products.map((p) => ({
+    ...p,
+    imageSrc: resolveHomeImage(p.image),
+    secondSrc: resolveHomeImage(p.second),
+    slug: p.name.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
+  })),
+  ...masterpieces.map((p) => ({
+    ...p,
+    imageSrc: resolveHomeImage(p.image),
+    secondSrc: resolveHomeImage(p.second),
+    slug: p.name.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
+  })),
   ...handpicked.map((item) => ({
     name: item.name,
     price: item.price,
     image: item.image,
+    imageSrc: resolveHomeImage(item.image),
+    slug: item.name.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
   })),
   ...productsData.map((item) => ({
     name: item.name,
     price: item.price,
-    image: 30, // fallback image id
+    image: 0,
+    imageSrc: item.images?.[0] || "/product-placeholder.svg",
+    secondSrc: item.images?.[1],
+    slug: item.slug,
   })),
 ];
 
@@ -25,25 +40,28 @@ export function getProductByName(nameOrSlug: string): Product | undefined {
   const normalized = raw.toUpperCase();
   const slugified = raw.toLowerCase().replace(/[^a-z0-9]+/g, "-");
 
-  // First check data/home products
-  const fromHome = allCatalogProducts.find((p) => {
+  // First check allCatalogProducts
+  const fromCatalog = allCatalogProducts.find((p) => {
     const pName = p.name.trim().toUpperCase();
-    const pSlug = p.name.trim().toLowerCase().replace(/[^a-z0-9]+/g, "-");
+    const pSlug = (p.slug || p.name).trim().toLowerCase().replace(/[^a-z0-9]+/g, "-");
     return pName === normalized || pSlug === slugified;
   });
-  if (fromHome) return fromHome;
+  if (fromCatalog) return fromCatalog;
 
   // Then check data/products
   const fromProducts = productsData.find((p) => {
     const pName = p.name.trim().toUpperCase();
-    const pSlug = p.slug.trim().toLowerCase();
+    const pSlug = p.slug.trim().toLowerCase().replace(/[^a-z0-9]+/g, "-");
     return pName === normalized || pSlug === slugified;
   });
   if (fromProducts) {
     return {
       name: fromProducts.name,
       price: fromProducts.price,
-      image: 30,
+      image: 0,
+      imageSrc: fromProducts.images?.[0] || "/product-placeholder.svg",
+      secondSrc: fromProducts.images?.[1],
+      slug: fromProducts.slug,
     };
   }
 
