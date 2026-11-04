@@ -1,5 +1,7 @@
 "use server";
 
+import { requireAdmin } from "@/helpers/auth/access";
+
 import { readCatalog } from "@/helpers/admin/catalog";
 import { getBlogList } from "@/helpers/admin/blogs";
 import { getCategories } from "@/helpers/admin/categories";
@@ -20,6 +22,7 @@ function text(form: FormData, key: string) {
 }
 
 export async function saveBlogAction(form: FormData): Promise<MutationResult<{ id: string }>> {
+  await requireAdmin();
   const id = text(form, "id");
   const uploadToken = text(form, "imageUploadToken");
   const keepImage = text(form, "keepImage") === "true";
@@ -76,6 +79,7 @@ export async function saveBlogAction(form: FormData): Promise<MutationResult<{ i
 }
 
 export async function previewBlogContentAction(content: string): Promise<{ html?: string; error?: string }> {
+  await requireAdmin();
   if (typeof content !== "string" || content.length > MAX_BLOG_CONTENT_LENGTH) return { error: "Keep the article within 100,000 characters, including formatting." };
   const html = sanitizeBlogContent(content);
   if (html.length > MAX_BLOG_CONTENT_LENGTH) return { error: "Keep the article within 100,000 characters, including formatting." };
@@ -83,6 +87,7 @@ export async function previewBlogContentAction(content: string): Promise<{ html?
 }
 
 export async function deleteBlog(id: string): Promise<ActionState> {
+  await requireAdmin();
   let keys: string[] = [];
   try {
     validateId(id);
@@ -100,6 +105,7 @@ export async function deleteBlog(id: string): Promise<ActionState> {
 }
 
 export async function loadBlogs() {
+  await requireAdmin();
   return readCatalog(async () => {
     const [rows, categories] = await Promise.all([getBlogList(), getCategories()]);
     return {

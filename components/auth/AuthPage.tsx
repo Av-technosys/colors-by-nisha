@@ -1,5 +1,7 @@
 "use client";
 
+import { useClerk, useSignIn, useSignUp } from "@clerk/nextjs";
+import { FcGoogle } from "react-icons/fc";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -25,18 +27,19 @@ interface AuthPageProps {
 
 export default function AuthPage({ mode }: AuthPageProps) {
   const router = useRouter();
+  const { signIn } = useSignIn();
+  const { signUp } = useSignUp();
+  const clerk = useClerk();
   const searchParams = useSearchParams();
   const emailParam = searchParams.get("email") || "";
 
   const isLogin = mode === "login";
   const isForgot = mode === "forgot";
   const isOtp = mode === "verify-otp";
-  const [isOtpView, setIsOtpView] = useState(isOtp);
-
-  // Sync state if mode changes
-  useEffect(() => {
-    setIsOtpView(mode === "verify-otp");
-  }, [mode]);
+  const isOtpView = isOtp;
+  const isSocialCompletion = !isLogin && searchParams.get("sso") === "complete";
+  const otpFlow = searchParams.get("flow") || "signup";
+  const isResetPassword = isForgot && searchParams.get("step") === "password";
 
   // Form Fields (all blank by default)
   const [fullName, setFullName] = useState("");
@@ -47,7 +50,6 @@ export default function AuthPage({ mode }: AuthPageProps) {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [agreedTerms, setAgreedTerms] = useState(false);
-  const [rememberMe, setRememberMe] = useState(false);
 
   // Forgot password email
   const [forgotEmail, setForgotEmail] = useState("");
@@ -140,181 +142,191 @@ export default function AuthPage({ mode }: AuthPageProps) {
     otpInputRefs.current[nextIndex]?.focus();
   };
 
-  // Resend OTP
-  const handleResendOtp = () => {
-    setOtpTimer(45);
-    setOtp(["", "", "", "", "", ""]);
-    setResendNotice("A fresh 6-digit verification code has been sent to your email.");
-    setTimeout(() => setResendNotice(""), 4000);
-    otpInputRefs.current[0]?.focus();
+  function showError(error: unknown) {
+    let message = "The request could not be completed. Please try again.";
+    if (error instanceof Error) message = error.message;
+    if (typeof error === "object" && error !== null) {
+      if ("longMessage" in error && typeof error.longMessage === "string") message = error.longMessage;
+      else if ("message" in error && typeof error.message === "string") message = error.message;
+    }
+    setError(message);
+  }
+
+  async function check(request: Promise<{ error: unknown }>) {
+    const result = await request;
+    if (result.error) throw result.error;
+  }
+
+  async function finish(resource: typeof signIn | typeof signUp) {
+    if (resource.status !== "complete") throw new Error("Please complete the required account verification.");
+    await check(resource.finalize({
+      navigate: async ({ session, decorateUrl }) => {
+        if (session?.currentTask) {
+          await clerk.redirectToTasks({ redirectUrl: "/dashboard" });
+          return;
+        }
+        const destination = decorateUrl("/dashboard");
+        if (destination.startsWith("http")) window.location.assign(destination);
+        else router.replace(destination);
+      },
+    }));
+  }
+
+  async function sendSignInCode() {
+    const factors = signIn.supportedSecondFactors;
+    if (factors.some(factor => factor.strategy === "email_code")) {
+      await check(signIn.mfa.sendEmailCode());
+      return "signin";
+    }
+    if (factors.some(factor => factor.strategy === "phone_code")) {
+      await check(signIn.mfa.sendPhoneCode());
+      return "phone";
+    }
+    if (factors.some(factor => factor.strategy === "totp")) return "totp";
+    throw new Error("This account requires a verification method that is not supported on this screen. Please contact support.");
+  }
+
+  const handleResendOtp = async () => {
+    if (isSubmitting || otpTimer > 0 || otpFlow === "totp") return;
+    setError("");
+    setIsSubmitting(true);
+    try {
+      if (otpFlow === "reset") await check(signIn.resetPasswordEmailCode.sendCode());
+      else if (otpFlow === "signin") await check(signIn.mfa.sendEmailCode());
+      else if (otpFlow === "phone") await check(signIn.mfa.sendPhoneCode());
+      else await check(signUp.verifications.sendEmailCode());
+      setOtpTimer(45);
+      setOtp(["", "", "", "", "", ""]);
+      setResendNotice("A fresh 6-digit verification code has been sent.");
+      triggerToast("success", "Verification code sent");
+      otpInputRefs.current[0]?.focus();
+    } catch (error) { showError(error); }
+    finally { setIsSubmitting(false); }
   };
 
-  // Submit OTP Verification
-  const handleOtpSubmit = (e: React.FormEvent) => {
+  const handleOtpSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isSubmitting) return;
     setError("");
-    const enteredOtp = otp.join("");
-    if (enteredOtp.length < 6) {
-      setError("Please enter the complete 6-digit OTP code.");
-      return;
-    }
-
+    const code = otp.join("");
+    if (code.length !== 6) { setError("Please enter the complete 6-digit code."); return; }
     setIsSubmitting(true);
-    setTimeout(() => {
-      setIsSubmitting(false);
-      const userEmail = email.trim() || emailParam;
+    try {
+      if (otpFlow === "reset") {
+        await check(signIn.resetPasswordEmailCode.verifyCode({ code }));
+        router.replace("/forgot-password?step=password");
+      } else if (otpFlow === "signup") {
+        await check(signUp.verifications.verifyEmailCode({ code }));
+        await finish(signUp);
+      } else {
+        if (otpFlow === "phone") await check(signIn.mfa.verifyPhoneCode({ code }));
+        else if (otpFlow === "totp") await check(signIn.mfa.verifyTOTP({ code }));
+        else await check(signIn.mfa.verifyEmailCode({ code }));
+        await finish(signIn);
+      }
+    } catch (error) { showError(error); }
+    finally { setIsSubmitting(false); }
+  };
+
+  const handleGoogleSignIn = async () => {
+    if (isSubmitting || !clerk.loaded) return;
+    setError("");
+    setIsSubmitting(true);
+    try {
+      await check(signIn.sso({ strategy: "oauth_google", redirectUrl: "/dashboard", redirectCallbackUrl: "/sso-callback" }));
+    } catch (error) { showError(error); }
+    finally { setIsSubmitting(false); }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (isSubmitting) return;
+    setError("");
+    if (isSocialCompletion) {
+      if (!fullName.trim() || !/^[6-9]\d{9}$/.test(phone.replace(/\s/g, ""))) { setError("Please enter your name and a valid 10-digit mobile number."); return; }
+      if (!agreedTerms) { setError("Please accept the Terms & Conditions."); return; }
+      setIsSubmitting(true);
       try {
-        const existing = localStorage.getItem("cbn_user");
-        const parsed = existing ? JSON.parse(existing) : {};
-        localStorage.setItem(
-          "cbn_user",
-          JSON.stringify({
-            ...parsed,
-            email: userEmail,
-            isLoggedIn: true,
-          })
-        );
-      } catch (e) {}
-
-      triggerToast(
-        "success",
-        "Account Created Successfully!",
-        "Your email has been verified. Welcome to Colors by Nisha Vijay."
-      );
-      setTimeout(() => {
-        router.push("/dashboard");
-      }, 1200);
-    }, 800);
-  };
-
-  // Submit Signup / Login
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
-
-    if (!email.trim()) {
-      setError("Please enter your email address.");
+        const [firstName, ...lastName] = fullName.trim().split(/\s+/);
+        await check(signUp.update({
+          legalAccepted: true,
+          unsafeMetadata: { ...signUp.unsafeMetadata, fullName: fullName.trim(), mobile: `+91${phone.replace(/\s/g, "")}` },
+          ...(signUp.missingFields.includes("first_name") ? { firstName } : {}),
+          ...(signUp.missingFields.includes("last_name") ? { lastName: lastName.join(" ") } : {}),
+          ...(signUp.missingFields.includes("email_address") ? { emailAddress: email.trim() } : {}),
+        }));
+        if (signUp.status === "complete") await finish(signUp);
+        else if (signUp.unverifiedFields.includes("email_address")) {
+          await check(signUp.verifications.sendEmailCode());
+          router.push(`/verify-otp?flow=signup&email=${encodeURIComponent(signUp.emailAddress || email.trim())}`);
+        } else throw new Error("Please complete the required account details before continuing.");
+      } catch (error) { showError(error); }
+      finally { setIsSubmitting(false); }
       return;
     }
-
+    if (!email.trim()) { setError("Please enter your email address."); return; }
+    if (!password) { setError("Please enter your password."); return; }
     if (!isLogin) {
-      if (!fullName.trim()) {
-        setError("Please enter your full name.");
-        return;
-      }
-      if (!phone.trim()) {
-        setError("Please enter your mobile number.");
-        return;
-      }
-      if (!password.trim()) {
-        setError("Please enter a password.");
-        return;
-      }
-      if (!hasMinLen) {
-        setError("Password must be at least 8 characters long.");
-        return;
-      }
-      if (!hasUpper) {
-        setError("Password must contain at least 1 uppercase letter (A-Z).");
-        return;
-      }
-      if (!hasLower) {
-        setError("Password must contain at least 1 lowercase letter (a-z).");
-        return;
-      }
-      if (!hasNumber) {
-        setError("Password must contain at least 1 number (0-9).");
-        return;
-      }
-      if (!hasSpecial) {
-        setError("Password must contain at least 1 special character (e.g. !@#$%&*).");
-        return;
-      }
-      if (password !== confirmPassword) {
-        setError("Passwords do not match.");
-        return;
-      }
-      if (!agreedTerms) {
-        setError("Please accept the Terms & Conditions.");
-        return;
-      }
-
-      // Transition to OTP verification screen & update route to /verify-otp
-      setIsSubmitting(true);
-      setTimeout(() => {
-        setIsSubmitting(false);
-        try {
-          localStorage.setItem(
-            "cbn_user",
-            JSON.stringify({
-              email: email.trim(),
-              fullName: fullName.trim(),
-              phone: phone.trim(),
-              isLoggedIn: false,
-            })
-          );
-        } catch (e) {}
-
-        triggerToast(
-          "info",
-          "Verification Code Sent",
-          `A 6-digit OTP code has been sent to ${email}.`
-        );
-        router.push(`/verify-otp?email=${encodeURIComponent(email)}`);
-      }, 600);
-    } else {
-      if (!password.trim()) {
-        setError("Please enter your password.");
-        return;
-      }
-
-      setIsSubmitting(true);
-      setTimeout(() => {
-        setIsSubmitting(false);
-        try {
-          const existing = localStorage.getItem("cbn_user");
-          const parsed = existing ? JSON.parse(existing) : {};
-          localStorage.setItem(
-            "cbn_user",
-            JSON.stringify({
-              ...parsed,
-              email: email.trim(),
-              isLoggedIn: true,
-            })
-          );
-        } catch (e) {}
-
-        triggerToast(
-          "success",
-          "Login Successful",
-          "Welcome back! Redirecting to your dashboard..."
-        );
-        setTimeout(() => {
-          router.push("/dashboard");
-        }, 1200);
-      }, 800);
+      if (!fullName.trim()) { setError("Please enter your full name."); return; }
+      if (!/^[6-9]\d{9}$/.test(phone.replace(/\s/g, ""))) { setError("Enter a valid 10-digit Indian mobile number."); return; }
+      if (!isPasswordValid) { setError("Use at least 8 characters, including uppercase, lowercase, a number, and a special character."); return; }
+      if (password !== confirmPassword) { setError("Passwords do not match."); return; }
+      if (!agreedTerms) { setError("Please accept the Terms & Conditions."); return; }
     }
+    setIsSubmitting(true);
+    try {
+      if (isLogin) {
+        await check(signIn.password({ identifier: email.trim(), password }));
+        if (signIn.status === "complete") await finish(signIn);
+        else if (signIn.status === "needs_second_factor" || signIn.status === "needs_client_trust") {
+          const flow = await sendSignInCode();
+          router.push(`/verify-otp?flow=${flow}&email=${encodeURIComponent(email.trim())}`);
+        } else if (signIn.status === "needs_new_password") router.replace("/forgot-password?step=password");
+        else throw new Error("Additional account verification is required. Please try again or contact support.");
+      } else {
+        await check(signUp.password({
+          emailAddress: email.trim(), password, legalAccepted: agreedTerms,
+          unsafeMetadata: { fullName: fullName.trim(), mobile: `+91${phone.replace(/\s/g, "")}` },
+        }));
+        if (signUp.missingFields.includes("first_name") || signUp.missingFields.includes("last_name")) {
+          const [firstName, ...lastName] = fullName.trim().split(/\s+/);
+          if (signUp.missingFields.includes("last_name") && !lastName.length) throw new Error("Please enter your first and last name.");
+          await check(signUp.update({ firstName, lastName: lastName.join(" ") }));
+        }
+        await check(signUp.verifications.sendEmailCode());
+        setPassword("");
+        setConfirmPassword("");
+        router.push(`/verify-otp?flow=signup&email=${encodeURIComponent(email.trim())}`);
+      }
+    } catch (error) { showError(error); }
+    finally { setIsSubmitting(false); }
   };
 
-  const handleForgotSubmit = (e: React.FormEvent) => {
+  const handleForgotSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isSubmitting) return;
     setError("");
-
-    if (!forgotEmail.trim()) {
-      setError("Please enter your email address.");
+    if (isResetPassword && (!isPasswordValid || password !== confirmPassword)) {
+      setError("Enter matching passwords with at least 8 characters, uppercase, lowercase, a number, and a special character.");
       return;
     }
-
+    if (!isResetPassword && !forgotEmail.trim()) { setError("Please enter your email address."); return; }
     setIsSubmitting(true);
-    setTimeout(() => {
-      setIsSubmitting(false);
-      triggerToast(
-        "success",
-        "Reset Link Sent",
-        `Password reset instructions sent to ${forgotEmail}. Please check your inbox.`
-      );
-      setForgotEmail("");
-    }, 800);
+    try {
+      if (isResetPassword) {
+        await check(signIn.resetPasswordEmailCode.submitPassword({ password, signOutOfOtherSessions: true }));
+        if (signIn.status === "complete") await finish(signIn);
+        else {
+          const flow = await sendSignInCode();
+          router.push(`/verify-otp?flow=${flow}`);
+        }
+      } else {
+        await check(signIn.create({ identifier: forgotEmail.trim() }));
+        await check(signIn.resetPasswordEmailCode.sendCode());
+        router.push(`/verify-otp?flow=reset&email=${encodeURIComponent(forgotEmail.trim())}`);
+      }
+    } catch (error) { showError(error); }
+    finally { setIsSubmitting(false); }
   };
 
   return (
@@ -414,7 +426,7 @@ export default function AuthPage({ mode }: AuthPageProps) {
               {isOtpView
                 ? "Enter the 6-digit code sent to verify your email."
                 : isForgot
-                ? "Enter your email to receive password reset instructions."
+                ? "Enter your email to receive a password reset code."
                 : isLogin
                 ? "Welcome back. Access your saved heirlooms and orders."
                 : "Step into our world of handcrafted couture and exclusive edits."}
@@ -432,7 +444,7 @@ export default function AuthPage({ mode }: AuthPageProps) {
                       <span>Verification Code Sent</span>
                     </div>
                     <p className="font-sans text-[11px] text-neutral-600">
-                      We sent an OTP to{" "}
+                      {otpFlow === "totp" ? "Enter the code from your authenticator for " : otpFlow === "phone" ? "Enter the code sent to your phone for " : "We sent an OTP to "}
                       <span className="font-semibold text-ink">
                         {email || "your email"}
                       </span>
@@ -479,7 +491,7 @@ export default function AuthPage({ mode }: AuthPageProps) {
                   </div>
 
                   {/* Resend Countdown */}
-                  <div className="text-center font-sans text-xs">
+                  {otpFlow !== "totp" && <div className="text-center font-sans text-xs">
                     {otpTimer > 0 ? (
                       <p className="text-neutral-500">
                         Resend code in{" "}
@@ -496,12 +508,12 @@ export default function AuthPage({ mode }: AuthPageProps) {
                         Didn&apos;t receive code? Resend OTP
                       </button>
                     )}
-                  </div>
+                  </div>}
 
                   {/* Verify Button */}
                   <button
                     type="submit"
-                    disabled={isSubmitting}
+                    disabled={isSubmitting || !clerk.loaded}
                     className="w-full rounded-md bg-[#2d254d] hover:bg-[#d4af37] text-[#FCF1D8] hover:text-[#2d254d] py-3 px-4 font-display text-xs sm:text-sm font-semibold uppercase tracking-[1.5px] transition-all duration-300 cursor-pointer shadow-sm active:scale-[0.99] disabled:opacity-70"
                   >
                     {isSubmitting ? "VERIFYING..." : "VERIFY & PROCEED"}
@@ -510,11 +522,11 @@ export default function AuthPage({ mode }: AuthPageProps) {
                   {/* Back to Edit Signup */}
                   <div className="text-center pt-0.5">
                     <Link
-                      href="/signup"
+                      href={otpFlow === "signup" ? "/signup" : "/login"}
                       className="inline-flex items-center gap-1.5 font-sans text-xs text-[#2d254d] hover:underline cursor-pointer"
                     >
                       <IoArrowBackOutline className="size-3.5" />
-                      <span>Back to Sign Up</span>
+                      <span>{otpFlow === "signup" ? "Back to Sign Up" : "Back to Sign In"}</span>
                     </Link>
                   </div>
                 </form>
@@ -529,6 +541,17 @@ export default function AuthPage({ mode }: AuthPageProps) {
                   </div>
                 )}
 
+                {isResetPassword ? (
+                <div className="space-y-3">
+                  {[{ label: "New password", value: password, change: setPassword }, { label: "Confirm password", value: confirmPassword, change: setConfirmPassword }].map(field => (
+                    <label key={field.label} className="block space-y-1 font-sans text-xs font-medium text-neutral-700">
+                      <span>{field.label}</span>
+                      <input type="password" autoComplete="new-password" required minLength={8} value={field.value} onChange={event => field.change(event.target.value)} className="w-full rounded-md border border-neutral-300 bg-white px-3.5 py-2.5 text-sm text-ink outline-none focus:border-[#2d254d] focus:ring-2 focus:ring-[#2d254d]/15" />
+                    </label>
+                  ))}
+                  <p className="text-xs text-neutral-500">Use 8+ characters, uppercase, lowercase, a number, and a special character.</p>
+                </div>
+                ) : (
                 <div className="space-y-1">
                   <label className="block font-sans text-xs font-medium text-neutral-700">
                     Email Address <span className="text-red-500">*</span>
@@ -545,12 +568,13 @@ export default function AuthPage({ mode }: AuthPageProps) {
                   </div>
                 </div>
 
+                )}
                 <button
                   type="submit"
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || !clerk.loaded}
                   className="w-full rounded-md bg-[#2d254d] hover:bg-[#d4af37] text-[#FCF1D8] hover:text-[#2d254d] py-3 px-4 font-display text-xs sm:text-sm font-semibold uppercase tracking-[1.5px] transition-all duration-300 cursor-pointer shadow-sm active:scale-[0.99] disabled:opacity-70 mt-1"
                 >
-                  {isSubmitting ? "SENDING..." : "SEND RESET LINK"}
+                  {isSubmitting ? "SENDING..." : isResetPassword ? "RESET PASSWORD" : "SEND RESET CODE"}
                 </button>
 
                 <div className="text-center pt-1">
@@ -592,6 +616,14 @@ export default function AuthPage({ mode }: AuthPageProps) {
                   Sign In
                 </Link>
               </div>
+
+              {!isSocialCompletion && <div className="space-y-3 pb-3">
+                <button type="button" onClick={handleGoogleSignIn} disabled={isSubmitting || !clerk.loaded} className="flex min-h-11 w-full items-center justify-center gap-3 rounded-md border border-neutral-300 bg-white px-4 py-2.5 font-sans text-sm font-medium text-ink shadow-2xs transition-colors hover:bg-neutral-50 disabled:cursor-wait disabled:opacity-60">
+                  <FcGoogle size={20} aria-hidden="true" />
+                  Continue with Google
+                </button>
+                <div className="flex items-center gap-3 text-[11px] text-neutral-400"><span className="h-px flex-1 bg-neutral-200" /><span>or continue with email</span><span className="h-px flex-1 bg-neutral-200" /></div>
+              </div>}
 
               {isLogin ? (
                 /* LOGIN FORM ONLY */
@@ -656,27 +688,9 @@ export default function AuthPage({ mode }: AuthPageProps) {
                     </div>
                   </div>
 
-                  {/* Remember Me Checkbox */}
-                  <div className="flex items-center gap-2 pt-0.5">
-                    <input
-                      type="checkbox"
-                      id="login-remember"
-                      checked={rememberMe}
-                      onChange={(e) => setRememberMe(e.target.checked)}
-                      className="size-3.5 rounded-md border-neutral-300 accent-[#2d254d] cursor-pointer"
-                    />
-                    <label
-                      htmlFor="login-remember"
-                      className="font-sans text-xs text-neutral-600 cursor-pointer select-none"
-                    >
-                      Remember me on this device
-                    </label>
-                  </div>
-
-                  {/* Submit Button */}
                   <button
                     type="submit"
-                    disabled={isSubmitting}
+                    disabled={isSubmitting || !clerk.loaded}
                     className="w-full rounded-md bg-[#2d254d] hover:bg-[#d4af37] text-[#FCF1D8] hover:text-[#2d254d] py-3 px-4 font-display text-xs sm:text-sm font-semibold uppercase tracking-[1.5px] transition-all duration-300 cursor-pointer shadow-sm active:scale-[0.99] disabled:opacity-70 mt-1"
                   >
                     {isSubmitting ? "SIGNING IN..." : "SIGN IN"}
@@ -685,6 +699,7 @@ export default function AuthPage({ mode }: AuthPageProps) {
               ) : (
                 /* ================= SIGNUP FORM ONLY ================= */
                 <form onSubmit={handleSubmit} className="space-y-2.5">
+                  <div id="clerk-captcha" />
                   {error && (
                     <div className="rounded-md bg-red-50 border border-red-200 px-3 py-1 text-xs text-red-600 font-sans">
                       {error}
@@ -738,7 +753,8 @@ export default function AuthPage({ mode }: AuthPageProps) {
                       <IoMailOutline className="text-neutral-400 mr-2 size-4 shrink-0" />
                       <input
                         type="email"
-                        value={email}
+                        value={isSocialCompletion ? signUp.emailAddress || email : email}
+                        readOnly={isSocialCompletion && Boolean(signUp.emailAddress)}
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder="name@example.com"
                         className="w-full bg-transparent font-sans text-xs sm:text-sm text-ink outline-none placeholder:text-neutral-400"
@@ -746,85 +762,88 @@ export default function AuthPage({ mode }: AuthPageProps) {
                     </div>
                   </div>
 
-                  {/* Row 3: Password & Confirm Password side by side */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                    <div className="space-y-1">
-                      <label className="block font-sans text-xs font-medium text-neutral-700">
-                        Password <span className="text-red-500">*</span>
-                      </label>
-                      <div className="relative flex items-center rounded-md border border-neutral-300 bg-white px-2.5 py-2 shadow-2xs focus-within:border-[#2d254d] focus-within:ring-2 focus-within:ring-[#2d254d]/15 transition">
-                        <IoLockClosedOutline className="text-neutral-400 mr-1.5 size-4 shrink-0" />
-                        <input
-                          type={showPassword ? "text" : "password"}
-                          value={password}
-                          onChange={(e) => setPassword(e.target.value)}
-                          placeholder="••••••••"
-                          className="w-full bg-transparent font-sans text-xs sm:text-sm text-ink outline-none placeholder:text-neutral-400"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => setShowPassword(!showPassword)}
-                          className="text-neutral-400 hover:text-ink cursor-pointer p-0.5"
-                          aria-label={showPassword ? "Hide password" : "Show password"}
-                        >
-                          {showPassword ? <IoEyeOffOutline size={15} /> : <IoEyeOutline size={15} />}
-                        </button>
+                  {!isSocialCompletion && <>
+                    {/* Row 3: Password & Confirm Password side by side */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                      <div className="space-y-1">
+                        <label className="block font-sans text-xs font-medium text-neutral-700">
+                          Password <span className="text-red-500">*</span>
+                        </label>
+                        <div className="relative flex items-center rounded-md border border-neutral-300 bg-white px-2.5 py-2 shadow-2xs focus-within:border-[#2d254d] focus-within:ring-2 focus-within:ring-[#2d254d]/15 transition">
+                          <IoLockClosedOutline className="text-neutral-400 mr-1.5 size-4 shrink-0" />
+                          <input
+                            type={showPassword ? "text" : "password"}
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            placeholder="••••••••"
+                            className="w-full bg-transparent font-sans text-xs sm:text-sm text-ink outline-none placeholder:text-neutral-400"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => setShowPassword(!showPassword)}
+                            className="text-neutral-400 hover:text-ink cursor-pointer p-0.5"
+                            aria-label={showPassword ? "Hide password" : "Show password"}
+                          >
+                            {showPassword ? <IoEyeOffOutline size={15} /> : <IoEyeOutline size={15} />}
+                          </button>
+                        </div>
+                      </div>
+
+                      <div className="space-y-1">
+                        <label className="block font-sans text-xs font-medium text-neutral-700">
+                          Confirm Password <span className="text-red-500">*</span>
+                        </label>
+                        <div className="relative flex items-center rounded-md border border-neutral-300 bg-white px-2.5 py-2 shadow-2xs focus-within:border-[#2d254d] focus-within:ring-2 focus-within:ring-[#2d254d]/15 transition">
+                          <IoLockClosedOutline className="text-neutral-400 mr-1.5 size-4 shrink-0" />
+                          <input
+                            type={showConfirmPassword ? "text" : "password"}
+                            value={confirmPassword}
+                            onChange={(e) => setConfirmPassword(e.target.value)}
+                            placeholder="••••••••"
+                            className="w-full bg-transparent font-sans text-xs sm:text-sm text-ink outline-none placeholder:text-neutral-400"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                            className="text-neutral-400 hover:text-ink cursor-pointer p-0.5"
+                            aria-label={showConfirmPassword ? "Hide password" : "Show password"}
+                          >
+                            {showConfirmPassword ? <IoEyeOffOutline size={15} /> : <IoEyeOutline size={15} />}
+                          </button>
+                        </div>
                       </div>
                     </div>
 
-                    <div className="space-y-1">
-                      <label className="block font-sans text-xs font-medium text-neutral-700">
-                        Confirm Password <span className="text-red-500">*</span>
-                      </label>
-                      <div className="relative flex items-center rounded-md border border-neutral-300 bg-white px-2.5 py-2 shadow-2xs focus-within:border-[#2d254d] focus-within:ring-2 focus-within:ring-[#2d254d]/15 transition">
-                        <IoLockClosedOutline className="text-neutral-400 mr-1.5 size-4 shrink-0" />
-                        <input
-                          type={showConfirmPassword ? "text" : "password"}
-                          value={confirmPassword}
-                          onChange={(e) => setConfirmPassword(e.target.value)}
-                          placeholder="••••••••"
-                          className="w-full bg-transparent font-sans text-xs sm:text-sm text-ink outline-none placeholder:text-neutral-400"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                          className="text-neutral-400 hover:text-ink cursor-pointer p-0.5"
-                          aria-label={showConfirmPassword ? "Hide password" : "Show password"}
-                        >
-                          {showConfirmPassword ? <IoEyeOffOutline size={15} /> : <IoEyeOutline size={15} />}
-                        </button>
+                    {/* Live Password Requirements checklist */}
+                    {password.length > 0 && (
+                      <div className="p-2 sm:p-2.5 rounded-md bg-neutral-50 border border-neutral-200/90 text-[11px] font-sans space-y-1 animate-in fade-in duration-200">
+                        <div className="flex items-center justify-between text-[10px] font-semibold uppercase tracking-wider text-neutral-500">
+                          <span>Password Requirements</span>
+                          <span className={isPasswordValid ? "text-emerald-600 font-bold" : "text-neutral-400"}>
+                            {isPasswordValid ? "Strong Password ✓" : "Incomplete"}
+                          </span>
+                        </div>
+                        <div className="grid grid-cols-2 gap-x-2 gap-y-0.5 text-[10.5px]">
+                          <div className={`flex items-center gap-1 ${hasMinLen ? "text-emerald-600 font-medium" : "text-neutral-500"}`}>
+                            <span>{hasMinLen ? "✓" : "○"}</span> At least 8 characters
+                          </div>
+                          <div className={`flex items-center gap-1 ${hasUpper ? "text-emerald-600 font-medium" : "text-neutral-500"}`}>
+                            <span>{hasUpper ? "✓" : "○"}</span> 1 uppercase (A-Z)
+                          </div>
+                          <div className={`flex items-center gap-1 ${hasLower ? "text-emerald-600 font-medium" : "text-neutral-500"}`}>
+                            <span>{hasLower ? "✓" : "○"}</span> 1 lowercase (a-z)
+                          </div>
+                          <div className={`flex items-center gap-1 ${hasNumber ? "text-emerald-600 font-medium" : "text-neutral-500"}`}>
+                            <span>{hasNumber ? "✓" : "○"}</span> 1 number (0-9)
+                          </div>
+                          <div className={`flex items-center gap-1 col-span-2 ${hasSpecial ? "text-emerald-600 font-medium" : "text-neutral-500"}`}>
+                            <span>{hasSpecial ? "✓" : "○"}</span> 1 special character (!@#$%&*...)
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  </div>
+                    )}
 
-                  {/* Live Password Requirements checklist */}
-                  {password.length > 0 && (
-                    <div className="p-2 sm:p-2.5 rounded-md bg-neutral-50 border border-neutral-200/90 text-[11px] font-sans space-y-1 animate-in fade-in duration-200">
-                      <div className="flex items-center justify-between text-[10px] font-semibold uppercase tracking-wider text-neutral-500">
-                        <span>Password Requirements</span>
-                        <span className={isPasswordValid ? "text-emerald-600 font-bold" : "text-neutral-400"}>
-                          {isPasswordValid ? "Strong Password ✓" : "Incomplete"}
-                        </span>
-                      </div>
-                      <div className="grid grid-cols-2 gap-x-2 gap-y-0.5 text-[10.5px]">
-                        <div className={`flex items-center gap-1 ${hasMinLen ? "text-emerald-600 font-medium" : "text-neutral-500"}`}>
-                          <span>{hasMinLen ? "✓" : "○"}</span> At least 8 characters
-                        </div>
-                        <div className={`flex items-center gap-1 ${hasUpper ? "text-emerald-600 font-medium" : "text-neutral-500"}`}>
-                          <span>{hasUpper ? "✓" : "○"}</span> 1 uppercase (A-Z)
-                        </div>
-                        <div className={`flex items-center gap-1 ${hasLower ? "text-emerald-600 font-medium" : "text-neutral-500"}`}>
-                          <span>{hasLower ? "✓" : "○"}</span> 1 lowercase (a-z)
-                        </div>
-                        <div className={`flex items-center gap-1 ${hasNumber ? "text-emerald-600 font-medium" : "text-neutral-500"}`}>
-                          <span>{hasNumber ? "✓" : "○"}</span> 1 number (0-9)
-                        </div>
-                        <div className={`flex items-center gap-1 col-span-2 ${hasSpecial ? "text-emerald-600 font-medium" : "text-neutral-500"}`}>
-                          <span>{hasSpecial ? "✓" : "○"}</span> 1 special character (!@#$%&*...)
-                        </div>
-                      </div>
-                    </div>
-                  )}
+                  </>}
 
                   {/* Terms and Conditions Checkbox */}
                   <div className="flex items-start gap-2 pt-0.5">
@@ -862,7 +881,7 @@ export default function AuthPage({ mode }: AuthPageProps) {
                   {/* Submit Button */}
                   <button
                     type="submit"
-                    disabled={isSubmitting}
+                    disabled={isSubmitting || !clerk.loaded}
                     className="w-full rounded-md bg-[#2d254d] hover:bg-[#d4af37] text-[#FCF1D8] hover:text-[#2d254d] py-3 px-4 font-display text-xs sm:text-sm font-semibold uppercase tracking-[1.5px] transition-all duration-300 cursor-pointer shadow-sm active:scale-[0.99] disabled:opacity-70 mt-1"
                   >
                     {isSubmitting ? "PROCESSING..." : "CREATE ACCOUNT"}

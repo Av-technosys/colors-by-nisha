@@ -13,6 +13,7 @@ export function ConditionalHeader() {
     pathname === "/login" ||
     pathname === "/forgot-password" ||
     pathname === "/verify-otp" ||
+    pathname === "/sso-callback" ||
     pathname?.startsWith("/signup/") ||
     pathname?.startsWith("/sign-up/") ||
     pathname?.startsWith("/login/") ||
@@ -32,6 +33,7 @@ export function ConditionalFooter() {
     pathname === "/login" ||
     pathname === "/forgot-password" ||
     pathname === "/verify-otp" ||
+    pathname === "/sso-callback" ||
     pathname?.startsWith("/signup/") ||
     pathname?.startsWith("/sign-up/") ||
     pathname?.startsWith("/login/") ||

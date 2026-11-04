@@ -1,5 +1,7 @@
 "use server";
 
+import { requireAdmin } from "@/helpers/auth/access";
+
 import { eq } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { blogs, productMedia } from "@/lib/db/schema";
@@ -9,6 +11,7 @@ import { checkUploadConfiguration, createUploadReceipt, readUploadReceipt } from
 type UploadResult = { token: string; url: string; error?: never } | { error: string; token?: never; url?: never };
 
 export async function uploadImageAction(form: FormData): Promise<UploadResult> {
+  await requireAdmin();
   const file = form.get("image");
   const folder = form.get("folder");
   if (!(file instanceof File) || !file.size || (folder !== "products" && folder !== "blogs")) {
@@ -28,6 +31,7 @@ export async function uploadImageAction(form: FormData): Promise<UploadResult> {
 }
 
 export async function discardImageUploadAction(token: string, folder: "products" | "blogs") {
+  await requireAdmin();
   try {
     const key = readUploadReceipt(token, folder);
     const [productImage] = await db.select({ id: productMedia.id }).from(productMedia).where(eq(productMedia.key, key)).limit(1);
