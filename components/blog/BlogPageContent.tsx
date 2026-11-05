@@ -14,7 +14,7 @@ export function BlogPageContent({ posts: initialPosts }: BlogPageContentProps = 
 
   return (
     <div className="bg-white text-ink pb-10 md:pb-14">
-      {/* Top Breadcrumb & Heading (Matches Screenshot) */}
+      {/* Top Breadcrumb & Heading*/}
       <section className="mx-auto w-[calc(100%-2rem)] max-w-[1328px] md:w-full pt-8 pb-6 md:pt-10 md:pb-8 text-center">
         {/* Breadcrumb: Home · Blogs */}
         <nav aria-label="Breadcrumb" className="mb-2">
