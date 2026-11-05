@@ -644,7 +644,7 @@ export async function uploadProductsCsv(formData: FormData): Promise<{ count?: n
 
         // Sequential SKU: SAR-001, LHN-001, ETH-001
         const prefix = cleanCategory === "Saree" ? "SAR" : (cleanCategory === "Lehenga" ? "LHN" : "ETH");
-        let finalSku = existingId && productBySku.has(existingId) ? productBySku.get(existingId)! : getNextSku(prefix);
+        const finalSku = existingId && productBySku.has(existingId) ? productBySku.get(existingId)! : getNextSku(prefix);
 
         let productId = existingId;
 

@@ -91,7 +91,7 @@ export type Product = {
 export function resolveHomeImage(id?: number | string): string | undefined {
   if (id === undefined || id === null || id === "") return undefined;
   if (typeof id === "string" && (id.startsWith("/") || id.startsWith("http"))) return id;
-  return images[id as any];
+  return images[id as keyof typeof images];
 }
 export const products: Product[] = [
   {
