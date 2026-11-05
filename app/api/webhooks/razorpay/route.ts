@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { verifyRazorpayWebhookSignature } from "@/helpers/razorpay";
 import { confirmOrderPayment, getOrder } from "@/helpers/orders/service";
+import { db } from "@/lib/db";
+import { payment } from "@/lib/db/schema";
 
 export async function POST(request: Request) {
   try {
@@ -42,6 +44,20 @@ export async function POST(request: Request) {
             amountMinor: Number(amountMinor),
             currency,
           });
+
+          try {
+            await db.insert(payment).values({
+              orderId: internalOrderId,
+              paymentId,
+              paymentOrderId: orderEntity?.id || null,
+              paymentStatus: "captured",
+              paymentMethod: paymentEntity?.method || "webhook",
+              paymentAmount: Number(amountMinor),
+              paymentMeta: event,
+            });
+          } catch (webhookDbErr) {
+            console.warn("Could not record webhook payment row in db:", webhookDbErr);
+          }
           console.log(`Razorpay webhook: Order ${internalOrderId} confirmed with payment ${paymentId}`);
         }
       }

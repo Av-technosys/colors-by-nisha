@@ -3,6 +3,8 @@ import { razorpay } from "@/helpers/razorpay";
 import { getOrder, orderReference } from "@/helpers/orders/service";
 import { minorAmount } from "@/helpers/orders/input";
 import { currentUser } from "@clerk/nextjs/server";
+import { db } from "@/lib/db";
+import { payment } from "@/lib/db/schema";
 
 export async function POST(request: Request) {
   try {
@@ -38,6 +40,18 @@ export async function POST(request: Request) {
         customerEmail: order.user?.email || "",
       },
     });
+
+    try {
+      await db.insert(payment).values({
+        orderId: order.id,
+        paymentOrderId: rzpOrder.id,
+        paymentAmount: amountInPaise,
+        paymentStatus: "pending",
+        paymentMeta: { receipt: orderReference(order.id) },
+      });
+    } catch (insertErr) {
+      console.warn("Could not insert pending payment record:", insertErr);
+    }
 
     return NextResponse.json({
       success: true,
