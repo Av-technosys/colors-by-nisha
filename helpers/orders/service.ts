@@ -18,7 +18,9 @@ export async function quoteCart(input: unknown): Promise<CartQuote> {
   const items = await Promise.all(lines.map(async line => {
     const product = catalog.find(item => item.slug === line.slug);
     if (!product || product.status !== "active") throw new OrderInputError("An item is no longer available. Please review your cart.");
-    const variant = product.variants.find(item => item.id === line.variantId);
+    const variant = product.variants.find(item => item.id === line.variantId)
+      ?? product.variants.find(item => line.size && item.name.toLowerCase() === line.size.toLowerCase())
+      ?? (product.variants.length > 0 && !line.variantId ? product.variants[0] : undefined);
     if ((product.variants.length > 0 || line.variantId) && !variant) throw new OrderInputError(`Please choose an available option for ${product.name} on its product page.`);
     if (variant) {
       const quantity = (quantities.get(variant.id) ?? 0) + line.quantity;
@@ -29,7 +31,7 @@ export async function quoteCart(input: unknown): Promise<CartQuote> {
     if (minorAmount(price) <= 0) throw new OrderInputError(`${product.name} is unavailable for checkout.`);
     const media = product.media.find(item => variant && item.variantId === variant.id) ?? product.media.find(item => !item.variantId) ?? product.media[0];
     return {
-      ...line, productId: product.id, name: product.name, price, sku: variant?.sku ?? product.sku,
+      ...line, variantId: variant?.id ?? line.variantId ?? undefined, productId: product.id, name: product.name, price, sku: variant?.sku ?? product.sku,
       imageKey: media?.key ?? null, image: media ? await imageUrl(media.key).catch(() => "/product-placeholder.svg") : "/product-placeholder.svg",
     };
   }));

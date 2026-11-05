@@ -44,7 +44,6 @@ export function CheckoutContent({ account }: { account: CustomerAccount }) {
   const attempt = useRef<{ fingerprint: string; id: string } | null>(null);
   const linesKey = JSON.stringify(cart.map(({ slug, variantId, size, quantity }) => ({ slug, variantId, size, quantity })));
   const currentQuote = quote?.key === linesKey ? quote.data : null;
-  const completeProfile = Boolean(account.fullName && account.email && account.mobile);
 
   useEffect(() => {
     loadRazorpayScript();
@@ -64,7 +63,23 @@ export function CheckoutContent({ account }: { account: CustomerAccount }) {
 
   async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (submitting.current || !currentQuote || !completeProfile || !acceptedTerms) return;
+    if (submitting.current) return;
+
+    if (!acceptedTerms) {
+      setError("Please agree to the terms and conditions and return policy to proceed.");
+      return;
+    }
+
+    if (!currentQuote) {
+      setError(quoteError || "Checking item prices and stock. Please click Refresh prices above or try again in a moment.");
+      return;
+    }
+
+    if (!address.fullName.trim() || !address.phone.trim() || !address.address.trim() || !address.city.trim() || !address.state.trim() || !address.pinCode.trim()) {
+      setError("Please fill in all required shipping address fields.");
+      return;
+    }
+
     submitting.current = true;
     setBusy(true);
     setError("");
@@ -193,9 +208,10 @@ export function CheckoutContent({ account }: { account: CustomerAccount }) {
       <div className="space-y-7">
         <section className="rounded-md border border-[#e8e3da] p-5 md:p-7">
           <div className="mb-4 flex items-center justify-between gap-3"><h2 className="font-display text-xl">Contact details</h2><Link href="/dashboard" className="text-xs text-purple underline underline-offset-4">Edit account</Link></div>
-          <p className="break-words text-sm">{account.fullName || "Name missing"}</p><p className="mt-2 break-all text-sm text-neutral-500">{account.email || "Email missing"}</p><p className="mt-2 text-sm text-neutral-500">{account.mobile || "Mobile number missing"}</p>
-          <p className="mt-4 text-xs leading-relaxed text-neutral-400">Enter the recipient’s name and number in the delivery address below.</p>
-          {!completeProfile && <p role="alert" className="mt-3 text-sm text-[#9e5144]">Complete your contact details in your account before placing the order.</p>}
+          <p className="break-words text-sm font-medium">{account.fullName || address.fullName || "Name will be taken from delivery address"}</p>
+          <p className="mt-2 break-all text-sm text-neutral-500">{account.email || "Email not found"}</p>
+          <p className="mt-2 text-sm text-neutral-500">{account.mobile || (address.phone ? `${address.phone} (from shipping address)` : "Phone number will be taken from delivery address")}</p>
+          <p className="mt-4 text-xs leading-relaxed text-neutral-400">Enter the recipient’s name and contact number in the delivery address below.</p>
         </section>
         <section className="rounded-md border border-[#e8e3da] p-5 md:p-7">
           <div className="mb-5 flex items-center justify-between gap-3"><h2 className="font-display text-xl">Delivery address</h2><Link href="/dashboard" className="text-xs text-purple underline underline-offset-4">Manage addresses</Link></div>
@@ -221,8 +237,8 @@ export function CheckoutContent({ account }: { account: CustomerAccount }) {
         <dl className="mt-5 space-y-3 border-t border-[#e8e3da] pt-5 text-sm"><div className="flex justify-between gap-3"><dt>Items total</dt><dd>{currentQuote ? formatINR(Number(currentQuote.subtotal)) : "—"}</dd></div><div className="flex justify-between gap-3 text-xs text-neutral-500"><dt>Shipping</dt><dd>Complimentary</dd></div><div className="flex justify-between gap-3 text-xs text-neutral-500"><dt>Payment method</dt><dd>Razorpay (UPI / Cards / NetBanking)</dd></div></dl>
         <label className="mt-6 flex items-start gap-3 text-xs leading-relaxed text-neutral-500"><input type="checkbox" required checked={acceptedTerms} onChange={event => setAcceptedTerms(event.target.checked)} className="mt-0.5 size-4 shrink-0 accent-purple" /><span>I agree to the <Link href="/terms-and-conditions" target="_blank" className="text-purple underline underline-offset-2">terms and conditions</Link> and <Link href="/return-and-refund" target="_blank" className="text-purple underline underline-offset-2">return policy</Link>.</span></label>
         {error && <p role="alert" className="mt-4 text-sm text-[#9e5144]">{error}</p>}
-        <Button variant="hero" type="submit" disabled={busy || !currentQuote || !completeProfile || !acceptedTerms} className="mt-6 w-full disabled:cursor-not-allowed disabled:opacity-50 disabled:transform-none">
-          {busy ? "Opening Razorpay…" : currentQuote ? `Pay ${formatINR(Number(currentQuote.subtotal))} with Razorpay` : "Place order"}
+        <Button variant="hero" type="submit" disabled={busy} className="mt-6 w-full disabled:cursor-not-allowed disabled:opacity-50 disabled:transform-none">
+          {busy ? "Opening Razorpay…" : currentQuote ? `Pay ${formatINR(Number(currentQuote.subtotal))} with Razorpay` : "Proceed to Payment"}
         </Button>
         <p className="mt-4 flex items-center justify-center gap-2 text-[11px] text-neutral-400"><LockKeyhole size={13} />100% Secure Payment powered by Razorpay</p>
       </section>

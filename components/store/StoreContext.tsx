@@ -45,7 +45,22 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     try {
       const saved = localStorage.getItem("cbn_cart");
       const items: unknown = saved ? JSON.parse(saved) : [];
-      return Array.isArray(items) ? items.filter((item): item is CartItem => Boolean(item && typeof item.slug === "string" && typeof item.size === "string" && typeof item.price === "number" && Number.isFinite(item.price) && Number.isInteger(item.quantity) && item.quantity > 0)).slice(0, 50) : [];
+      return Array.isArray(items)
+        ? items
+            .filter((item): item is CartItem =>
+              Boolean(
+                item &&
+                  typeof item.slug === "string" &&
+                  typeof item.size === "string" &&
+                  typeof item.price === "number" &&
+                  Number.isFinite(item.price) &&
+                  Number.isInteger(item.quantity) &&
+                  item.quantity > 0
+              )
+            )
+            .map(item => ({ ...item, available: true }))
+            .slice(0, 50)
+        : [];
     } catch {
       return [];
     }
@@ -67,12 +82,29 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   const [notification, setNotification] = useState<string | null>(null);
 
   const syncCart = useCallback((products: ProductItem[]) => {
+    if (!products || !products.length) return;
     const catalog = new Map(products.map(product => [product.slug, product]));
     setCart(current => current.map(item => {
       const product = catalog.get(item.slug);
-      if (!product || (product.variants?.length && !item.variantId) || (item.variantId && !product.variants?.some(variant => variant.id === item.variantId))) return { ...item, available: false };
-      const selected = item.variantId ? selectVariant(product, item.variantId) : product;
-      return { ...item, name: selected.name, price: selected.price, image: selected.images[0] || "/product-placeholder.svg", stockCount: selected.stockCount, available: selected.inStock };
+      if (!product) return { ...item, available: true };
+
+      let variantId = item.variantId;
+      if (!variantId && product.variants?.length) {
+        const matched = product.variants.find(v => v.name.toLowerCase() === item.size.toLowerCase()) ?? product.variants[0];
+        variantId = matched?.id;
+      }
+
+      const selected = variantId ? selectVariant(product, variantId) : product;
+      const isAvailable = product.inStock !== false && (selected.inStock !== false);
+      return {
+        ...item,
+        variantId: variantId ?? item.variantId,
+        name: selected.name,
+        price: selected.price,
+        image: selected.images[0] || item.image || "/product-placeholder.svg",
+        stockCount: selected.stockCount,
+        available: isAvailable,
+      };
     }));
   }, []);
 
@@ -110,28 +142,34 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     const finalPrice = typeof product.price === "number" ? product.price : Number(product.price) || 0;
     const finalImage = product.images?.[0] || "/Home/images/015_kesari_rang__IMG_0124.jpg";
 
+    const matchedVariant = product.variantId
+      ? product.variants?.find(v => v.id === product.variantId)
+      : (product.variants?.find(v => v.name.toLowerCase() === size.toLowerCase()) ?? product.variants?.[0]);
+    const finalVariantId = product.variantId ?? matchedVariant?.id;
+
     setCart((prev) => {
       const existing = prev.findIndex(
-        (item) => item.slug === product.slug && (item.variantId || "") === (product.variantId || "") && item.size === size
+        (item) => item.slug === product.slug && (item.variantId || "") === (finalVariantId || "") && item.size === size
       );
       if (existing !== -1) {
         const copy = [...prev];
         const nextQty = Math.min(limit, copy[existing].quantity + qty);
-        copy[existing] = { ...copy[existing], quantity: nextQty, available: true, price: finalPrice, image: finalImage, stockCount: product.stockCount };
+        copy[existing] = { ...copy[existing], quantity: nextQty, available: true, price: finalPrice, image: finalImage, stockCount: product.stockCount, variantId: finalVariantId };
         return copy;
       }
       return [
         ...prev,
         {
-          id: `${product.slug}-${size}-${product.variantId || "default"}`,
+          id: `${product.slug}-${size}-${finalVariantId || "default"}`,
           slug: product.slug,
           name: product.name,
           price: finalPrice,
           image: finalImage,
           size,
-          variantId: product.variantId,
+          variantId: finalVariantId,
           stockCount: product.stockCount,
           quantity: qty,
+          available: true,
         },
       ];
     });

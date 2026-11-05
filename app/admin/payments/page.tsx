@@ -52,7 +52,7 @@ export default async function PaymentsPage() {
 
   const mergedData = {
     ...paymentPage,
-    records: liveRecords.length > 0 ? liveRecords : paymentPage.records,
+    records: liveRecords,
   };
 
   return <RecordsPage data={mergedData} />;
