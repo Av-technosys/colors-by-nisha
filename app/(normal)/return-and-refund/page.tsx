@@ -58,7 +58,7 @@ export default function ReturnAndRefundPage() {
             </h3>
             <p className="mt-1">
               We offer customization services for selected products according to
-              the customer's preferences, such as size adjustments, design
+              the customer&apos;s preferences, such as size adjustments, design
               modifications, or other available customization options.
             </p>
             <p className="mt-3">

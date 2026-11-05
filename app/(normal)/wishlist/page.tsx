@@ -3,9 +3,9 @@
 import { QuickViewModal } from "@/components/shop/QuickViewModal";
 import { ProductCard } from "@/components/store/ProductCard";
 import { useStore } from "@/components/store/StoreContext";
-import { images, resolveHomeImage, type Product } from "@/data/home";
+import { resolveHomeImage, type Product } from "@/data/home";
 import { productsData, type ProductItem } from "@/data/products";
-import { allCatalogProducts, getProductByName, addRecentlyViewed, getRecentlyViewed } from "@/lib/store";
+import { getProductByName, addRecentlyViewed, getRecentlyViewed } from "@/lib/store";
 import Link from "next/link";
 import { useEffect, useState, useSyncExternalStore } from "react";
 
@@ -15,11 +15,10 @@ export default function WishlistPage() {
   const { wishlist, toggleWishlist, addToCart, setCartOpen } = useStore();
   const [selectedProduct, setSelectedProduct] = useState<ProductItem | null>(null);
   const [allProducts, setAllProducts] = useState<ProductItem[]>(productsData);
-  const [recentlyViewed, setRecentlyViewed] = useState<string[]>([]);
+  const [recentlyViewed] = useState<string[]>(() => typeof window !== "undefined" ? getRecentlyViewed() : []);
   const isMounted = useSyncExternalStore(noopSubscribe, () => true, () => false);
 
   useEffect(() => {
-    setRecentlyViewed(getRecentlyViewed());
     fetch("/api/search")
       .then((res) => res.json())
       .then((data) => {
