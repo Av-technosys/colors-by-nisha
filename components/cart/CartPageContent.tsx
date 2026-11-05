@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useState, useSyncExternalStore } from "react";
+import React, { useEffect, useState, useSyncExternalStore } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { formatINR, getAllProducts, type ProductItem } from "@/data/products";
+import { useRouter } from "next/navigation";
+import { formatINR, type ProductItem } from "@/data/products";
 import { useStore } from "@/components/store/StoreContext";
 import { QuickViewModal } from "@/components/shop/QuickViewModal";
 import { IoEyeOutline } from "react-icons/io5";
@@ -16,23 +17,19 @@ interface CartPageContentProps {
 
 export function CartPageContent({ initialCrossSellProducts }: CartPageContentProps = {}) {
   const isMounted = useSyncExternalStore(noopSubscribe, () => true, () => false);
-  const { cart, updateQuantity, removeFromCart, addToCart } = useStore();
+  const { cart, updateQuantity, removeFromCart, syncCart } = useStore();
+  const router = useRouter();
   const [selectedQuickProduct, setSelectedQuickProduct] = useState<ProductItem | null>(null);
-  const [orderNote, setOrderNote] = useState("");
   const [agreedTerms, setAgreedTerms] = useState(false);
   const [termsError, setTermsError] = useState(false);
 
-  // Shipping Calculator state
-  const [country, setCountry] = useState("India");
-  const [province, setProvince] = useState("Rajasthan");
-  const [zipCode, setZipCode] = useState("");
-  const [shippingCalculated, setShippingCalculated] = useState(false);
   const [crossSellIndex, setCrossSellIndex] = useState(0);
+  const allProducts = initialCrossSellProducts ?? [];
+  useEffect(() => {
+    if (initialCrossSellProducts) syncCart(initialCrossSellProducts);
+  }, [initialCrossSellProducts, syncCart]);
+  const hasUnavailableItems = cart.some(item => item.available === false || (item.stockCount !== undefined && item.quantity > item.stockCount));
 
-  // Cross sell products (uses dynamic products from database when available, fallback to catalog)
-  const allProducts = initialCrossSellProducts && initialCrossSellProducts.length > 0
-    ? initialCrossSellProducts
-    : getAllProducts();
   const crossSellProducts = allProducts.filter((p) => !cart.some((c) => c.slug === p.slug)).slice(0, 6);
 
   const subtotal = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
@@ -46,20 +43,7 @@ export function CartPageContent({ initialCrossSellProducts }: CartPageContentPro
     }
     setTermsError(false);
 
-    // Prepare WhatsApp checkout order text
-    const text = encodeURIComponent(
-      `Hello Colors by Nisha! I would like to checkout my Cart:\n${cart
-        .map((i) => `• ${i.name} (Qty: ${i.quantity}) - ${formatINR(i.price * i.quantity)}`)
-        .join("\n")}\n\n• Subtotal: ${formatINR(subtotal)}\n• Country/Province: ${country}, ${province} (${zipCode || "N/A"})\n• Note: ${
-        orderNote || "None"
-      }`
-    );
-    window.open(`https://wa.me/919799330455?text=${text}`, "_blank");
-  };
-
-  const handleEstimateShipping = (e: React.FormEvent) => {
-    e.preventDefault();
-    setShippingCalculated(true);
+    router.push("/checkout");
   };
 
   return (
@@ -166,6 +150,8 @@ export function CartPageContent({ initialCrossSellProducts }: CartPageContentPro
                                   {["XS", "S", "M", "L", "XL", "XXL", "Custom"].includes(item.size) ? `Size: ${item.size}` : `Option: ${item.size}`}
                                 </p>
                               )}
+                              {item.available === false && <p className="mt-2 text-xs text-[#9e5144]">Currently unavailable</p>}
+                              {item.stockCount !== undefined && item.quantity > item.stockCount && <p className="mt-2 text-xs text-[#9e5144]">Only {item.stockCount} available</p>}
                               <button
                                 onClick={() => removeFromCart(index)}
                                 className="mt-2 text-xs text-neutral-400 hover:text-red-600 underline underline-offset-2 transition cursor-pointer"
@@ -300,10 +286,10 @@ export function CartPageContent({ initialCrossSellProducts }: CartPageContentPro
                               </p>
                               <div className="mt-2 flex items-center gap-2">
                                 <button
-                                  onClick={() => addToCart(product, "M", 1)}
+                                  onClick={() => setSelectedQuickProduct(product)}
                                   className="rounded-md bg-[#2d254d] hover:bg-[#201938] px-3.5 py-1.5 font-display text-[10px] font-bold uppercase tracking-wider text-white shadow-2xs transition cursor-pointer"
                                 >
-                                  ADD TO CART
+                                  CHOOSE OPTIONS
                                 </button>
                                 <button
                                   onClick={() => setSelectedQuickProduct(product)}
@@ -370,89 +356,10 @@ export function CartPageContent({ initialCrossSellProducts }: CartPageContentPro
                   </div>
                 </div>
 
-                {/* Add Order Note */}
-                <div className="pt-2 border-t border-neutral-200/60">
-                  <label htmlFor="order-note" className="block text-xs font-semibold text-neutral-800 mb-2">
-                    Add Order Note
-                  </label>
-                  <textarea
-                    id="order-note"
-                    placeholder="Add Order Note"
-                    rows={3}
-                    value={orderNote}
-                    onChange={(e) => setOrderNote(e.target.value)}
-                    className="w-full rounded-md border border-neutral-200 bg-white p-3 text-xs text-ink placeholder:text-neutral-400 focus:border-[#2d254d] focus:ring-1 focus:ring-[#2d254d] outline-none transition resize-none shadow-2xs"
-                  />
-                </div>
+                <p className="border-t border-neutral-200/60 pt-4 text-xs leading-relaxed text-neutral-500">Shipping charges will be confirmed separately. No payment is collected when you submit your order.</p>
 
-                {/* Estimate Shipping Form */}
-                <div className="pt-2 border-t border-neutral-200/60">
-                  <h4 className="text-xs font-semibold text-neutral-800 mb-2.5">
-                    Estimate Shipping
-                  </h4>
-                  <form onSubmit={handleEstimateShipping} className="space-y-2.5">
-                    <div>
-                      <label className="text-[11px] text-neutral-500 block mb-1">Country/region</label>
-                      <select
-                        value={country}
-                        onChange={(e) => setCountry(e.target.value)}
-                        className="w-full rounded-md border border-neutral-200 bg-white px-3 py-2 text-xs text-ink focus:border-[#2d254d] outline-none"
-                      >
-                        <option value="India">India</option>
-                        <option value="United States">United States</option>
-                        <option value="United Kingdom">United Kingdom</option>
-                        <option value="United Arab Emirates">United Arab Emirates</option>
-                        <option value="Canada">Canada</option>
-                        <option value="Australia">Australia</option>
-                      </select>
-                    </div>
-
-                    <div>
-                      <label className="text-[11px] text-neutral-500 block mb-1">Province</label>
-                      <select
-                        value={province}
-                        onChange={(e) => setProvince(e.target.value)}
-                        className="w-full rounded-md border border-neutral-200 bg-white px-3 py-2 text-xs text-ink focus:border-[#2d254d] outline-none"
-                      >
-                        <option value="Rajasthan">Rajasthan</option>
-                        <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
-                        <option value="Delhi">Delhi</option>
-                        <option value="Maharashtra">Maharashtra</option>
-                        <option value="Gujarat">Gujarat</option>
-                        <option value="Karnataka">Karnataka</option>
-                        <option value="Uttar Pradesh">Uttar Pradesh</option>
-                        <option value="Punjab">Punjab</option>
-                        <option value="West Bengal">West Bengal</option>
-                      </select>
-                    </div>
-
-                    <div>
-                      <label className="text-[11px] text-neutral-500 block mb-1">Postal/ZIP code</label>
-                      <input
-                        type="text"
-                        placeholder="Postal/ZIP code"
-                        value={zipCode}
-                        onChange={(e) => setZipCode(e.target.value)}
-                        className="w-full rounded-md border border-neutral-200 bg-white px-3 py-2 text-xs text-ink placeholder:text-neutral-400 focus:border-[#2d254d] outline-none"
-                      />
-                    </div>
-
-                    <button
-                      type="submit"
-                      className="w-full rounded-md bg-[#2d254d] hover:bg-[#201938] py-2.5 px-4 font-display text-xs font-bold uppercase tracking-wider text-white shadow-2xs transition cursor-pointer"
-                    >
-                      ESTIMATE SHIPPING
-                    </button>
-                  </form>
-
-                  {shippingCalculated && (
-                    <div className="mt-3 rounded-md bg-emerald-50/80 p-2.5 text-center text-xs text-emerald-800 font-medium">
-                      ✓ Free Express Insured Shipping to {country} ({province})
-                    </div>
-                  )}
-                </div>
-
-                {/* Subtotal, Terms, Checkout Button */}
+                {hasUnavailableItems && <p role="alert" className="text-xs leading-relaxed text-[#9e5144]">Some items are unavailable or exceed current stock. Update your cart before checkout.</p>}
+                {/* Order subtotal */}
                 <div className="pt-4 border-t border-neutral-200/80 space-y-3">
                   <div className="flex justify-between items-baseline">
                     <span className="font-display font-semibold text-sm text-neutral-800">Subtotal:</span>
@@ -461,7 +368,7 @@ export function CartPageContent({ initialCrossSellProducts }: CartPageContentPro
                     </span>
                   </div>
                   <p className="text-[11px] text-neutral-500 leading-tight">
-                    Tax included and shipping calculated at checkout
+                    Items total. Shipping charges confirmed separately.
                   </p>
 
                   {/* Terms Checkbox */}
@@ -488,9 +395,10 @@ export function CartPageContent({ initialCrossSellProducts }: CartPageContentPro
                   {/* Checkout Button */}
                   <button
                     onClick={handleCheckout}
-                    className="w-full rounded-md bg-[#64597b] hover:bg-[#524867] py-3.5 px-6 font-display text-xs md:text-sm font-bold uppercase tracking-wider text-white shadow-xs transition-colors cursor-pointer text-center"
+                    disabled={hasUnavailableItems}
+                    className="w-full rounded-md bg-[#64597b] hover:bg-[#524867] py-3.5 px-6 font-display text-xs md:text-sm font-bold uppercase tracking-wider text-white shadow-xs transition-colors cursor-pointer text-center disabled:cursor-not-allowed disabled:opacity-50"
                   >
-                    CHECK OUT
+                    CONTINUE TO CHECKOUT
                   </button>
                 </div>
               </div>

@@ -1,0 +1,20 @@
+import Image from "next/image";
+import { formatINR } from "@/data/products";
+import type { OrderDetails } from "@/helpers/orders/service";
+import { StatusBadge } from "@/components/admin/AdminUI";
+
+export function OrderSummary({ order }: { order: OrderDetails }) {
+  const date = (value: Date) => new Intl.DateTimeFormat("en-IN", { dateStyle: "medium", timeZone: "Asia/Kolkata" }).format(value);
+  return <div className="space-y-6">
+    <section className="rounded-md border border-[#e8e3da] bg-white p-5 md:p-7">
+      <div className="mb-5 flex flex-wrap items-center justify-between gap-3"><h2 className="font-display text-xl">Order details</h2><StatusBadge status={order.status} /></div>
+      <p className="mb-5 text-xs text-neutral-400">Received {date(order.createdAt)}</p>
+      <div className="divide-y divide-[#eeeae4]">{order.items.map(item => <div key={item.id} className="flex gap-4 py-5"><div className="relative h-28 w-20 shrink-0 overflow-hidden rounded-md bg-neutral-100"><Image src={item.image} alt={item.productName} fill unoptimized sizes="80px" className="object-cover" /></div><div className="min-w-0 flex-1"><h3 className="font-display text-base">{item.productName}</h3><p className="mt-2 text-xs text-neutral-500">{item.size || "Standard"} · Quantity {item.quantity}</p>{item.productSku && <p className="mt-1 break-all text-xs text-neutral-400">SKU: {item.productSku}</p>}<p className="mt-3 text-sm">{formatINR(Number(item.productPrice) * item.quantity)}<span className="ml-2 text-xs text-neutral-400">{formatINR(Number(item.productPrice))} each</span></p></div></div>)}</div>
+      <dl className="space-y-3 border-t border-[#eeeae4] pt-5 text-sm"><div className="flex justify-between gap-4"><dt>Items total</dt><dd>{formatINR(Number(order.totalAmount))}</dd></div><div className="flex justify-between gap-4 text-xs text-neutral-500"><dt>Shipping charges</dt><dd>Confirmed separately</dd></div><div className="flex justify-between gap-4 text-xs text-neutral-500"><dt>Payment</dt><dd>{order.paidAt ? "Received" : "Pending"}</dd></div></dl>
+    </section>
+    <div className="grid gap-6 sm:grid-cols-2">
+      <section className="rounded-md border border-[#e8e3da] bg-white p-5 md:p-7"><h2 className="mb-4 font-display text-xl">Delivery address</h2><p className="text-sm">{order.shippingName || order.user?.fullName || "Customer account unavailable"}</p><p className="mt-3 whitespace-pre-line break-words text-sm leading-relaxed text-neutral-500">{order.addressLine1}{order.addressLine2 ? `, ${order.addressLine2}` : ""}<br />{order.city}, {order.state} {order.pincode}<br />India</p>{(order.shippingPhone || order.user?.mobile) && <p className="mt-3 text-sm text-neutral-500">{order.shippingPhone || order.user?.mobile}</p>}{order.user?.email && <p className="mt-2 break-all text-xs text-neutral-400">{order.user.email}</p>}</section>
+      <section className="rounded-md border border-[#e8e3da] bg-white p-5 md:p-7"><h2 className="mb-4 font-display text-xl">Delivery tracking</h2>{order.courierName ? <><p className="text-sm">{order.courierName}</p><p className="mt-2 break-all text-xs text-neutral-500">{order.trackingNumber || "Tracking number pending"}</p>{order.trackingUrl && /^https:\/\//i.test(order.trackingUrl) && <a href={order.trackingUrl} target="_blank" rel="noopener noreferrer" className="mt-4 inline-block text-sm text-purple underline underline-offset-4">Track shipment</a>}</> : <p className="text-sm leading-relaxed text-neutral-500">Tracking details will appear here after your order is dispatched.</p>}{order.estimatedDeliveryDate && <p className="mt-4 text-xs text-neutral-500">Estimated delivery: {date(order.estimatedDeliveryDate)}</p>}{order.shippedAt && <p className="mt-2 text-xs text-neutral-400">Shipped: {date(order.shippedAt)}</p>}{order.deliveredAt && <p className="mt-2 text-xs text-neutral-400">Delivered: {date(order.deliveredAt)}</p>}</section>
+    </div>
+  </div>;
+}

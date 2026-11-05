@@ -1,4 +1,4 @@
-import { relations } from "drizzle-orm";
+import { relations, sql } from "drizzle-orm";
 import {
   pgTable,
   uuid,
@@ -9,6 +9,8 @@ import {
   timestamp,
   boolean,
   date,
+  index,
+  uniqueIndex,
 } from "drizzle-orm/pg-core";
 
 
@@ -98,6 +100,91 @@ export const users = pgTable("users", {
   deletedAt: timestamp("deleted_at", { withTimezone: true }),
 });
 
+// Saved addresses
+export const addresses = pgTable("addresses", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  userId: uuid("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  fullName: varchar("full_name", { length: 120 }).notNull(),
+  phone: varchar("phone", { length: 20 }).notNull(),
+  street: text("street").notNull(),
+  locality: varchar("locality", { length: 80 }),
+  city: varchar("city", { length: 80 }).notNull(),
+  state: varchar("state", { length: 80 }).notNull(),
+  pincode: varchar("pincode", { length: 16 }).notNull(),
+  country: varchar("country", { length: 80 }).notNull().default("India"),
+  isDefault: boolean("is_default").notNull().default(false),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+}, (table) => [
+  index("addresses_user_idx").on(table.userId),
+  uniqueIndex("addresses_user_default_idx").on(table.userId).where(sql`${table.isDefault} = true`),
+]);
+
+// Order records
+export const orders = pgTable("orders", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  userId: uuid("user_id").references(() => users.id, { onDelete: "set null" }),
+  status: varchar("status", { length: 30 }).notNull().default("pending"),
+  paymentId: varchar("payment_id", { length: 100 }).unique(),
+  paidAt: timestamp("paid_at", { withTimezone: true }),
+  stockDeductedAt: timestamp("stock_deducted_at", { withTimezone: true }),
+  shippingName: varchar("shipping_name", { length: 120 }),
+  shippingPhone: varchar("shipping_phone", { length: 20 }),
+  trackingNumber: varchar("tracking_number", { length: 100 }),
+  trackingUrl: text("tracking_url"),
+  courierName: varchar("courier_name", { length: 100 }),
+  estimatedDeliveryDate: timestamp("estimated_delivery_date", { withTimezone: true }),
+  shippedAt: timestamp("shipped_at", { withTimezone: true }),
+  deliveredAt: timestamp("delivered_at", { withTimezone: true }),
+  addressLine1: varchar("address_line_1", { length: 500 }).notNull(),
+  addressLine2: varchar("address_line_2", { length: 500 }),
+  city: varchar("city", { length: 100 }).notNull(),
+  state: varchar("state", { length: 100 }).notNull(),
+  pincode: varchar("pincode", { length: 20 }).notNull(),
+  subtotalAmount: numeric("subtotal_amount", { precision: 12, scale: 2 }).notNull(),
+  totalAmount: numeric("total_amount", { precision: 12, scale: 2 }).notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().$onUpdate(() => new Date()).notNull(),
+}, (table) => [
+  index("orders_user_created_idx").on(table.userId, table.createdAt),
+  index("orders_status_idx").on(table.status),
+  index("orders_created_idx").on(table.createdAt),
+]);
+
+// Order items
+export const orderItems = pgTable("order_items", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  orderId: uuid("order_id").notNull().references(() => orders.id, { onDelete: "restrict" }),
+  productId: uuid("product_id").references(() => products.id, { onDelete: "set null" }),
+  variantId: uuid("variant_id").references(() => productVariants.id, { onDelete: "set null" }),
+  size: varchar("size", { length: 100 }),
+  quantity: integer("quantity").notNull(),
+  productName: varchar("product_name", { length: 255 }).notNull(),
+  productSlug: varchar("product_slug", { length: 255 }).notNull(),
+  productImage: text("product_image"),
+  productPrice: numeric("product_price", { precision: 10, scale: 2 }).notNull(),
+  productSku: varchar("product_sku", { length: 100 }),
+}, (table) => [index("order_items_order_idx").on(table.orderId)]);
+
+export const ordersRelations = relations(orders, ({ one, many }) => ({
+  user: one(users, { fields: [orders.userId], references: [users.id] }),
+  items: many(orderItems),
+}));
+
+export const orderItemsRelations = relations(orderItems, ({ one }) => ({
+  order: one(orders, { fields: [orderItems.orderId], references: [orders.id] }),
+  product: one(products, { fields: [orderItems.productId], references: [products.id] }),
+  variant: one(productVariants, { fields: [orderItems.variantId], references: [productVariants.id] }),
+}));
+
+export const usersRelations = relations(users, ({ many }) => ({
+  orders: many(orders),
+  addresses: many(addresses),
+}));
+
+export const addressesRelations = relations(addresses, ({ one }) => ({
+  user: one(users, { fields: [addresses.userId], references: [users.id] }),
+}));
+
 export const categoriesRelations = relations(categories, ({ many }) => ({
   products: many(products),
   blogs: many(blogs),
@@ -114,6 +201,7 @@ export const productsRelations = relations(products, ({ one, many }) => ({
   }),
   variants: many(productVariants), 
   media: many(productMedia),
+  orderItems: many(orderItems),
 }));
 
 export const productVariantsRelations = relations(productVariants, ({ one, many }) => ({
@@ -122,6 +210,7 @@ export const productVariantsRelations = relations(productVariants, ({ one, many 
     references: [products.id],
   }),
   media: many(productMedia),
+  orderItems: many(orderItems),
 }));
 
 export const productMediaRelations = relations(productMedia, ({ one }) => ({
@@ -144,4 +233,7 @@ export const contactUs = pgTable("contact_us", {
 
 export type ContactUs = typeof contactUs.$inferSelect;
 export type NewContactUs = typeof contactUs.$inferInsert;
- 
+export type Order = typeof orders.$inferSelect;
+export type NewOrder = typeof orders.$inferInsert;
+export type OrderItem = typeof orderItems.$inferSelect;
+export type NewOrderItem = typeof orderItems.$inferInsert;
