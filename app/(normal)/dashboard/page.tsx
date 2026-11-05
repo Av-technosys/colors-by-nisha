@@ -2,15 +2,13 @@ import { Suspense } from "react";
 import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import DashboardPageContent from "@/components/account/DashboardPageContent";
-import { readAccount } from "@/helpers/auth/account";
-import { syncUser } from "@/helpers/auth/users";
+import { getCustomerAccount } from "@/helpers/auth/addresses";
 
 async function Account() {
   const user = await currentUser();
   if (!user) redirect("/login");
-  const record = await syncUser(user);
-  if (!record || record.deletedAt) redirect("/login");
-  return <DashboardPageContent initialAccount={readAccount(user)} />;
+  const { account } = await getCustomerAccount(user);
+  return <DashboardPageContent initialAccount={account} />;
 }
 
 export default function DashboardPage() {

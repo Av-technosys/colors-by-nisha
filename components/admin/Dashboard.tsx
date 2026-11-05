@@ -1,7 +1,9 @@
 import Link from "next/link";
 import { ArrowRight, CreditCard, FileText, Mail, Package, Plus, ShoppingBag, Users } from "lucide-react";
 import { Photo } from "@/components/ui/Photo";
-import { orderPage, productPage } from "@/data/admin";
+import { productPage } from "@/data/admin";
+import { formatINR } from "@/data/products";
+import { orderReference, type listOrders } from "@/helpers/orders/service";
 import { PageHeading, StatusBadge } from "./AdminUI";
 import { RevenueChart } from "./RevenueChart";
 
@@ -12,7 +14,7 @@ const stats = [
   { label: "Your customers", value: "6", note: "5 active customer profiles", icon: Users },
 ];
 
-export function Dashboard() {
+export function Dashboard({ orders }: { orders: Awaited<ReturnType<typeof listOrders>> }) {
   return (
     <>
       <PageHeading
@@ -33,8 +35,8 @@ export function Dashboard() {
               <p className="text-xs text-neutral-500">{stat.label}</p>
               <span className="rounded-md bg-[#f5f2f8] p-2 text-[#8e7ba7]"><stat.icon size={17} aria-hidden="true" /></span>
             </div>
-            <p className="font-display text-[30px] leading-none text-purple">{stat.value}</p>
-            <p className="mt-3 text-[10px] text-neutral-400">{stat.note}</p>
+            <p className="font-display text-[30px] leading-none text-purple">{stat.label === "Total orders" ? orders.total : stat.value}</p>
+            <p className="mt-3 text-[10px] text-neutral-400">{stat.label === "Total orders" ? "Customer orders received" : stat.note}</p>
           </div>
         ))}
       </div>
@@ -80,7 +82,7 @@ export function Dashboard() {
         </div>
         <div className="overflow-x-auto">
           <table className="w-full whitespace-nowrap text-left text-xs">
-            <caption className="sr-only">Recent sample orders</caption>
+            <caption className="sr-only">Recent orders</caption>
             <thead className="bg-[#fbfaf8] text-[10px] uppercase tracking-[0.08em] text-neutral-400">
               <tr>
                 {["Order", "Customer", "Date", "Amount", "Status"].map(label => (
@@ -89,15 +91,16 @@ export function Dashboard() {
               </tr>
             </thead>
             <tbody className="divide-y divide-[#f0ede8]">
-              {orderPage.records.slice(0, 4).map(order => (
+              {orders.rows.slice(0, 4).map(order => (
                 <tr key={order.id}>
-                  <td className="px-6 py-4 font-display text-sm text-purple"><Link href="/admin/orders" className="hover:underline">{order.title}</Link></td>
-                  <td className="px-6 py-4 text-neutral-500">{order.fields.Customer}</td>
-                  <td className="px-6 py-4 text-neutral-400">{order.fields.Date}</td>
-                  <td className="px-6 py-4">{order.fields.Amount}</td>
+                  <td className="px-6 py-4 font-display text-sm text-purple"><Link href={`/admin/orders/${order.id}`} className="hover:underline">{orderReference(order.id)}</Link></td>
+                  <td className="px-6 py-4 text-neutral-500">{order.customerName || "Deleted customer"}</td>
+                  <td className="px-6 py-4 text-neutral-400">{new Intl.DateTimeFormat("en-IN", { dateStyle: "medium", timeZone: "Asia/Kolkata" }).format(order.createdAt)}</td>
+                  <td className="px-6 py-4">{formatINR(Number(order.totalAmount))}</td>
                   <td className="px-6 py-4"><StatusBadge status={order.status} /></td>
                 </tr>
               ))}
+              {!orders.rows.length && <tr><td colSpan={5} className="px-6 py-10 text-center text-neutral-400">No orders yet.</td></tr>}
             </tbody>
           </table>
         </div>

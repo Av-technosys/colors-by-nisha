@@ -78,6 +78,8 @@ export default function DashboardPageContent({ initialAccount }: { initialAccoun
             <div className="mt-6 flex items-center gap-2 border-t border-white/15 pt-4 text-[11px] text-white/60"><span className="size-1.5 rounded-md bg-[#d2bea1]" />Member since {joined}</div>
           </div>
           <div className="rounded-md border border-[#e8e3da] bg-white p-3">
+            <Link href="/orders" className="flex min-h-12 items-center justify-between rounded-md px-3 text-sm text-purple hover:bg-[#f7f5f1]">Your orders<ChevronRight size={14} aria-hidden="true" /></Link>
+            <Link href="/checkout" className="flex min-h-12 items-center justify-between rounded-md px-3 text-sm text-purple hover:bg-[#f7f5f1]">Continue checkout<ChevronRight size={14} aria-hidden="true" /></Link>
             <p className="px-3 pb-2 pt-3 text-[10px] font-medium uppercase tracking-[0.14em] text-neutral-400">Helpful information</p>
             <nav aria-label="Account policies">{policyLinks.map(({ key, label, icon: Icon }) => <button type="button" key={key} onClick={() => setActivePolicy(key)} className="flex min-h-12 w-full items-center gap-3 rounded-md px-3 text-left text-sm text-neutral-600 transition hover:bg-[#f7f5f1] hover:text-purple"><Icon size={16} className="shrink-0 text-neutral-400" aria-hidden="true" /><span className="flex-1">{label}</span><ChevronRight size={14} className="text-neutral-300" aria-hidden="true" /></button>)}</nav>
           </div>

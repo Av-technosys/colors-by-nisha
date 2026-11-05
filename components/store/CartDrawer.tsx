@@ -3,24 +3,15 @@
 import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { X, Trash2, Truck, FileText, Package } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { X, Trash2, Truck, Package } from "lucide-react";
 import { formatINR } from "@/data/products";
 import { useStore } from "./StoreContext";
 
 export function CartDrawer() {
   const { cart, cartOpen, setCartOpen, removeFromCart, updateQuantity } = useStore();
+  const router = useRouter();
   const drawerRef = useRef<HTMLDivElement>(null);
-
-  // Quick tools state
-  const [activeTab, setActiveTab] = useState<"note" | "shipping" | null>(null);
-  const [orderNote, setOrderNote] = useState("");
-  const [noteSaved, setNoteSaved] = useState(false);
-
-  // Shipping estimate state
-  const [country, setCountry] = useState("India");
-  const [province, setProvince] = useState("Rajasthan");
-  const [postalCode, setPostalCode] = useState("");
-  const [shippingCalculated, setShippingCalculated] = useState(false);
 
   // Terms agreement state
   const [termsAgreed, setTermsAgreed] = useState(true);
@@ -65,14 +56,8 @@ export function CartDrawer() {
       return;
     }
     setTermsError(false);
-    const message = encodeURIComponent(
-      `Hello Colors by Nisha! I would like to place an order:\n\n${cart
-        .map((i) => `• ${i.name} (Size: ${i.size}, Qty: ${i.quantity}) - ${formatINR(i.price)}`)
-        .join("\n")}\n\nSubtotal: ${formatINR(total)}${
-        orderNote ? `\nOrder Note: ${orderNote}` : ""
-      }\nShipping to: ${country}${province ? `, ${province}` : ""}${postalCode ? ` (${postalCode})` : ""}`
-    );
-    window.open(`https://wa.me/919799330455?text=${message}`, "_blank");
+    setCartOpen(false);
+    router.push("/checkout");
   };
 
   return (
@@ -247,120 +232,7 @@ export function CartDrawer() {
         {/* 4. Bottom Section: Quick Tool Tabs + Subtotal + Terms + Buttons */}
         {cart.length > 0 && (
           <div className="border-t border-neutral-200 bg-white px-6 py-4 space-y-3">
-            {/* Quick Actions Bar: [ Order Note Icon ] | [ Shipping Box Icon ] */}
-            <div className="grid grid-cols-2 border border-neutral-200 rounded-none divide-x divide-neutral-200 text-neutral-600">
-              <button
-                type="button"
-                onClick={() => setActiveTab(activeTab === "note" ? null : "note")}
-                className={`py-2.5 flex items-center justify-center hover:bg-neutral-50 transition cursor-pointer ${
-                  activeTab === "note" ? "bg-neutral-50 text-ink" : ""
-                }`}
-                title="Add Order Note"
-                aria-label="Add Order Note"
-              >
-                <FileText size={17} strokeWidth={1.7} />
-              </button>
-              <button
-                type="button"
-                onClick={() => setActiveTab(activeTab === "shipping" ? null : "shipping")}
-                className={`py-2.5 flex items-center justify-center hover:bg-neutral-50 transition cursor-pointer ${
-                  activeTab === "shipping" ? "bg-neutral-50 text-ink" : ""
-                }`}
-                title="Estimate Shipping"
-                aria-label="Estimate Shipping"
-              >
-                <Package size={17} strokeWidth={1.7} />
-              </button>
-            </div>
-
-            {/* Expandable Order Note Panel */}
-            {activeTab === "note" && (
-              <div className="p-3 bg-neutral-50 border border-neutral-200 rounded-md text-xs space-y-2 animate-in fade-in duration-200">
-                <label className="font-semibold text-neutral-700 block">
-                  Add a note to your order:
-                </label>
-                <textarea
-                  value={orderNote}
-                  onChange={(e) => {
-                    setOrderNote(e.target.value);
-                    setNoteSaved(false);
-                  }}
-                  rows={2}
-                  placeholder="Special instructions or tailoring preferences..."
-                  className="w-full rounded-md border border-neutral-300 bg-white p-2 text-xs text-ink focus:border-ink focus:outline-none"
-                />
-                <button
-                  type="button"
-                  onClick={() => setNoteSaved(true)}
-                  className="rounded-md bg-neutral-800 px-3 py-1.5 text-[11px] font-semibold text-white hover:bg-neutral-900 transition"
-                >
-                  {noteSaved ? "Saved ✓" : "Save Note"}
-                </button>
-              </div>
-            )}
-
-            {/* Expandable Shipping Estimator Panel */}
-            {activeTab === "shipping" && (
-              <div className="p-3 bg-neutral-50 border border-neutral-200 rounded-md text-xs space-y-2.5 animate-in fade-in duration-200">
-                <p className="font-semibold text-neutral-700">Estimate Shipping</p>
-                <div className="grid grid-cols-2 gap-2">
-                  <div>
-                    <label className="text-[10px] text-neutral-500 uppercase font-semibold block mb-0.5">
-                      Country
-                    </label>
-                    <select
-                      value={country}
-                      onChange={(e) => setCountry(e.target.value)}
-                      className="w-full rounded-md border border-neutral-300 bg-white p-1.5 text-xs text-ink"
-                    >
-                      <option value="India">India</option>
-                      <option value="United States">United States</option>
-                      <option value="United Kingdom">United Kingdom</option>
-                      <option value="United Arab Emirates">United Arab Emirates</option>
-                      <option value="Canada">Canada</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="text-[10px] text-neutral-500 uppercase font-semibold block mb-0.5">
-                      State/Province
-                    </label>
-                    <input
-                      type="text"
-                      value={province}
-                      onChange={(e) => setProvince(e.target.value)}
-                      placeholder="State"
-                      className="w-full rounded-md border border-neutral-300 bg-white p-1.5 text-xs text-ink"
-                    />
-                  </div>
-                </div>
-                <div>
-                  <label className="text-[10px] text-neutral-500 uppercase font-semibold block mb-0.5">
-                    Postal/ZIP code
-                  </label>
-                  <input
-                    type="text"
-                    value={postalCode}
-                    onChange={(e) => setPostalCode(e.target.value)}
-                    placeholder="e.g. 302021"
-                    className="w-full rounded-md border border-neutral-300 bg-white p-1.5 text-xs text-ink"
-                  />
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setShippingCalculated(true)}
-                  className="rounded-md bg-neutral-800 px-3 py-1.5 text-[11px] font-semibold text-white hover:bg-neutral-900 transition"
-                >
-                  Calculate
-                </button>
-                {shippingCalculated && (
-                  <p className="text-[11px] text-emerald-700 font-medium pt-1">
-                    {hasFreeShipping
-                      ? "Free Standard Domestic Delivery applies to your order."
-                      : "Standard shipping: Rs. 250.00 (Free above Rs. 10,000)"}
-                  </p>
-                )}
-              </div>
-            )}
+            <p className="text-xs leading-relaxed text-neutral-500">Shipping charges will be confirmed separately.</p>
 
             {/* Subtotal Row (Matches Screenshot: Subtotal Rs. 24,500.00) */}
             <div className="flex items-center justify-between pt-1">
