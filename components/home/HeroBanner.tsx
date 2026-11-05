@@ -44,7 +44,7 @@ export function HeroBanner({ onShop, paused = false }: { onShop: () => void; pau
     <>
       <link rel="preload" as="image" href={slides[0].image} fetchPriority="high" />
       <section
-        className="group relative isolate h-[calc(100svh-100px)] w-full overflow-hidden bg-[#6e573c] text-white lg:h-svh"
+        className="group relative isolate min-h-[360px] h-[calc(100svh-132px-env(safe-area-inset-bottom))] md:h-[calc(100svh-88px)] w-full overflow-hidden bg-[#6e573c] text-white lg:h-svh"
         aria-roledescription="carousel"
         aria-label="Featured collections"
         onMouseEnter={() => setHovered(true)}
@@ -93,7 +93,7 @@ export function HeroBanner({ onShop, paused = false }: { onShop: () => void; pau
               </motion.div>
               <div className="absolute inset-0 bg-black/10" />
               <motion.div
-                className="absolute inset-x-5 bottom-[110px] text-center md:inset-x-6 md:bottom-[70px]"
+                className="absolute inset-x-5 bottom-16 text-center md:inset-x-6 md:bottom-[70px]"
                 initial={{ opacity: 1, y: 16 }}
                 animate={{ opacity: active ? 1 : 0, y: active ? 0 : 16 }}
                 transition={{ duration: reducedMotion ? 0 : 0.9, delay: active && !reducedMotion ? 0.25 : 0, ease }}
@@ -110,7 +110,7 @@ export function HeroBanner({ onShop, paused = false }: { onShop: () => void; pau
         <button className="absolute right-6 top-1/2 z-10 hidden size-[46px] place-items-center rounded-md border border-white/40 bg-white/10 opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100 md:grid" aria-label="Next slide" onClick={() => changeSlide((slide + 1) % slides.length)}>
           <Icon name="arrow" />
         </button>
-        <div className="absolute bottom-[85px] left-1/2 z-10 flex -translate-x-1/2 gap-3 md:bottom-6">
+        <div className="absolute bottom-6 left-1/2 z-10 flex -translate-x-1/2 gap-3 md:bottom-6">
           {slides.map((item, index) => (
             <button className="size-1.5 rounded-md bg-white/45 transition-colors aria-current:bg-white aria-current:outline aria-current:outline-1 aria-current:outline-offset-8 aria-current:outline-white" key={item.image} onClick={() => changeSlide(index)} aria-label={`Show ${item.title}`} aria-current={slide === index} />
           ))}

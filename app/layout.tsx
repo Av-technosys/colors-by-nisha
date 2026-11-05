@@ -27,7 +27,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={`${montserrat.variable} ${outfit.variable} scroll-smooth scroll-pt-[105px] motion-reduce:scroll-auto lg:scroll-pt-[135px]`}>
-      <body className="bg-white font-sans text-sm leading-[1.714] text-ink md:text-[15px] [&_button]:cursor-pointer [&_button]:touch-manipulation [&_a]:touch-manipulation [&_:is(button,a,input):focus-visible]:outline-2 [&_:is(button,a,input):focus-visible]:outline-offset-4 [&_:is(button,a,input):focus-visible]:outline-[#a66c40]">
+      <body className="bg-white font-sans text-sm leading-[1.714] text-ink md:text-[15px] [&_button]:cursor-pointer max-sm:[&_input]:text-base max-sm:[&_select]:text-base max-sm:[&_textarea]:text-base [&_button]:touch-manipulation [&_a]:touch-manipulation [&_:is(button,a,input):focus-visible]:outline-2 [&_:is(button,a,input):focus-visible]:outline-offset-4 [&_:is(button,a,input):focus-visible]:outline-[#a66c40]">
         <ClerkProvider signInUrl="/login" signUpUrl="/signup" signInFallbackRedirectUrl="/dashboard" signUpFallbackRedirectUrl="/dashboard">
           <StoreProvider>
             {children}

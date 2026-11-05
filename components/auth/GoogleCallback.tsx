@@ -1,6 +1,7 @@
 "use client";
 
 import { HandleSSOCallback, useClerk, useSignIn } from "@clerk/nextjs";
+import { consumeReturnPath } from "@/helpers/auth/return-path";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -37,7 +38,7 @@ export function GoogleCallback() {
       <HandleSSOCallback
         navigateToApp={async ({ session, decorateUrl }) => {
           if (session?.currentTask) { await clerk.redirectToTasks({ redirectUrl: "/dashboard" }); return; }
-          const destination = decorateUrl("/dashboard");
+          const destination = decorateUrl(consumeReturnPath());
           if (destination.startsWith("http")) window.location.assign(destination);
           else router.replace(destination);
         }}

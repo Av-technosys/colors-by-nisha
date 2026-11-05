@@ -43,6 +43,13 @@
       "when": 1793855648976,
       "tag": "0005_lucky_luminals",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1793858210296,
+      "tag": "0006_empty_unus",
+      "breakpoints": true
     }
   ]
 }

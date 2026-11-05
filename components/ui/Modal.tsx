@@ -37,7 +37,7 @@ export function Modal({ children, title, onClose, className = "" }: { children: 
   }, [onClose]);
 
   return <div className="fixed inset-0 z-60 flex items-center justify-center bg-black/45 p-4 md:p-6" onClick={onClose}>
-    <div ref={ref} role="dialog" aria-modal="true" aria-label={title} tabIndex={-1} className={`relative max-h-[85dvh] overflow-auto rounded-md bg-white outline-none md:max-h-[90dvh] ${className}`} onClick={event => event.stopPropagation()}>
+    <div ref={ref} role="dialog" aria-modal="true" aria-label={title} tabIndex={-1} className={`relative min-w-0 max-h-[calc(100dvh-2rem)] overflow-auto overscroll-contain rounded-md bg-white outline-none md:max-h-[calc(100dvh-3rem)] ${className}`} onClick={event => event.stopPropagation()}>
       <button className="absolute right-2.5 top-2.5 z-10 grid size-9 place-items-center rounded-md bg-white" aria-label="Close" onClick={onClose}><Icon name="close" /></button>
       {children}
     </div>

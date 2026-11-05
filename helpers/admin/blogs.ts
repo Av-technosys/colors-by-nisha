@@ -2,7 +2,7 @@ import "server-only";
 
 import { desc, eq } from "drizzle-orm";
 import { db } from "@/lib/db";
-import { blogs, categories } from "@/lib/db/schema";
+import { blogs, blogCategories } from "@/lib/db/schema";
 import { validateId } from "./validation";
 import { sanitizeBlogContent } from "./blog-content.server";
 import type { AdminBlog } from "@/components/admin/blogs/blog-fields";
@@ -12,12 +12,12 @@ export async function getBlogList() {
     id: blogs.id,
     title: blogs.title,
     slug: blogs.slug,
-    category: categories.name,
+    category: blogCategories.name,
     categoryId: blogs.categoryId,
     authorName: blogs.authorName,
     publishDate: blogs.publishDate,
     isDraft: blogs.isDraft,
-  }).from(blogs).innerJoin(categories, eq(blogs.categoryId, categories.id)).orderBy(desc(blogs.createdAt));
+  }).from(blogs).innerJoin(blogCategories, eq(blogs.categoryId, blogCategories.id)).orderBy(desc(blogs.createdAt));
 }
 
 export async function getBlog(id: string): Promise<AdminBlog | undefined> {

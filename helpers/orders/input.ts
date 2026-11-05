@@ -1,6 +1,9 @@
 export const orderStatuses = ["pending", "processing", "packed", "shipped", "out_for_delivery", "delivered", "cancelled"] as const;
 export type OrderStatus = typeof orderStatuses[number];
-export class OrderInputError extends Error {}
+export class OrderInputError extends Error {
+  code?: string;
+  constructor(message: string, code?: string) { super(message); this.code = code; }
+}
 
 export const statusLabels: Record<OrderStatus, string> = {
   pending: "Pending", processing: "Processing", packed: "Packed", shipped: "Shipped",
@@ -8,8 +11,8 @@ export const statusLabels: Record<OrderStatus, string> = {
 };
 
 const transitions: Record<OrderStatus, readonly OrderStatus[]> = {
-  pending: ["processing", "cancelled"], processing: ["packed", "cancelled"],
-  packed: ["shipped", "cancelled"], shipped: ["out_for_delivery", "delivered"],
+  pending: ["processing", "cancelled"], processing: ["packed", "shipped", "out_for_delivery", "delivered", "cancelled"],
+  packed: ["shipped", "out_for_delivery", "delivered", "cancelled"], shipped: ["out_for_delivery", "delivered"],
   out_for_delivery: ["delivered"], delivered: [], cancelled: [],
 };
 export function nextStatuses(status: string) { return transitions[status as OrderStatus] ?? []; }
@@ -37,10 +40,10 @@ export function parseOrderLines(input: unknown): OrderLine[] {
   const lines = new Map<string, OrderLine>();
   for (const item of input) {
     if (!item || typeof item !== "object" || typeof item.slug !== "string" || !item.slug.trim() || item.slug.length > 255) throw new OrderInputError("Invalid cart item. Please review your cart.");
-    if (item.variantId !== undefined && !isUuid(item.variantId)) throw new OrderInputError("Invalid product option. Please add this item again.");
+    if (item.variantId !== undefined && item.variantId !== "v1" && !isUuid(item.variantId)) throw new OrderInputError("Invalid product option. Please add this item again.");
     if (typeof item.size !== "string" || item.size.length > 100) throw new OrderInputError("Invalid product size.");
     if (!Number.isInteger(item.quantity) || item.quantity < 1 || item.quantity > 99) throw new OrderInputError("Item quantities must be between 1 and 99.");
-    const line = { slug: item.slug.trim(), variantId: item.variantId, size: item.size.trim(), quantity: item.quantity };
+    const line = { slug: item.slug.trim(), variantId: item.variantId === "v1" ? undefined : item.variantId, size: item.size.trim(), quantity: item.quantity };
     const key = JSON.stringify([line.slug, line.variantId, line.size]);
     const previous = lines.get(key);
     if (previous) previous.quantity += line.quantity;

@@ -1,3 +1,4 @@
+import { FormSkeleton } from "@/components/ui/Skeleton";
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { connection } from "next/server";
@@ -21,5 +22,5 @@ async function EditProduct({ params }: PageProps) {
 }
 
 export default function EditProductPage({ params }: PageProps) {
-  return <Suspense fallback={<p className="text-sm text-neutral-500">Loading product…</p>}><EditProduct params={params} /></Suspense>;
+  return <Suspense fallback={<FormSkeleton />}><EditProduct params={params} /></Suspense>;
 }

@@ -33,7 +33,7 @@ export async function readCatalog(read: () => Promise<CatalogData>): Promise<Cat
       if (attempt === 0 && (connectionErrors.includes(code) || disconnected)) continue;
       console.error("Admin table data could not be loaded:", code || "unknown error");
       if (["42P01", "42703"].includes(code)) {
-        return { records: [], error: "The database schema needs updating. Apply the latest migration, then retry." };
+        return { records: [], error: "These records are temporarily unavailable. Please try again shortly." };
       }
       return { records: [], error: "The records could not be loaded. Please try again." };
     }

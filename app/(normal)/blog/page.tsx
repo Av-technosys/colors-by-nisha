@@ -1,3 +1,4 @@
+import { CollectionSkeleton } from "@/components/ui/PageSkeletons";
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { BlogPageContent } from "@/components/blog/BlogPageContent";
@@ -17,7 +18,7 @@ async function BlogListContent() {
 export default function BlogPage() {
   return (
     <main className="min-h-screen bg-white text-ink flex flex-col">
-      <Suspense fallback={<div className="min-h-[50vh] grid place-items-center text-sm text-neutral-400 font-sans">Loading stories...</div>}>
+      <Suspense fallback={<CollectionSkeleton title="Blogs" blog />}>
         <BlogListContent />
       </Suspense>
     </main>

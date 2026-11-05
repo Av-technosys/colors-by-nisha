@@ -6,17 +6,17 @@ import { useStore } from "@/components/store/StoreContext";
 import { resolveHomeImage, type Product } from "@/data/home";
 import { productsData, type ProductItem } from "@/data/products";
 import { getProductByName, addRecentlyViewed, getRecentlyViewed } from "@/lib/store";
+import { Skeleton } from "@/components/ui/Skeleton";
 import Link from "next/link";
-import { useEffect, useState, useSyncExternalStore } from "react";
+import { useEffect, useState } from "react";
 
-const noopSubscribe = () => () => {};
 
 export default function WishlistPage() {
-  const { wishlist, toggleWishlist, addToCart, setCartOpen } = useStore();
+  const { cartReady: isMounted, wishlist, toggleWishlist, addToCart, setCartOpen } = useStore();
   const [selectedProduct, setSelectedProduct] = useState<ProductItem | null>(null);
   const [allProducts, setAllProducts] = useState<ProductItem[]>(productsData);
   const [recentlyViewed] = useState<string[]>(() => typeof window !== "undefined" ? getRecentlyViewed() : []);
-  const isMounted = useSyncExternalStore(noopSubscribe, () => true, () => false);
+  const [loadingProducts, setLoadingProducts] = useState(true);
 
   useEffect(() => {
     fetch("/api/search")
@@ -26,7 +26,7 @@ export default function WishlistPage() {
           setAllProducts(data.products);
         }
       })
-      .catch(() => {});
+      .catch(() => {}).finally(() => setLoadingProducts(false));
   }, []);
 
   // Map wishlist strings to Product objects with actual dynamic images
@@ -157,7 +157,7 @@ export default function WishlistPage() {
 
   return (
     <main className="min-h-screen bg-white py-10 md:py-14">
-      <div className="mx-auto w-[calc(100%-2rem)] max-w-[1328px] md:w-full">
+      <div className="mx-auto w-[calc(100%-2rem)] max-w-[1328px] sm:w-[calc(100%-3rem)] lg:w-[calc(100%-4rem)]">
         {/* 1. Breadcrumbs */}
         <nav
           className="text-center font-sans text-xs md:text-sm text-neutral-500 mb-2"
@@ -176,7 +176,7 @@ export default function WishlistPage() {
         </h1>
 
         {/* 3. Wishlist Content Section */}
-        {isMounted && wishlistProducts.length > 0 ? (
+        {!isMounted || loadingProducts ? <div role="status" aria-label="Loading wishlist" className="grid grid-cols-2 gap-5 lg:grid-cols-4">{[0, 1, 2, 3].map(item => <div key={item} className="space-y-3"><Skeleton className="aspect-[2/3] w-full" /><Skeleton className="h-4 w-3/4" /></div>)}</div> : wishlistProducts.length > 0 ? (
           <div>
             <div className="grid grid-cols-2 gap-4 sm:gap-6 md:grid-cols-3 lg:grid-cols-4 lg:gap-8">
               {wishlistProducts.map((product) => (

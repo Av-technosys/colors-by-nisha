@@ -1,3 +1,4 @@
+import { ProductSkeleton } from "@/components/ui/PageSkeletons";
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
@@ -28,7 +29,7 @@ async function ProductContent({ params }: PageProps) {
 }
 
 export default function ProductDetailPage(props: PageProps) {
-  return <Suspense fallback={<div className="min-h-[60vh] grid place-items-center text-sm text-neutral-500">Loading product…</div>}>
+  return <Suspense fallback={<ProductSkeleton />}>
     <ProductContent {...props} />
   </Suspense>;
 }

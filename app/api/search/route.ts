@@ -24,7 +24,7 @@ export async function GET(request: Request) {
     });
 
     return NextResponse.json({ products: filtered });
-  } catch (err) {
+  } catch {
     if (!q) {
       return NextResponse.json({ products: productsData });
     }

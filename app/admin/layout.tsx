@@ -2,6 +2,7 @@ import { requireAdmin } from "@/helpers/auth/access";
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { AdminShell } from "@/components/admin/AdminShell";
+import { TableSkeleton } from "@/components/ui/Skeleton";
 
 export const metadata: Metadata = {
   title: { default: "Dashboard | Colors by Nisha", template: "%s | Colors by Nisha Admin" },
@@ -10,14 +11,14 @@ export const metadata: Metadata = {
 
 async function AuthorizedAdmin({ children }: { children: React.ReactNode }) {
   await requireAdmin();
-  return <AdminShell>{children}</AdminShell>;
+  return children;
 }
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
-    <Suspense fallback={null}>
+    <AdminShell><Suspense fallback={<TableSkeleton />}>
       <AuthorizedAdmin>{children}</AuthorizedAdmin>
-    </Suspense>
+    </Suspense></AdminShell>
   );
 }
 

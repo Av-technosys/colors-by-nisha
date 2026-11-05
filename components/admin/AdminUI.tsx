@@ -10,9 +10,9 @@ type PageHeadingProps = {
 export function PageHeading({ eyebrow, title, description, action }: PageHeadingProps) {
   return (
     <div className="mb-7 flex flex-wrap items-end justify-between gap-5">
-      <div>
+      <div className="min-w-0">
         <p className="mb-2 text-[10px] uppercase tracking-[0.22em] text-[#94764d]">{eyebrow}</p>
-        <h1 className="font-display text-3xl leading-tight tracking-tight sm:text-[34px]">{title}</h1>
+        <h1 className="break-words font-display text-3xl leading-tight tracking-tight sm:text-[34px]">{title}</h1>
         <p className="mt-2 max-w-xl text-xs leading-relaxed text-neutral-500 sm:text-[13px]">{description}</p>
       </div>
       {action}

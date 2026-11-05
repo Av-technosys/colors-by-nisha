@@ -14,8 +14,8 @@ export function BlogPageContent({ posts: initialPosts }: BlogPageContentProps = 
 
   return (
     <div className="bg-white text-ink pb-10 md:pb-14">
-      {/* Top Breadcrumb & Heading*/}
-      <section className="mx-auto w-[calc(100%-2rem)] max-w-[1328px] md:w-full pt-8 pb-6 md:pt-10 md:pb-8 text-center">
+      {/* Blog heading */}
+      <section className="mx-auto w-[calc(100%-2rem)] max-w-[1328px] sm:w-[calc(100%-3rem)] lg:w-[calc(100%-4rem)] pt-8 pb-6 md:pt-10 md:pb-8 text-center">
         {/* Breadcrumb: Home · Blogs */}
         <nav aria-label="Breadcrumb" className="mb-2">
           <ol className="inline-flex items-center gap-2 text-xs text-neutral-500 font-medium font-sans">
@@ -41,7 +41,7 @@ export function BlogPageContent({ posts: initialPosts }: BlogPageContentProps = 
       </section>
 
       {/* Main Content Layout: Left Sidebar (Popular Posts) + Right Main Grid */}
-      <div className="mx-auto w-[calc(100%-2rem)] max-w-[1328px] md:w-full">
+      <div className="mx-auto w-[calc(100%-2rem)] max-w-[1328px] sm:w-[calc(100%-3rem)] lg:w-[calc(100%-4rem)]">
         <div className="flex flex-col lg:flex-row gap-10 lg:gap-12 items-start">
           {/* Left Sidebar: Popular Posts */}
           <aside className="w-full lg:w-[280px] shrink-0">

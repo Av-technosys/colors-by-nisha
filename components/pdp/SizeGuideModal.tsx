@@ -31,18 +31,18 @@ export function SizeGuideModal({ isOpen, onClose }: SizeGuideModalProps) {
       aria-label="Size Guide"
     >
       <div
-        className="relative w-full max-w-xl rounded-md bg-white p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-200"
+        className="relative max-h-[calc(100dvh-2rem)] w-full max-w-xl overflow-y-auto rounded-md bg-white p-4 sm:p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-200"
         style={{ overscrollBehavior: "contain" }}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center justify-between border-b border-neutral-200 pb-4">
+        <div className="flex items-start justify-between gap-3 border-b border-neutral-200 pb-4">
           <div>
             <h2 className="font-display text-xl font-medium tracking-wide uppercase text-ink">Size Guide</h2>
             <p className="text-xs text-neutral-500">Standard measurements for lehengas & ethnic ensembles</p>
           </div>
           <button
             onClick={onClose}
-            className="grid size-8 place-items-center rounded-md text-neutral-500 hover:bg-neutral-100"
+            className="grid size-8 shrink-0 place-items-center rounded-md text-neutral-500 hover:bg-neutral-100"
             aria-label="Close size guide"
           >
             ✕

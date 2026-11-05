@@ -1,8 +1,11 @@
 "use client";
 
+import { friendlyError, UserFacingError } from "@/helpers/errors";
+
 import { useClerk, useSignIn, useSignUp } from "@clerk/nextjs";
 import { FcGoogle } from "react-icons/fc";
 import Image from "next/image";
+import { consumeReturnPath, rememberReturnPath } from "@/helpers/auth/return-path";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -40,6 +43,9 @@ export default function AuthPage({ mode }: AuthPageProps) {
   const isSocialCompletion = !isLogin && searchParams.get("sso") === "complete";
   const otpFlow = searchParams.get("flow") || "signup";
   const isResetPassword = isForgot && searchParams.get("step") === "password";
+
+  const requestedReturn = searchParams.get("redirect_url");
+  useEffect(() => { rememberReturnPath(requestedReturn); }, [requestedReturn]);
 
   // Form Fields (all blank by default)
   const [fullName, setFullName] = useState("");
@@ -143,13 +149,7 @@ export default function AuthPage({ mode }: AuthPageProps) {
   };
 
   function showError(error: unknown) {
-    let message = "The request could not be completed. Please try again.";
-    if (error instanceof Error) message = error.message;
-    if (typeof error === "object" && error !== null) {
-      if ("longMessage" in error && typeof error.longMessage === "string") message = error.longMessage;
-      else if ("message" in error && typeof error.message === "string") message = error.message;
-    }
-    setError(message);
+    setError(friendlyError(error, "We couldn’t complete sign-in. Please check your details and try again."));
   }
 
   async function check(request: Promise<{ error: unknown }>) {
@@ -158,14 +158,14 @@ export default function AuthPage({ mode }: AuthPageProps) {
   }
 
   async function finish(resource: typeof signIn | typeof signUp) {
-    if (resource.status !== "complete") throw new Error("Please complete the required account verification.");
+    if (resource.status !== "complete") throw new UserFacingError("Please complete the required account verification.");
     await check(resource.finalize({
       navigate: async ({ session, decorateUrl }) => {
         if (session?.currentTask) {
           await clerk.redirectToTasks({ redirectUrl: "/dashboard" });
           return;
         }
-        const destination = decorateUrl("/dashboard");
+        const destination = decorateUrl(consumeReturnPath(requestedReturn));
         if (destination.startsWith("http")) window.location.assign(destination);
         else router.replace(destination);
       },
@@ -183,7 +183,7 @@ export default function AuthPage({ mode }: AuthPageProps) {
       return "phone";
     }
     if (factors.some(factor => factor.strategy === "totp")) return "totp";
-    throw new Error("This account requires a verification method that is not supported on this screen. Please contact support.");
+    throw new UserFacingError("We couldn’t complete verification. Please try another sign-in method or contact us.");
   }
 
   const handleResendOtp = async () => {
@@ -259,7 +259,7 @@ export default function AuthPage({ mode }: AuthPageProps) {
         else if (signUp.unverifiedFields.includes("email_address")) {
           await check(signUp.verifications.sendEmailCode());
           router.push(`/verify-otp?flow=signup&email=${encodeURIComponent(signUp.emailAddress || email.trim())}`);
-        } else throw new Error("Please complete the required account details before continuing.");
+        } else throw new UserFacingError("Please complete the required account details before continuing.");
       } catch (error) { showError(error); }
       finally { setIsSubmitting(false); }
       return;
@@ -282,7 +282,7 @@ export default function AuthPage({ mode }: AuthPageProps) {
           const flow = await sendSignInCode();
           router.push(`/verify-otp?flow=${flow}&email=${encodeURIComponent(email.trim())}`);
         } else if (signIn.status === "needs_new_password") router.replace("/forgot-password?step=password");
-        else throw new Error("Additional account verification is required. Please try again or contact support.");
+        else throw new UserFacingError("Additional account verification is required. Please try again or contact support.");
       } else {
         await check(signUp.password({
           emailAddress: email.trim(), password, legalAccepted: agreedTerms,
@@ -290,7 +290,7 @@ export default function AuthPage({ mode }: AuthPageProps) {
         }));
         if (signUp.missingFields.includes("first_name") || signUp.missingFields.includes("last_name")) {
           const [firstName, ...lastName] = fullName.trim().split(/\s+/);
-          if (signUp.missingFields.includes("last_name") && !lastName.length) throw new Error("Please enter your first and last name.");
+          if (signUp.missingFields.includes("last_name") && !lastName.length) throw new UserFacingError("Please enter your first and last name.");
           await check(signUp.update({ firstName, lastName: lastName.join(" ") }));
         }
         await check(signUp.verifications.sendEmailCode());
@@ -330,7 +330,7 @@ export default function AuthPage({ mode }: AuthPageProps) {
   };
 
   return (
-    <main className="min-h-screen lg:h-screen w-full flex flex-col lg:flex-row bg-white overflow-x-hidden lg:overflow-hidden select-none relative">
+    <main className="min-h-dvh lg:h-dvh w-full flex flex-col lg:flex-row bg-white overflow-x-hidden lg:overflow-hidden select-none relative">
       {/* FLOATING TOAST / ACTION NOTIFICATION*/}
       {toast && (
         <aside
@@ -400,7 +400,7 @@ export default function AuthPage({ mode }: AuthPageProps) {
           </p>
         </div>
       </div>
-      <div className="w-full lg:w-1/2 min-h-screen lg:h-full flex flex-col justify-center items-center px-5 sm:px-8 lg:px-10 xl:px-14 py-6 sm:py-8 lg:py-4 overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden bg-white">
+      <div className="w-full lg:w-1/2 min-h-dvh lg:h-full flex flex-col justify-center items-center px-5 sm:px-8 lg:px-10 xl:px-14 py-6 sm:py-8 lg:py-4 overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden bg-white">
         <div className="w-full max-w-[430px] flex flex-col justify-center my-auto animate-in fade-in duration-300">
           {/* Brand Logo & Header */}
           <div className="text-center mb-3 sm:mb-4 flex flex-col items-center">
@@ -484,7 +484,7 @@ export default function AuthPage({ mode }: AuthPageProps) {
                           value={digit}
                           onChange={(e) => handleOtpChange(idx, e.target.value)}
                           onKeyDown={(e) => handleOtpKeyDown(idx, e)}
-                          className="h-11 w-10 sm:h-12 sm:w-11 rounded-md border border-neutral-300 bg-white text-center font-display text-lg font-bold text-ink outline-none focus:border-[#2d254d] focus:ring-2 focus:ring-[#2d254d]/20 transition shadow-2xs"
+                          className="h-11 min-w-0 w-[calc((100%-2.5rem)/6)] max-w-10 sm:h-12 sm:w-11 sm:max-w-none rounded-md border border-neutral-300 bg-white text-center font-display text-lg font-bold text-ink outline-none focus:border-[#2d254d] focus:ring-2 focus:ring-[#2d254d]/20 transition shadow-2xs"
                         />
                       ))}
                     </div>

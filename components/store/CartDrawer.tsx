@@ -1,21 +1,18 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { X, Trash2, Truck, Package } from "lucide-react";
 import { formatINR } from "@/data/products";
+import { Button } from "@/components/ui/Button";
 import { useStore } from "./StoreContext";
 
 export function CartDrawer() {
   const { cart, cartOpen, setCartOpen, removeFromCart, updateQuantity } = useStore();
   const router = useRouter();
   const drawerRef = useRef<HTMLDivElement>(null);
-
-  // Terms agreement state
-  const [termsAgreed, setTermsAgreed] = useState(true);
-  const [termsError, setTermsError] = useState(false);
 
   // Close on Escape key
   useEffect(() => {
@@ -51,11 +48,6 @@ export function CartDrawer() {
   const hasFreeShipping = total >= freeShippingThreshold;
 
   const handleCheckout = () => {
-    if (!termsAgreed) {
-      setTermsError(true);
-      return;
-    }
-    setTermsError(false);
     setCartOpen(false);
     router.push("/checkout");
   };
@@ -71,12 +63,12 @@ export function CartDrawer() {
     >
       <div
         ref={drawerRef}
-        className="relative flex h-full w-full max-w-[460px] sm:max-w-[480px] flex-col bg-white shadow-2xl transition-transform animate-in slide-in-from-right duration-300"
+        className="relative flex h-dvh w-full overflow-y-auto max-w-[460px] sm:max-w-[480px] flex-col bg-white shadow-2xl transition-transform animate-in slide-in-from-right duration-300"
         style={{ overscrollBehavior: "contain" }}
         onClick={(e) => e.stopPropagation()}
       >
         {/* 1. Header: Shopping Cart (Count) + Close button */}
-        <div className="flex items-center justify-between border-b border-neutral-100 px-6 py-4">
+        <div className="flex shrink-0 items-center justify-between border-b border-neutral-100 px-4 py-4 sm:px-6">
           <h2 className="font-display text-base sm:text-lg font-bold tracking-tight text-ink">
             Shopping Cart ({totalCount})
           </h2>
@@ -126,7 +118,7 @@ export function CartDrawer() {
 
         {/* 3. Items List Area */}
         <div
-          className="flex-1 overflow-y-auto px-6 py-4 divide-y divide-neutral-100"
+          className="min-h-24 flex-1 overflow-y-auto px-4 sm:px-6 py-4 divide-y divide-neutral-100"
           style={{ overscrollBehavior: "contain" }}
         >
           {cart.length === 0 ? (
@@ -190,7 +182,7 @@ export function CartDrawer() {
                   </div>
 
                   {/* Quantity Pill + Trash Icon Row (Matches Screenshot) */}
-                  <div className="flex items-center justify-between mt-3 pt-1">
+                  <div className="flex flex-wrap items-center justify-between gap-2 mt-3 pt-1">
                     {/* Pill Quantity Counter: - 1 + */}
                     <div className="inline-flex items-center bg-[#f4f4f4] rounded-md border border-neutral-200/80 px-1 py-0.5">
                       <button
@@ -231,7 +223,7 @@ export function CartDrawer() {
 
         {/* 4. Bottom Section: Quick Tool Tabs + Subtotal + Terms + Buttons */}
         {cart.length > 0 && (
-          <div className="border-t border-neutral-200 bg-white px-6 py-4 space-y-3">
+          <div className="shrink-0 border-t border-neutral-200 bg-white px-4 py-4 pb-[max(1rem,env(safe-area-inset-bottom))] sm:px-6 space-y-3">
             <p className="text-xs leading-relaxed text-neutral-500">Shipping charges will be confirmed separately.</p>
 
             {/* Subtotal Row (Matches Screenshot: Subtotal Rs. 24,500.00) */}
@@ -242,55 +234,18 @@ export function CartDrawer() {
               </span>
             </div>
 
-            {/* Terms & Conditions Checkbox (Matches Screenshot) */}
-            <div className="pt-0.5">
-              <label className="flex items-center gap-2 cursor-pointer text-xs text-neutral-600 font-sans select-none">
-                <input
-                  type="checkbox"
-                  checked={termsAgreed}
-                  onChange={(e) => {
-                    setTermsAgreed(e.target.checked);
-                    if (e.target.checked) setTermsError(false);
-                  }}
-                  className="size-3.5 rounded-md border-neutral-300 text-purple focus:ring-purple cursor-pointer"
-                />
-                <span>
-                  I agree with{" "}
-                  <Link
-                    href="/terms-and-conditions"
-                    onClick={() => setCartOpen(false)}
-                    className="text-ink font-semibold underline underline-offset-2 hover:text-neutral-700"
-                  >
-                    Terms & Conditions
-                  </Link>
-                </span>
-              </label>
-              {termsError && (
-                <p className="text-[11px] text-red-600 font-medium mt-1">
-                  Please agree to the Terms & Conditions before checkout.
-                </p>
-              )}
-            </div>
-
             {/* Action Buttons: VIEW CART & CHECKOUT (Matches Reference Screenshot) */}
             <div className="space-y-2 pt-2">
               {/* VIEW CART: Outline Button */}
               <Link
                 href="/cart"
                 onClick={() => setCartOpen(false)}
-                className="block w-full text-center border border-neutral-900 bg-white py-3 px-4 text-xs font-bold tracking-widest uppercase text-ink hover:bg-neutral-50 transition rounded-none shadow-2xs"
+                className="inline-flex min-h-10 w-full items-center justify-center rounded-md border border-purple bg-white px-5 py-2 font-display text-xs uppercase tracking-[0.12em] text-purple transition hover:bg-purple hover:text-white md:min-h-12 md:px-8 md:py-3 md:text-sm"
               >
                 VIEW CART
               </Link>
 
-              {/* CHECKOUT: Purple / Slate Solid Button */}
-              <button
-                type="button"
-                onClick={handleCheckout}
-                className="block w-full text-center bg-[#786c87] py-3.5 px-4 text-xs font-bold tracking-widest uppercase text-white hover:bg-[#685c76] transition rounded-none shadow-xs cursor-pointer"
-              >
-                CHECKOUT
-              </button>
+              <Button type="button" variant="hero" onClick={handleCheckout} className="w-full">Checkout</Button>
             </div>
           </div>
         )}

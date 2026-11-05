@@ -7,7 +7,7 @@ import { productsData, type ProductItem } from "@/data/products";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { IoCloseOutline, IoSearchOutline } from "react-icons/io5";
 
 export function SearchModal() {
@@ -28,11 +28,11 @@ export function SearchModal() {
       .catch(() => {});
   }, []);
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     setSearchOpen(false);
     setQuery("");
     setSelectedProduct(null);
-  };
+  }, [setSearchOpen]);
 
   useEffect(() => {
     if (searchOpen) {
@@ -58,7 +58,7 @@ export function SearchModal() {
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [searchOpen, selectedProduct]);
+  }, [searchOpen, selectedProduct, handleClose]);
 
   if (!searchOpen) return null;
 
@@ -95,7 +95,7 @@ export function SearchModal() {
         aria-modal="true"
         aria-label="Search site"
       >
-        <div className="mx-auto w-[calc(100%-2rem)] max-w-[1328px] md:w-full py-6 md:py-12 relative min-h-screen flex flex-col">
+        <div className="mx-auto w-[calc(100%-2rem)] max-w-[1328px] sm:w-[calc(100%-3rem)] lg:w-[calc(100%-4rem)] py-6 md:py-12 relative min-h-dvh flex flex-col">
           {/* Desktop Top-Right Close Button (Matches Desktop Screenshot) */}
           <button
             onClick={handleClose}

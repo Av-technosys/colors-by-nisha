@@ -1,5 +1,6 @@
 "use server";
 
+import { friendlyError } from "@/helpers/errors";
 import { requireAdmin } from "@/helpers/auth/access";
 
 import { eq } from "drizzle-orm";
@@ -25,7 +26,8 @@ export async function uploadImageAction(form: FormData): Promise<UploadResult> {
     return { token, url: await imageUrl(key) };
   } catch (error) {
     if (key) await deleteImages([key]);
-    const reason = error instanceof Error ? error.message : "The upload could not be completed.";
+    console.error("Image upload failed", error);
+    const reason = friendlyError(error, "We couldn’t upload this image right now.");
     return { error: `${reason} Please re-upload the image.` };
   }
 }

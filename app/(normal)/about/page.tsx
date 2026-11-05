@@ -68,7 +68,7 @@ export default function AboutUsPage() {
 
       {/* 2. The Artistry Behind Every Heirloom */}
       <section className="w-full py-10 md:py-14" aria-label="The Artistry Behind Every Heirloom">
-        <div className="mx-auto w-[calc(100%-2rem)] max-w-[1328px] md:w-full">
+        <div className="mx-auto w-[calc(100%-2rem)] max-w-[1328px] sm:w-[calc(100%-3rem)] lg:w-[calc(100%-4rem)]">
           {/* Section Heading */}
           <div className="text-center mb-6 md:mb-8">
             <h2 className="font-display text-2xl font-medium leading-tight tracking-normal md:text-3xl text-[#111111]">
@@ -151,7 +151,7 @@ export default function AboutUsPage() {
 
       {/* 3. Section 3: Elegance in Every Stitch */}
       <section className="w-full py-10 md:py-14 bg-white" aria-label="Elegance in Every Stitch">
-        <div className="mx-auto w-[calc(100%-2rem)] max-w-[1328px] md:w-full">
+        <div className="mx-auto w-[calc(100%-2rem)] max-w-[1328px] sm:w-[calc(100%-3rem)] lg:w-[calc(100%-4rem)]">
           <div className="grid items-center gap-10 md:grid-cols-2 md:gap-12 lg:gap-16">
             {/* Left Column: Image (Aligned directly under left column, reduced height) */}
             <div className="relative w-full aspect-[4/5] md:aspect-auto md:h-[460px] lg:h-[500px] overflow-hidden rounded-md bg-neutral-100 shadow-sm">
@@ -192,7 +192,7 @@ export default function AboutUsPage() {
 
       {/* 4. Section 4: Timeless Products (Matches Reference Image 2) */}
       <section className="w-full py-10 md:py-14 bg-white" aria-label="Timeless Products">
-        <div className="mx-auto w-[calc(100%-2rem)] max-w-[1328px] md:w-full">
+        <div className="mx-auto w-[calc(100%-2rem)] max-w-[1328px] sm:w-[calc(100%-3rem)] lg:w-[calc(100%-4rem)]">
           <div className="grid items-center gap-10 md:grid-cols-2 md:gap-12 lg:gap-16">
             {/* Left Column: Centered Content */}
             <div className="order-2 md:order-1 flex flex-col items-center justify-center text-center px-2 md:px-6 lg:px-10">
@@ -283,7 +283,7 @@ export default function AboutUsPage() {
 
       {/* 6. Section 6: Brand Highlights */}
       <section className="w-full py-10 md:py-14 bg-white" aria-label="Brand Pillars and Values">
-        <div className="mx-auto w-[calc(100%-2rem)] max-w-[1328px] md:w-full">
+        <div className="mx-auto w-[calc(100%-2rem)] max-w-[1328px] sm:w-[calc(100%-3rem)] lg:w-[calc(100%-4rem)]">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-10 md:gap-y-12 lg:gap-y-14">
             {featureCards.map((card) => (
               <div key={card.title} className="flex flex-col items-center text-center group">

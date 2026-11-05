@@ -1,3 +1,4 @@
+import { ArticleSkeleton } from "@/components/ui/PageSkeletons";
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
@@ -51,7 +52,7 @@ async function BlogPostContent({ params }: BlogPostPageProps) {
 export default function BlogPostPage(props: BlogPostPageProps) {
   return (
     <main className="min-h-screen bg-white text-ink flex flex-col">
-      <Suspense fallback={<div className="min-h-[50vh] grid place-items-center text-sm text-neutral-400 font-sans">Loading article...</div>}>
+      <Suspense fallback={<ArticleSkeleton />}>
         <BlogPostContent {...props} />
       </Suspense>
     </main>

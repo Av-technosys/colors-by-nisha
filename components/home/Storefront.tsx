@@ -1,15 +1,12 @@
 "use client";
 
-import { Footer } from "@/components/layout/Footer";
-import { Header } from "@/components/layout/Header";
-import { MobileNavigation } from "@/components/layout/MobileNavigation";
 import type { CartItem } from "@/components/store/ProductDetails";
 import { StoreDialog, type DialogState } from "@/components/store/StoreDialog";
 import { useStore } from "@/components/store/StoreContext";
-import { QuickViewModal } from "@/components/shop/QuickViewModal";
-import { images, resolveHomeImage, type Product } from "@/data/home";
-import type { ProductItem } from "@/data/products";
+import { ProductQuickView } from "@/components/shop/ProductQuickView";
+import { type Product } from "@/data/home";
 import { useCallback, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { CollectionSection } from "./CollectionSection";
 import { CurrentlyObsessedSection } from "./CurrentlyObsessedSection";
 import { FestiveSection } from "./FestiveSection";
@@ -24,10 +21,10 @@ import { StorySection } from "./StorySection";
 import { TestimonialsSection } from "./TestimonialsSection";
 
 export default function Storefront() {
+  const router = useRouter();
   const [dialog, setDialog] = useState<DialogState | null>(null);
-  const [cart, setCart] = useState<CartItem[]>([]);
-  const [quickViewProduct, setQuickViewProduct] = useState<ProductItem | null>(null);
-  const { wishlist, toggleWishlist, addToCart: globalAddToCart, setCartOpen } = useStore();
+  const [quickViewProduct, setQuickViewProduct] = useState<string | null>(null);
+  const { cart, wishlist, toggleWishlist, removeFromCart } = useStore();
 
   useEffect(() => {
     if (typeof window !== "undefined" && !window.location.hash) {
@@ -38,53 +35,23 @@ export default function Storefront() {
   const closeDialog = useCallback(() => setDialog(null), []);
   const openPanel = (name: string) => setDialog({ kind: "panel", name });
   const openProduct = (product: Product) => {
-    const imgSrc = product.imageSrc || resolveHomeImage(product.image) || "/product-placeholder.svg";
-    const secondSrc = product.secondSrc || resolveHomeImage(product.second);
-    const imgs = [imgSrc, secondSrc].filter(Boolean) as string[];
-    const item: ProductItem = {
-      id: String(product.name),
-      slug: product.name.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
-      name: product.name,
-      price: product.price,
-      images: imgs.length ? imgs : ["/product-placeholder.svg"],
-      category: "Couture",
-      categorySlug: "couture",
-      inStock: true,
-      description: "Handcrafted designer heirloom created with royal heritage craftsmanship, fine fabrics, and delicate embroidery.",
-      variants: [{ id: "v1", name: "Free Size", stock: 10, price: product.price, images: imgs }],
-    };
-    setQuickViewProduct(item);
+    setDialog(null);
+    setQuickViewProduct(product.slug || product.name);
   };
   const openVideo = (id: number) => setDialog({ kind: "video", id });
-  const shop = () => document.getElementById("currently-obsessed")?.scrollIntoView({ behavior: "smooth" });
+  const shop = () => router.push("/shop");
   const toggleSave = (name: string) => toggleWishlist(name);
-  const addToCart = (item: CartItem) => {
-    setCart(current => [...current, item]);
-    const imgSrc = resolveHomeImage(item.image) || (typeof item.image === "string" ? item.image : "/product-placeholder.svg");
-    globalAddToCart({
-      id: String(item.name),
-      name: item.name,
-      slug: item.name.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
-      price: item.price,
-      images: [imgSrc],
-      category: "Couture",
-      inStock: true,
-      description: "",
-      variants: [],
-    }, item.size, 1);
-    setCartOpen(true);
-  };
+  const addToCart = (item: CartItem) => openProduct(item);
   const productActions = { saved: wishlist, toggleSave, onSelect: openProduct };
 
   return <>
-    <Header />
     <main id="main">
       <HeroBanner onShop={shop} paused={!!dialog} />
-      <CollectionSection onShop={shop} />
+      <CollectionSection />
       <SeasonalMarquee />
       <HandpickedSection onPlay={openVideo} onSelect={openProduct} />
       <CurrentlyObsessedSection {...productActions} />
-      <StorySection onLearnMore={() => openPanel("Our story")} />
+      <StorySection onLearnMore={() => router.push("/about")} />
       <FestiveSection onShop={shop} />
       <SpotlightSection {...productActions} onPlay={openVideo} onShop={shop} />
       <InstagramSection onPlay={openVideo} />
@@ -92,12 +59,11 @@ export default function Storefront() {
       <TestimonialsSection onSelect={openProduct} />
       <SaleSection onShop={shop} />
     </main>
-    <Footer />
-    <MobileNavigation />
-    {dialog && <StoreDialog dialog={dialog} cart={cart} onClose={closeDialog} onPanel={openPanel} onShop={shop} onAdd={addToCart} onRemove={index => setCart(current => current.filter((_, itemIndex) => itemIndex !== index))} {...productActions} />}
+    {dialog && <StoreDialog dialog={dialog} cart={cart} onClose={closeDialog} onPanel={openPanel} onShop={shop} onAdd={addToCart} onRemove={removeFromCart} {...productActions} />}
     {quickViewProduct && (
-      <QuickViewModal
-        product={quickViewProduct}
+      <ProductQuickView
+        key={quickViewProduct}
+        identifier={quickViewProduct}
         onClose={() => setQuickViewProduct(null)}
       />
     )}

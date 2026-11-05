@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Photo } from "@/components/ui/Photo";
-import { images, money, resolveHomeImage, type Product } from "@/data/home";
+import { money, resolveHomeImage, type Product } from "@/data/home";
 import { addRecentlyViewed } from "@/lib/store";
 import {
   IoCloseOutline,
@@ -52,6 +52,12 @@ export function ProductCard({
   const handleSelect = () => {
     addRecentlyViewed(product.name);
     onSelect(product);
+  };
+
+  const handleProductClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    event.preventDefault();
+    handleSelect();
   };
 
   const handleQuickViewClick = (e: React.MouseEvent) => {
@@ -108,7 +114,7 @@ export function ProductCard({
         <Link
           tabIndex={duplicate ? -1 : undefined}
           href={`/products/${productSlug}`}
-          onClick={() => addRecentlyViewed(product.name)}
+          onClick={handleProductClick}
           className="absolute inset-0 size-full cursor-pointer"
           aria-label={`View ${product.name}`}
         >
@@ -232,7 +238,7 @@ export function ProductCard({
       <Link
         tabIndex={duplicate ? -1 : undefined}
         href={`/products/${productSlug}`}
-        onClick={() => addRecentlyViewed(product.name)}
+        onClick={handleProductClick}
         className="mt-3 font-display text-sm leading-snug md:mt-4 md:text-[15px] hover:text-purple transition-colors cursor-pointer text-ink font-medium"
       >
         {product.name}

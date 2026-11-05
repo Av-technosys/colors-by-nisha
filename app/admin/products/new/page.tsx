@@ -1,3 +1,4 @@
+import { FormSkeleton } from "@/components/ui/Skeleton";
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { connection } from "next/server";
@@ -12,5 +13,5 @@ async function NewProduct() {
 }
 
 export default function NewProductPage() {
-  return <Suspense fallback={<p className="text-sm text-neutral-500">Loading product form…</p>}><NewProduct /></Suspense>;
+  return <Suspense fallback={<FormSkeleton />}><NewProduct /></Suspense>;
 }

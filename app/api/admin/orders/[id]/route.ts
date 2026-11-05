@@ -7,7 +7,7 @@ import { orderError, readOrderRequest } from "@/helpers/orders/http";
 
 export async function PATCH(request: Request, context: { params: Promise<{ id: string }> }) {
   const user = await currentUser();
-  if (!user || !hasAdminEmail(user, process.env.ADMIN_EMAILS ?? "")) return Response.json({ error: "Admin access required." }, { status: user ? 403 : 401 });
+  if (!user || !hasAdminEmail(user, process.env.ADMIN_EMAILS ?? "")) return Response.json({ error: "You don’t have access to this page." }, { status: user ? 403 : 401 });
   try {
     const input = await readOrderRequest(request);
     if (typeof input.updatedAt !== "string") throw new OrderInputError("Refresh the order before saving.");
