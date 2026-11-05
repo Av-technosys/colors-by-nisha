@@ -3,6 +3,8 @@ import { verifyRazorpaySignature } from "@/helpers/razorpay";
 import { confirmOrderPayment, getOrder, orderReference } from "@/helpers/orders/service";
 import { minorAmount } from "@/helpers/orders/input";
 import { currentUser } from "@clerk/nextjs/server";
+import { db } from "@/lib/db";
+import { payment } from "@/lib/db/schema";
 
 export async function POST(request: Request) {
   try {
@@ -41,6 +43,20 @@ export async function POST(request: Request) {
       amountMinor,
       currency: "INR",
     });
+
+    try {
+      await db.insert(payment).values({
+        orderId: order.id,
+        paymentId: razorpay_payment_id,
+        paymentOrderId: razorpay_order_id,
+        paymentStatus: "captured",
+        paymentMethod: "online",
+        paymentAmount: amountMinor,
+        paymentMeta: { signature: razorpay_signature },
+      });
+    } catch (paymentErr) {
+      console.warn("Could not record payment row in db:", paymentErr);
+    }
 
     return NextResponse.json({
       success: true,

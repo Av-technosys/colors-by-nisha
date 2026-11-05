@@ -11,6 +11,7 @@ import {
   date,
   index,
   uniqueIndex,
+  jsonb,
 } from "drizzle-orm/pg-core";
 
 
@@ -165,10 +166,34 @@ export const orderItems = pgTable("order_items", {
   productSku: varchar("product_sku", { length: 100 }),
 }, (table) => [index("order_items_order_idx").on(table.orderId)]);
 
+// -----------------Payment table-----------------
+export const payment = pgTable("payment", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  orderId: uuid("order_id").references(() => orders.id, { onDelete: "cascade" }),
+  paymentId: varchar("payment_id", { length: 100 }),
+  paymentStatus: varchar("payment_status", { length: 50 }).notNull().default("pending"),
+  paymentMethod: varchar("payment_method", { length: 50 }),
+  paymentAmount: integer("payment_amount").notNull(),
+  paymentOrderId: varchar("payment_order_id", { length: 100 }),
+  paymentMeta: jsonb("payment_meta"),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
+}, (table) => [
+  index("payment_order_idx").on(table.orderId),
+  index("payment_payment_id_idx").on(table.paymentId),
+]);
+
+export const payments = payment;
+
 export const ordersRelations = relations(orders, ({ one, many }) => ({
   user: one(users, { fields: [orders.userId], references: [users.id] }),
   items: many(orderItems),
+  payments: many(payment),
 }));
+
+export const paymentRelations = relations(payment, ({ one }) => ({
+  order: one(orders, { fields: [payment.orderId], references: [orders.id] }),
+}));
+export const paymentsRelations = paymentRelations;
 
 export const orderItemsRelations = relations(orderItems, ({ one }) => ({
   order: one(orders, { fields: [orderItems.orderId], references: [orders.id] }),
@@ -237,3 +262,5 @@ export type Order = typeof orders.$inferSelect;
 export type NewOrder = typeof orders.$inferInsert;
 export type OrderItem = typeof orderItems.$inferSelect;
 export type NewOrderItem = typeof orderItems.$inferInsert;
+export type Payment = typeof payments.$inferSelect;
+export type NewPayment = typeof payments.$inferInsert;
