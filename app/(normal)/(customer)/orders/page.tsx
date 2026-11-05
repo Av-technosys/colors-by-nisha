@@ -1,3 +1,4 @@
+import { OrderListSkeleton } from "@/components/ui/PageSkeletons";
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { currentUser } from "@clerk/nextjs/server";
@@ -11,8 +12,8 @@ async function Orders({ searchParams }: { searchParams: Promise<{ page?: string;
   if (!user) redirect("/login");
   const filters = await searchParams;
   const data = await listOrders({ ...filters, clerkId: user.id });
-  return <div className="mx-auto max-w-[1200px] px-5 py-10 md:py-14"><h1 className="mb-3 font-display text-3xl md:text-4xl">Your orders</h1><p className="mb-8 text-sm text-neutral-500">Your pieces, from our atelier to your doorstep.</p><OrdersTable data={data} query={filters.query} status={filters.status} /></div>;
+  return <div className="space-y-6"><h2 className="mb-3 font-display text-3xl md:text-4xl">Your orders</h2><p className="mb-8 text-sm text-neutral-500">Your pieces, from our atelier to your doorstep.</p><OrdersTable data={data} query={filters.query} status={filters.status} /></div>;
 }
 export default function OrdersPage(props: { searchParams: Promise<{ page?: string; query?: string; status?: string }> }) {
-  return <Suspense fallback={<p className="py-24 text-center text-sm text-neutral-500">Loading orders…</p>}><Orders {...props} /></Suspense>;
+  return <Suspense fallback={<OrderListSkeleton />}><Orders {...props} /></Suspense>;
 }

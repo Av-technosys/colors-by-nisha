@@ -1,3 +1,4 @@
+import { rateLimit } from "@/helpers/security/requests";
 import { currentUser } from "@clerk/nextjs/server";
 import { and, eq, isNull } from "drizzle-orm";
 import { db } from "@/lib/db";
@@ -12,6 +13,7 @@ export async function POST(request: Request) {
   const user = await currentUser();
   if (!user) return Response.json({ error: "Please sign in before placing an order." }, { status: 401 });
   try {
+    rateLimit(`order:${user.id}`, 10);
     const input = await readOrderRequest(request);
     let record = await db.query.users.findFirst({ where: and(eq(users.clerkId, user.id), isNull(users.deletedAt)) });
     record ??= await syncUser(user);

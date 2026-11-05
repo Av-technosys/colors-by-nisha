@@ -11,7 +11,7 @@ export default function CategoriesPage() {
       singular="category"
       description="Organise products into categories with unique URL slugs."
       basePath="/admin/categories"
-      columns={["Products", "Blogs"]}
+      columns={["Products"]}
       loadAction={loadCategories}
       deleteAction={deleteCategory}
     />

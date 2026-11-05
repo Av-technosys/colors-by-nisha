@@ -32,6 +32,9 @@ test("cart validation rejects malformed IDs, quantities and oversized requests",
 test("status transitions prevent repeated stock allocation and terminal-order reopening", () => {
   assert.deepEqual(nextStatuses("pending"), ["processing", "cancelled"]);
   assert.equal(nextStatuses("processing").includes("pending"), false);
+  assert.equal(nextStatuses("processing").includes("delivered"), true);
+  assert.equal(nextStatuses("packed").includes("delivered"), true);
+  assert.equal(nextStatuses("packed").includes("out_for_delivery"), true);
   assert.equal(nextStatuses("shipped").includes("cancelled"), false);
   assert.deepEqual(nextStatuses("cancelled"), []);
   assert.deepEqual(nextStatuses("delivered"), []);

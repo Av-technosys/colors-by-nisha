@@ -23,7 +23,7 @@ export interface CustomerAccount {
   addresses: SavedAddress[];
 }
 
-export class AccountInputError extends Error {}
+export class AccountInputError extends Error { name = "AccountInputError"; }
 
 export function normalizeMobile(value: string) {
   const compact = value.trim().replace(/[\s()-]/g, "");

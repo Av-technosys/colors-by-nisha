@@ -9,7 +9,7 @@ export function HandpickedSection({ onPlay, onSelect }: { onPlay: (id: number) =
   return (
     <Reveal>
       <section className="bg-ice py-10 md:py-14">
-        <div className="mx-auto w-[calc(100%-2rem)] max-w-[1328px] md:w-full">
+        <div className="mx-auto w-[calc(100%-2rem)] max-w-[1328px] sm:w-[calc(100%-3rem)] lg:w-[calc(100%-4rem)]">
           <h2 className="pb-6 md:pb-8 text-center font-display text-2xl font-medium leading-tight tracking-normal md:text-3xl">Handpicked Elegance</h2>
           <div className="flex snap-x snap-mandatory gap-2.5 overflow-x-auto [scrollbar-width:none] md:grid md:grid-cols-2 lg:grid-cols-4">
             {handpicked.map(item => (

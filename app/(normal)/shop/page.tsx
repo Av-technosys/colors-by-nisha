@@ -1,3 +1,4 @@
+import { CollectionSkeleton } from "@/components/ui/PageSkeletons";
 import type { Metadata } from "next";
 import { getShopProducts } from "@/helpers/store/products";
 import { Suspense } from "react";
@@ -8,38 +9,24 @@ export const metadata: Metadata = {
   description: "Browse our handcrafted collection of royal lehengas, festive sarees, and contemporary festive ensembles.",
 };
 
-async function ShopLoader({
-  searchParamsPromise,
-}: {
-  searchParamsPromise?: Promise<{ category?: string; search?: string; query?: string; q?: string; sort?: string }>;
-}) {
-  const params = searchParamsPromise ? await searchParamsPromise : {};
+async function ShopLoader() {
   const products = await getShopProducts();
-  const search = params.search || params.query || params.q || "";
 
   return (
     <ShopPageContent
       products={products}
-      initialCategory={params.category}
-      initialSearch={search}
     />
   );
 }
 
-export default function ShopPage(props: {
-  searchParams?: Promise<{ category?: string; search?: string; query?: string; q?: string; sort?: string }>;
-}) {
+export default function ShopPage() {
   return (
     <div className="min-h-screen bg-white text-ink flex flex-col">
       <div className="flex-1">
         <Suspense
-          fallback={
-            <div className="mx-auto w-[calc(100%-2rem)] max-w-[1328px] md:w-full py-20 text-center text-sm text-neutral-400">
-              Loading curated collection...
-            </div>
-          }
+          fallback={<CollectionSkeleton />}
         >
-          <ShopLoader searchParamsPromise={props.searchParams} />
+          <ShopLoader />
         </Suspense>
       </div>
     </div>

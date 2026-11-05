@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { ConditionalHeader, ConditionalFooter } from "@/components/layout/ConditionalNav";
+import { ConditionalHeader, ConditionalFooter, ConditionalMobileNavigation } from "@/components/layout/ConditionalNav";
 
 export default function NormalLayout({
   children,
@@ -14,6 +14,9 @@ export default function NormalLayout({
       {children}
       <Suspense fallback={null}>
         <ConditionalFooter />
+      </Suspense>
+      <Suspense fallback={null}>
+        <ConditionalMobileNavigation />
       </Suspense>
     </>
   );

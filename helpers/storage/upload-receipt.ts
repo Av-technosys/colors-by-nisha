@@ -1,5 +1,7 @@
 import "server-only";
 
+import { UserFacingError } from "@/helpers/errors";
+
 import { imageKeyPrefix } from "./image-path";
 import { createHmac, timingSafeEqual } from "node:crypto";
 
@@ -23,16 +25,16 @@ export function createUploadReceipt(key: string, folder: "products" | "blogs") {
 
 export function readUploadReceipt(token: string, folder: "products" | "blogs") {
   const message = "This image upload is missing or expired. Please re-upload the image.";
-  if (!token || token.length > 2048) throw new Error(message);
+  if (!token || token.length > 2048) throw new UserFacingError(message);
   const parts = token.split(".");
-  if (parts.length !== 2) throw new Error(message);
+  if (parts.length !== 2) throw new UserFacingError(message);
   const [payload, signature] = parts;
   const expected = createHmac("sha256", uploadSigningKey()).update(payload).digest();
   const supplied = Buffer.from(signature, "base64url");
-  if (supplied.length !== expected.length || !timingSafeEqual(supplied, expected)) throw new Error(message);
+  if (supplied.length !== expected.length || !timingSafeEqual(supplied, expected)) throw new UserFacingError(message);
   let receipt: UploadReceipt;
   try { receipt = JSON.parse(Buffer.from(payload, "base64url").toString("utf8")); }
-  catch { throw new Error(message); }
-  if (receipt.folder !== folder || !Number.isFinite(receipt.expires) || receipt.expires < Date.now() || typeof receipt.key !== "string" || !receipt.key.startsWith(imageKeyPrefix(folder))) throw new Error(message);
+  catch { throw new UserFacingError(message); }
+  if (receipt.folder !== folder || !Number.isFinite(receipt.expires) || receipt.expires < Date.now() || typeof receipt.key !== "string" || !receipt.key.startsWith(imageKeyPrefix(folder))) throw new UserFacingError(message);
   return receipt.key;
 }

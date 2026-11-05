@@ -1,3 +1,5 @@
+import { readJson, rateLimit } from "@/helpers/security/requests";
+import { orderError } from "@/helpers/orders/http";
 import { auth, clerkClient, currentUser } from "@clerk/nextjs/server";
 import { AccountInputError, parseContact } from "@/helpers/auth/account";
 import { getCustomerAccount, changeCustomerAddress } from "@/helpers/auth/addresses";
@@ -8,13 +10,19 @@ function checkMetadataSize(value: unknown) {
   if (Buffer.byteLength(JSON.stringify(value), "utf8") > 7500) throw new AccountInputError("Your saved details have reached their limit. Remove an unused address and try again.");
 }
 
+export async function GET() {
+  const user = await currentUser();
+  if (!user) return Response.json({ error: "Sign in to use your saved addresses." }, { status: 401 });
+  try { rateLimit(`account-read:${user.id}`, 120); return Response.json((await getCustomerAccount(user)).account, { headers: { "Cache-Control": "no-store" } }); }
+  catch (error) { return orderError(error, "Your account could not be loaded. Please try again."); }
+}
+
 export async function PATCH(request: Request) {
-  const origin = request.headers.get("origin");
-  if (origin && origin !== new URL(request.url).origin) return Response.json({ error: "Invalid request origin." }, { status: 403 });
   const user = await currentUser();
   if (!user) return Response.json({ error: "Sign in required." }, { status: 401 });
   try {
-    const body = await request.json();
+    rateLimit(`account-write:${user.id}`, 30);
+    const body = await readJson(request);
     if (!body || typeof body !== "object" || Array.isArray(body)) throw new AccountInputError("Invalid account details.");
     const client = await clerkClient();
     if (body.action === "profile") {
@@ -40,14 +48,13 @@ export async function PATCH(request: Request) {
       await Promise.all(sessionIds.map(id => client.sessions.revokeSession(id)));
       return Response.json({ success: true });
     }
-    if (!["save-address", "delete-address", "default-address"].includes(body.action)) throw new AccountInputError("Invalid account action.");
+    if (typeof body.action !== "string" || !["save-address", "delete-address", "default-address"].includes(body.action)) throw new AccountInputError("Invalid account action.");
     const { userId, account } = await getCustomerAccount(user);
     const addresses = await changeCustomerAddress(userId, body);
     revalidatePath("/dashboard");
     revalidatePath("/checkout");
     return Response.json({ account: { ...account, addresses } });
   } catch (error) {
-    const invalid = error instanceof AccountInputError || error instanceof SyntaxError;
-    return Response.json({ error: error instanceof AccountInputError ? error.message : invalid ? "Invalid account details." : "Your changes could not be saved. Please try again." }, { status: invalid ? 400 : 503 });
+    return orderError(error, "Your changes could not be saved. Please try again.");
   }
 }

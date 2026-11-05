@@ -2,7 +2,7 @@ import "server-only";
 
 import { asc, countDistinct, eq } from "drizzle-orm";
 import { db } from "@/lib/db";
-import { blogs, categories, products } from "@/lib/db/schema";
+import { categories, products } from "@/lib/db/schema";
 import { validateId } from "./validation";
 
 export async function getCategories() {
@@ -15,11 +15,9 @@ export async function getCategoryList() {
     name: categories.name,
     slug: categories.slug,
     productCount: countDistinct(products.id),
-    blogCount: countDistinct(blogs.id),
   })
     .from(categories)
     .leftJoin(products, eq(products.categoryId, categories.id))
-    .leftJoin(blogs, eq(blogs.categoryId, categories.id))
     .groupBy(categories.id)
     .orderBy(asc(categories.name));
 }

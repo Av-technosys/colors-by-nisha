@@ -1,3 +1,5 @@
+import { Suspense } from "react";
+import { TableSkeleton } from "@/components/ui/Skeleton";
 import type { Metadata } from "next";
 import { desc, eq } from "drizzle-orm";
 import { db } from "@/lib/db";
@@ -11,7 +13,7 @@ import type { AdminRecord } from "@/data/admin";
 
 export const metadata: Metadata = { title: "Payments" };
 
-export default async function PaymentsPage() {
+async function PaymentsContent() {
   await requireAdmin();
 
   let liveRecords: AdminRecord[] = [];
@@ -69,3 +71,5 @@ export default async function PaymentsPage() {
 
   return <RecordsPage data={mergedData} />;
 }
+
+export default function PaymentsPage() { return <Suspense fallback={<TableSkeleton />}><PaymentsContent /></Suspense>; }

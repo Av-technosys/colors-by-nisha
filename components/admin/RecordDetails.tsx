@@ -26,9 +26,9 @@ export function RecordDetails({ data, record, onClose, onEdit, onStatusChange }:
 
       <dl className="mb-5 divide-y divide-neutral-100 text-xs">
         {data.columns.slice(1).map(column => (
-          <div key={column} className="flex justify-between gap-4 py-3">
+          <div key={column} className="flex flex-col gap-2 py-3 sm:flex-row sm:justify-between sm:gap-4">
             <dt className="text-neutral-400">{column}</dt>
-            <dd className="text-right">{record.fields[column]}</dd>
+            <dd className="min-w-0 break-words sm:text-right">{record.fields[column]}</dd>
           </div>
         ))}
         <div className="flex items-center justify-between py-3">

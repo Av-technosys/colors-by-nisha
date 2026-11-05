@@ -1,5 +1,6 @@
 import AuthPage from "@/components/auth/AuthPage";
 import type { Metadata } from "next";
+import { AuthSkeleton } from "@/components/ui/PageSkeletons";
 import { Suspense } from "react";
 
 export const metadata: Metadata = {
@@ -9,7 +10,7 @@ export const metadata: Metadata = {
 
 export default function ForgotPasswordPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-white" />}>
+    <Suspense fallback={<AuthSkeleton />}>
       <AuthPage mode="forgot" />
     </Suspense>
   );

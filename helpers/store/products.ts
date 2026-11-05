@@ -1,7 +1,7 @@
 import "server-only";
 
 import { cache } from "react";
-import { and, asc, desc, eq, inArray, ne, sql } from "drizzle-orm";
+import { and, asc, desc, eq, inArray, ne, or, sql } from "drizzle-orm";
 import { io } from "next/cache";
 import { db } from "@/lib/db";
 import { categories, products, productMedia, productVariants } from "@/lib/db/schema";
@@ -50,6 +50,14 @@ async function toProduct(row: ProductRecord): Promise<ProductItem> {
       images: media.filter(image => image.variantId === variant.id).map(image => image.url),
     })),
   };
+}
+
+export async function getCatalogProduct(identifier: string) {
+  const row = await db.query.products.findFirst({
+    where: and(published, or(eq(products.slug, identifier), sql`lower(${products.name}) = ${identifier.toLowerCase()}`)),
+    with: productRelations,
+  });
+  return row ? toProduct(row) : null;
 }
 
 export const getShopProducts = cache(async () => {

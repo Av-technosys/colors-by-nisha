@@ -1,3 +1,4 @@
+import { TableSkeleton } from "@/components/ui/Skeleton";
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { requireAdmin } from "@/helpers/auth/access";
@@ -14,5 +15,5 @@ async function Orders({ searchParams }: { searchParams: Promise<{ page?: string;
   return <><PageHeading eyebrow="From atelier to doorstep" title="Orders" description="View customer orders and manage delivery progress." /><OrdersTable data={data} admin query={filters.query} status={filters.status} /></>;
 }
 export default function OrdersPage(props: { searchParams: Promise<{ page?: string; query?: string; status?: string }> }) {
-  return <Suspense fallback={<p className="py-16 text-sm text-neutral-500">Loading orders…</p>}><Orders {...props} /></Suspense>;
+  return <Suspense fallback={<TableSkeleton />}><Orders {...props} /></Suspense>;
 }

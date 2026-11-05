@@ -1,3 +1,5 @@
+import { Suspense } from "react";
+import { TableSkeleton } from "@/components/ui/Skeleton";
 import type { Metadata } from "next";
 import { RecordsPage } from "@/components/admin/RecordsPage";
 import { contactPage, type AdminRecord } from "@/data/admin";
@@ -7,7 +9,7 @@ import { desc } from "drizzle-orm";
 
 export const metadata: Metadata = { title: "Contact" };
 
-export default async function ContactPage() {
+async function ContactContent() {
   let dbRecords: AdminRecord[] = [];
   try {
     const rows = await db
@@ -41,3 +43,5 @@ export default async function ContactPage() {
 
   return <RecordsPage data={pageData} />;
 }
+
+export default function ContactPage() { return <Suspense fallback={<TableSkeleton />}><ContactContent /></Suspense>; }

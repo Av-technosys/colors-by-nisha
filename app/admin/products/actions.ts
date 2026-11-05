@@ -1,20 +1,32 @@
 "use server";
 
+import { UserFacingError } from "@/helpers/errors";
+
 import { requireAdmin } from "@/helpers/auth/access";
 
 import { readCatalog } from "@/helpers/admin/catalog";
 import { getProductList } from "@/helpers/admin/products";
 
-import { and, eq, inArray } from "drizzle-orm";
+import { and, asc, eq, inArray } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
-import { categories, products, productMedia, productVariants } from "@/lib/db/schema";
+import { categories, products, productMedia, productVariants, orderItems, orders } from "@/lib/db/schema";
 import { confirmImageUpload, deleteImages } from "@/helpers/storage/s3";
 import { readUploadReceipt } from "@/helpers/storage/upload-receipt";
-import { parseProduct } from "@/helpers/admin/product-input";
+import { parseProduct, stockForUpdate } from "@/helpers/admin/product-input";
 import { actionError, validateId, type ActionState } from "@/helpers/admin/validation";
 import { slugify } from "@/helpers/admin/slugify";
+
+type ProductTransaction = Parameters<Parameters<typeof db.transaction>[0]>[0];
+
+async function checkOpenOrders(tx: ProductTransaction, productId: string, variantIds?: string[]) {
+  const [linked] = await tx.select({ id: orderItems.id }).from(orderItems).innerJoin(orders, eq(orders.id, orderItems.orderId)).where(and(
+    eq(orderItems.productId, productId), variantIds ? inArray(orderItems.variantId, variantIds) : undefined,
+    inArray(orders.status, ["pending", "processing", "packed", "shipped", "out_for_delivery"]),
+  )).limit(1);
+  if (linked) throw new UserFacingError("This product is part of an unfinished order. Complete or cancel those orders before removing it or replacing its options.");
+}
 
 export async function saveProduct(_state: ActionState, form: FormData): Promise<ActionState> {
   await requireAdmin();
@@ -30,22 +42,24 @@ export async function saveProduct(_state: ActionState, form: FormData): Promise<
       let productId = input.id;
       if (productId) {
         const existing = await tx.select({ id: products.id }).from(products).where(eq(products.id, productId)).for("update");
-        if (!existing.length) throw new Error("This product no longer exists.");
+        if (!existing.length) throw new UserFacingError("This product no longer exists.");
         await tx.update(products).set(input.values).where(eq(products.id, productId));
       } else {
         const [created] = await tx.insert(products).values(input.values).returning({ id: products.id });
         productId = created.id;
       }
 
-      const existingVariants = await tx.select({ id: productVariants.id }).from(productVariants).where(eq(productVariants.productId, productId));
+      const existingVariants = await tx.select({ id: productVariants.id, stock: productVariants.stock }).from(productVariants).where(eq(productVariants.productId, productId)).orderBy(asc(productVariants.id)).for("update");
       const variantIds = existingVariants.map(row => row.id);
       if (input.variants.some(row => row.id && !variantIds.includes(row.id))) {
-        throw new Error("A variant no longer belongs to this product. Reload and try again.");
+        throw new UserFacingError("A variant no longer belongs to this product. Reload and try again.");
       }
       const savedVariants = new Map<string, string>();
-      for (const { id, clientId, ...values } of input.variants) {
+      for (const { id, clientId, originalStock, ...values } of input.variants) {
         if (id) {
-          await tx.update(productVariants).set(values).where(and(eq(productVariants.id, id), eq(productVariants.productId, productId)));
+          const current = existingVariants.find(row => row.id === id)!;
+          const stock = stockForUpdate(current.stock, values.stock, originalStock);
+          await tx.update(productVariants).set({ ...values, stock }).where(and(eq(productVariants.id, id), eq(productVariants.productId, productId)));
           savedVariants.set(clientId, id);
         } else {
           const [created] = await tx.insert(productVariants).values({ ...values, productId }).returning({ id: productVariants.id });
@@ -55,7 +69,7 @@ export async function saveProduct(_state: ActionState, form: FormData): Promise<
 
       const existingMedia = await tx.select({ id: productMedia.id, key: productMedia.key }).from(productMedia).where(eq(productMedia.productId, productId));
       if (input.media.some(row => row.id && !existingMedia.some(existing => existing.id === row.id))) {
-        throw new Error("A media item no longer belongs to this product. Reload and try again.");
+        throw new UserFacingError("A media item no longer belongs to this product. Reload and try again.");
       }
       const removedMedia = existingMedia.filter(row => !input.media.some(item => item.id === row.id));
       removedKeys.push(...removedMedia.map(row => row.key));
@@ -65,10 +79,10 @@ export async function saveProduct(_state: ActionState, form: FormData): Promise<
       for (const row of uploadedMedia) {
         const existing = existingMedia.find(item => item.id === row.id);
         const key = row.key ?? existing?.key;
-        if (!key) throw new Error("An image has not been uploaded. Please re-upload the image.");
+        if (!key) throw new UserFacingError("An image has not been uploaded. Please re-upload the image.");
         if (!row.key) await confirmImageUpload(key);
         const variantId = row.variantRef ? savedVariants.get(row.variantRef) : null;
-        if (row.variantRef && !variantId) throw new Error("An image refers to a removed variant.");
+        if (row.variantRef && !variantId) throw new UserFacingError("An image refers to a removed variant.");
         const values = {
           key,
           position: row.position,
@@ -83,6 +97,7 @@ export async function saveProduct(_state: ActionState, form: FormData): Promise<
       }
       const removedVariants = variantIds.filter(id => !input.variants.some(row => row.id === id));
       if (removedVariants.length) {
+        await checkOpenOrders(tx, productId, removedVariants);
         await tx.delete(productVariants).where(and(eq(productVariants.productId, productId), inArray(productVariants.id, removedVariants)));
       }
     });
@@ -106,7 +121,8 @@ export async function deleteProduct(id: string): Promise<ActionState> {
     validateId(id);
     keys = await db.transaction(async tx => {
       const existing = await tx.select({ id: products.id }).from(products).where(eq(products.id, id)).for("update");
-      if (!existing.length) throw new Error("This product no longer exists.");
+      if (!existing.length) throw new UserFacingError("This product no longer exists.");
+      await checkOpenOrders(tx, id);
       const media = await tx.select({ key: productMedia.key }).from(productMedia).where(eq(productMedia.productId, id));
       await tx.delete(products).where(eq(products.id, id));
       return media.map(row => row.key);
@@ -453,16 +469,17 @@ type ParsedProductGroup = {
 };
 
 export async function uploadProductsCsv(formData: FormData): Promise<{ count?: number; error?: string }> {
+  await requireAdmin();
   try {
-    const file = formData.get("file") as File;
-    if (!file || !file.size) {
+    const file = formData.get("file");
+    if (!(file instanceof File) || !file.size || file.size > 5 * 1024 * 1024) {
       return { error: "Please select a valid CSV file." };
     }
 
     const text = await file.text();
     const rows = parseCsvRows(text);
-    if (rows.length < 2) {
-      return { error: "CSV file is empty or missing data rows." };
+    if (rows.length < 2 || rows.length > 5001 || rows.some(row => row.length > 100)) {
+      return { error: "Choose a CSV with between 1 and 5,000 product rows." };
     }
 
     const headers = rows[0].map(h => h.trim());
@@ -601,8 +618,8 @@ export async function uploadProductsCsv(formData: FormData): Promise<{ count?: n
       const variantName = opt1Val && opt1Val !== "Default Title" ? opt1Val : "Standard";
       const vPriceNum = parseFloat(rawPrice.replace(/[^0-9.]/g, "") || group.price);
       const vPrice = !isNaN(vPriceNum) && vPriceNum > 0 ? vPriceNum.toFixed(2) : group.price;
-      // Unlimited in-stock (stock = null, no artificial limit)
-      const vStock = null;
+      if (variantStock && (!/^\d+$/.test(variantStock) || Number(variantStock) > 2_147_483_647)) throw new UserFacingError("Enter a valid whole-number stock quantity in the CSV.");
+      const vStock = variantStock ? Number(variantStock) : null;
 
       // Avoid duplicate variants with same name
       if (!group.variants.some(v => v.name === variantName)) {
@@ -649,6 +666,8 @@ export async function uploadProductsCsv(formData: FormData): Promise<{ count?: n
         let productId = existingId;
 
         if (existingId) {
+          await tx.select({ id: products.id }).from(products).where(eq(products.id, existingId)).for("update");
+          await checkOpenOrders(tx, existingId);
           // UPDATE EXISTING PRODUCT
           await tx.update(products).set({
             name,
@@ -700,6 +719,7 @@ export async function uploadProductsCsv(formData: FormData): Promise<{ count?: n
 
         // Manage Variants in product_variants
         if (productId) {
+          const previousStock = existingId ? await tx.select({ name: productVariants.name, stock: productVariants.stock }).from(productVariants).where(eq(productVariants.productId, productId)).orderBy(asc(productVariants.id)).for("update") : [];
           await tx.delete(productVariants).where(eq(productVariants.productId, productId));
           const variantsToInsert = group.variants.length > 0 ? group.variants : [{ name: "Standard", price: group.price, stock: null }];
 
@@ -711,7 +731,7 @@ export async function uploadProductsCsv(formData: FormData): Promise<{ count?: n
               name: v.name,
               sku: variantSku,
               price: v.price,
-              stock: null,
+              stock: v.stock ?? previousStock.find(previous => previous.name === v.name)?.stock ?? null,
             });
           }
         }

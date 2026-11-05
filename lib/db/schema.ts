@@ -69,12 +69,19 @@ export const productMedia = pgTable("product_media", {
 });
 
 
+// Blog categories
+export const blogCategories = pgTable("blog_categories", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  name: varchar("name", { length: 255 }).notNull(),
+  slug: varchar("slug", { length: 255 }).notNull().unique(),
+});
+
 // -----------------Blogs table-----------------
 export const blogs = pgTable("blogs", {
   id: uuid("id").defaultRandom().primaryKey(),
   title: varchar("title", { length: 300 }).notNull(),
   slug: varchar("slug", { length: 200 }).notNull().unique(),
-  categoryId: uuid("category_id").notNull().references(() => categories.id, { onDelete: "restrict" }),
+  categoryId: uuid("category_id").notNull().references(() => blogCategories.id, { onDelete: "restrict" }),
   publishDate: date("publish_date").notNull(),
   mainBannerImage: text("main_banner_image").notNull(),
   authorName: varchar("author_name", { length: 100 }).notNull(),
@@ -212,11 +219,14 @@ export const addressesRelations = relations(addresses, ({ one }) => ({
 
 export const categoriesRelations = relations(categories, ({ many }) => ({
   products: many(products),
+}));
+
+export const blogCategoriesRelations = relations(blogCategories, ({ many }) => ({
   blogs: many(blogs),
 }));
 
 export const blogsRelations = relations(blogs, ({ one }) => ({
-  category: one(categories, { fields: [blogs.categoryId], references: [categories.id] }),
+  category: one(blogCategories, { fields: [blogs.categoryId], references: [blogCategories.id] }),
 }));
 
 export const productsRelations = relations(products, ({ one, many }) => ({

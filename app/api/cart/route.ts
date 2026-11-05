@@ -1,8 +1,10 @@
+import { rateLimit, clientKey } from "@/helpers/security/requests";
 import { quoteCart } from "@/helpers/orders/service";
 import { orderError, readOrderRequest } from "@/helpers/orders/http";
 
 export async function POST(request: Request) {
   try {
+    rateLimit(`cart:${clientKey(request.headers)}`, 60);
     const body = await readOrderRequest(request);
     return Response.json(await quoteCart(body.items), { headers: { "Cache-Control": "no-store" } });
   } catch (error) { return orderError(error); }

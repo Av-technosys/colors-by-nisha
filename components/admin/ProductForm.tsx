@@ -56,6 +56,7 @@ export function ProductForm({ product, categoryOptions }: ProductFormProps) {
     sku: row.sku ?? "",
     price: row.price,
     stock: row.stock === null ? "" : String(row.stock),
+    originalStock: row.stock === null ? "" : String(row.stock),
   })) ?? []);
   const [images, setImages] = useState<SelectedImage[]>(() => product?.media.map(row => ({
     id: row.id,
@@ -124,9 +125,9 @@ export function ProductForm({ product, categoryOptions }: ProductFormProps) {
     <>
       <Link href="/admin/products" className="mb-5 inline-flex items-center gap-2 text-xs text-purple"><ArrowLeft size={15} aria-hidden="true" />Back to products</Link>
       <PageHeading eyebrow="Products" title={product ? "Edit product" : "Add product"} description="Add the main product, its variants, and the details customers need." />
-      <form ref={formRef} onSubmit={handleSubmit}>
+      <form ref={formRef} onSubmit={handleSubmit} className="min-w-0 [&_label]:min-w-0 [&_input]:min-w-0 [&_select]:min-w-0 [&_textarea]:min-w-0">
         <input type="hidden" name="id" value={product?.id ?? ""} />
-        <fieldset disabled={pending} className="space-y-6 disabled:opacity-60">
+        <fieldset disabled={pending} className="min-w-0 space-y-6 disabled:opacity-60">
           <section className="rounded-md border border-[#e8e5df] bg-white p-5 sm:p-7">
             <h2 className="mb-6 font-display text-xl">Main product</h2>
             <div className="grid gap-5 sm:grid-cols-2">
@@ -142,7 +143,7 @@ export function ProductForm({ product, categoryOptions }: ProductFormProps) {
                 SKU
                 <input name="sku" maxLength={100} defaultValue={product?.sku ?? ""} className="mt-2 min-h-11 w-full rounded-md border border-[#e5e1da] px-3 text-sm" />
               </label>
-              <div className="grid gap-5 sm:col-span-2 sm:grid-cols-3">
+              <div className="grid gap-5 sm:col-span-2 md:grid-cols-3">
                 <label className="text-xs text-neutral-500">
                   Price (₹)
                   <input name="price" type="number" min="0" max="99999999.99" step="0.01" required defaultValue={product?.price} className="mt-2 min-h-11 w-full rounded-md border border-[#e5e1da] px-3 text-sm" />

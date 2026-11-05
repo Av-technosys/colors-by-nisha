@@ -23,7 +23,6 @@ export interface HeaderProps {
 export function Header({
   savedCount,
   cartCount,
-  onShop: _onShop,
   onPanel,
   solid = false,
   activeNav,
@@ -31,7 +30,7 @@ export function Header({
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
   const isHome = pathname === "/";
-  const { cart, wishlist, setMenuOpen, setCartOpen, setSearchOpen } = useStore();
+  const { cart, wishlist, menuOpen, setMenuOpen, setCartOpen, setSearchOpen } = useStore();
   const isMounted = useSyncExternalStore(noopSubscribe, () => true, () => false);
 
   useEffect(() => {
@@ -94,10 +93,12 @@ export function Header({
   return (
     <>
       <header className={headerClass}>
-        <Container className="grid h-full grid-cols-[1fr_auto_1fr] items-center">
+        <Container className="grid h-full grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:gap-5">
           <button
             className="col-start-1 row-start-1 justify-self-start p-2 lg:hidden text-ink cursor-pointer"
             aria-label="Open menu"
+            aria-controls="mobile-menu"
+            aria-expanded={menuOpen}
             onClick={handleMenuClick}
           >
             <Icon name="menu" size={22} />
@@ -134,7 +135,7 @@ export function Header({
             />
           </Link>
           <nav
-            className="hidden items-center gap-8 font-display text-[15px] tracking-wide lg:flex"
+            className="hidden min-w-0 items-center justify-center gap-4 font-display text-sm tracking-wide lg:flex xl:gap-8 xl:text-[15px]"
             aria-label="Main navigation"
           >
             <Link
@@ -190,7 +191,7 @@ export function Header({
               {
                 name: "Wishlist",
                 icon: "heart",
-                mobile: true,
+                mobile: false,
                 href: "/wishlist",
                 count: displayWishlistCount,
               },
@@ -198,7 +199,7 @@ export function Header({
                 name: "Cart",
                 panel: "Shopping bag",
                 icon: "cart",
-                mobile: true,
+                mobile: false,
                 count: displayCartCount,
               },
             ].map((item) =>
@@ -206,8 +207,8 @@ export function Header({
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={`relative min-h-9 min-w-8 items-center justify-center cursor-pointer ${
-                    item.mobile ? "inline-flex" : "hidden lg:inline-flex"
+                  className={`relative min-h-11 min-w-8 items-center justify-center cursor-pointer ${
+                    item.mobile ? "inline-flex" : "hidden md:inline-flex"
                   }`}
                   aria-label={item.name}
                 >
@@ -221,8 +222,8 @@ export function Header({
               ) : (
                 <button
                   key={item.name}
-                  className={`relative min-h-9 min-w-8 items-center justify-center cursor-pointer ${
-                    item.mobile ? "inline-flex" : "hidden lg:inline-flex"
+                  className={`relative min-h-11 min-w-8 items-center justify-center cursor-pointer ${
+                    item.mobile ? "inline-flex" : "hidden md:inline-flex"
                   }`}
                   aria-label={item.name}
                   onClick={() => handlePanelClick(item.name, item.panel)}
@@ -244,9 +245,9 @@ export function Header({
           </div>
         </Container>
       </header>
-      {scrolled && (
+      {scrolled && !pathname.startsWith("/products/") && (
         <button
-          className="fixed bottom-[85px] right-4 z-20 size-10 rounded-md bg-white text-xl shadow-md transition-transform hover:-translate-y-1 md:bottom-8 md:right-8 md:size-12 md:text-2xl cursor-pointer"
+          className="fixed bottom-[calc(85px+env(safe-area-inset-bottom))] right-4 z-20 size-10 rounded-md bg-white text-xl shadow-md transition-transform hover:-translate-y-1 md:bottom-8 md:right-8 md:size-12 md:text-2xl cursor-pointer"
           aria-label="Back to top"
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
         >

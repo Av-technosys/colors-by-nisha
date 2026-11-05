@@ -28,7 +28,7 @@ export function ProductCsvUpload({ onImportSuccess }: { onImportSuccess?: () => 
       if (res.error) {
         toast.error(res.error);
       } else {
-        toast.success(`Success! Added ${res.count} products to the database.`);
+        toast.success(`${res.count} products imported successfully.`);
         onImportSuccess?.();
       }
     } catch {

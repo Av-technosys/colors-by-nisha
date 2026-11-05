@@ -91,7 +91,7 @@ export function ProductGallery({ images, productName, productSlug }: ProductGall
         )}
 
         {/* Main Image Container */}
-        <div className="relative flex-1">
+        <div className="relative min-w-0 flex-1">
           <div
             className="group relative aspect-2/3 w-full overflow-hidden rounded-md bg-neutral-100 cursor-zoom-in shadow-xs"
             onMouseEnter={() => setIsZoomed(true)}
@@ -212,7 +212,7 @@ export function ProductGallery({ images, productName, productSlug }: ProductGall
             ✕
           </button>
           <div
-            className="relative h-[85vh] w-[90vw] max-w-4xl"
+            className="relative h-[calc(100dvh-5rem)] w-full max-w-4xl"
             onClick={(e) => e.stopPropagation()}
           >
             <Image

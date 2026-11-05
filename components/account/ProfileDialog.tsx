@@ -1,5 +1,7 @@
 "use client";
 
+import { UserFacingError, friendlyError } from "@/helpers/errors";
+
 import { useUser } from "@clerk/nextjs";
 import { useState, type FormEvent } from "react";
 import { Modal } from "@/components/ui/Modal";
@@ -28,7 +30,7 @@ export function ProfileDialog({ account, incomplete, onClose, onSaved }: { accou
     try {
       const contact = parseContact({ fullName, mobile });
       const address = email.trim().toLowerCase();
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(address)) throw new Error("Please enter a valid email address.");
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(address)) throw new UserFacingError("Please enter a valid email address.");
       if (address !== account.email.toLowerCase()) {
         const refreshed = await user.reload();
         let nextEmail = refreshed.emailAddresses.find(item => item.emailAddress.toLowerCase() === address);
@@ -42,16 +44,16 @@ export function ProfileDialog({ account, incomplete, onClose, onSaved }: { accou
             return;
           }
           const verified = await nextEmail.attemptVerification({ code });
-          if (verified.verification.status !== "verified") throw new Error("Please verify your new email address.");
+          if (verified.verification.status !== "verified") throw new UserFacingError("Please verify your new email address.");
         }
         await user.update({ primaryEmailAddressId: nextEmail.id });
       }
       const updated = await updateAccount({ action: "profile", ...contact });
-      if (!updated) throw new Error("Your profile could not be saved. Please retry.");
+      if (!updated) throw new UserFacingError("Your profile could not be saved. Please retry.");
       await user.reload();
       onSaved(updated);
     } catch (error) {
-      setError(error instanceof Error ? error.message : "Your profile could not be saved. Please try again.");
+      setError(friendlyError(error, "Your profile could not be saved. Please try again."));
     } finally { setSaving(false); }
   }
 
@@ -62,10 +64,10 @@ export function ProfileDialog({ account, incomplete, onClose, onSaved }: { accou
     try {
       const refreshed = await user.reload();
       const address = refreshed.emailAddresses.find(item => item.emailAddress.toLowerCase() === pendingEmail);
-      if (!address) throw new Error("Please save your email address again.");
+      if (!address) throw new UserFacingError("Please save your email address again.");
       await address.prepareVerification({ strategy: "email_code" });
       setNotice("A fresh verification code has been sent.");
-    } catch (error) { setError(error instanceof Error ? error.message : "The code could not be sent."); }
+    } catch (error) { setError(friendlyError(error, "The code could not be sent.")); }
     finally { setSaving(false); }
   }
 

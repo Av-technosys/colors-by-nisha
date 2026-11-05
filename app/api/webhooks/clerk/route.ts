@@ -1,13 +1,15 @@
-import type { NextRequest } from "next/server";
+import { NextRequest } from "next/server";
+import { readText, RequestError } from "@/helpers/security/requests";
 import { verifyWebhook } from "@clerk/nextjs/webhooks";
 import { markUserDeleted, syncClerkUser } from "@/helpers/auth/users";
 
 export async function POST(request: NextRequest) {
   let event;
   try {
-    event = await verifyWebhook(request);
-  } catch {
-    return Response.json({ error: "Invalid webhook signature." }, { status: 400 });
+    const body = await readText(request, 1_000_000);
+    event = await verifyWebhook(new NextRequest(request.url, { method: request.method, headers: request.headers, body }));
+  } catch (error) {
+    return Response.json({ error: "We couldn’t verify this request." }, { status: error instanceof RequestError ? error.status : 400 });
   }
   try {
     if (event.type === "user.created" || event.type === "user.updated") await syncClerkUser(event.data.id);

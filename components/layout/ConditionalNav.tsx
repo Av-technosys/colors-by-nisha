@@ -2,6 +2,7 @@
 
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
+import { MobileNavigation } from "@/components/layout/MobileNavigation";
 import { usePathname } from "next/navigation";
 
 export function ConditionalHeader() {
@@ -41,9 +42,16 @@ export function ConditionalFooter() {
     pathname?.startsWith("/verify-otp/");
 
   const isDashboard =
-    pathname === "/dashboard" || pathname?.startsWith("/dashboard/");
+    ["/dashboard", "/account", "/orders"].some(path => pathname === path || pathname?.startsWith(`${path}/`));
 
   if (isAuthPage || isDashboard) return null;
   return <Footer />;
+}
+
+export function ConditionalMobileNavigation() {
+  const pathname = usePathname();
+  const hidden = ["/signup", "/sign-up", "/login", "/forgot-password", "/verify-otp", "/sso-callback"].some(path => pathname === path || pathname.startsWith(`${path}/`));
+  if (hidden) return null;
+  return <MobileNavigation />;
 }
 
