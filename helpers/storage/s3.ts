@@ -1,5 +1,7 @@
 import "server-only";
 
+import { UserFacingError } from "@/helpers/errors";
+
 import { randomUUID } from "node:crypto";
 import { DeleteObjectsCommand, GetObjectCommand, HeadObjectCommand, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
@@ -29,10 +31,10 @@ function imageType(bytes: Buffer) {
 }
 
 export async function validateImage(file: File, maxBytes = MAX_IMAGE_BYTES) {
-  if (!file.size || file.size > maxBytes) throw new Error(`Choose an image no larger than ${Math.round(maxBytes / 1024 / 1024)} MB.`);
-  if (!IMAGE_TYPES.includes(file.type)) throw new Error("Choose a JPG, PNG, WebP, or GIF image.");
+  if (!file.size || file.size > maxBytes) throw new UserFacingError(`Choose an image no larger than ${Math.round(maxBytes / 1024 / 1024)} MB.`);
+  if (!IMAGE_TYPES.includes(file.type)) throw new UserFacingError("Choose a JPG, PNG, WebP, or GIF image.");
   const bytes = Buffer.from(await file.arrayBuffer());
-  if (bytes.length > maxBytes || imageType(bytes) !== file.type) throw new Error("This file is not a valid supported image.");
+  if (bytes.length > maxBytes || imageType(bytes) !== file.type) throw new UserFacingError("This file is not a valid supported image.");
   return bytes;
 }
 

@@ -35,7 +35,6 @@ export async function saveCategory(_state: ActionState, form: FormData): Promise
   revalidatePath("/shop");
   revalidatePath("/products/[handle]", "page");
   revalidatePath("/admin/products");
-  revalidatePath("/admin/blogs");
   return { success: true };
 }
 
@@ -52,7 +51,6 @@ export async function deleteCategory(id: string): Promise<ActionState> {
   revalidatePath("/shop");
   revalidatePath("/products/[handle]", "page");
   revalidatePath("/admin/products");
-  revalidatePath("/admin/blogs");
   return {};
 }
 
@@ -64,7 +62,7 @@ export async function loadCategories() {
       id: category.id,
       name: category.name,
       slug: category.slug,
-      fields: { Products: String(category.productCount), Blogs: String(category.blogCount) },
+      fields: { Products: String(category.productCount) },
     })) };
   });
 }

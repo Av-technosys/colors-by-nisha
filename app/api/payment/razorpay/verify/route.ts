@@ -1,76 +1,28 @@
-import { NextResponse } from "next/server";
-import { verifyRazorpaySignature } from "@/helpers/razorpay";
-import { confirmOrderPayment, getOrder, orderReference } from "@/helpers/orders/service";
-import { minorAmount } from "@/helpers/orders/input";
-import { currentUser } from "@clerk/nextjs/server";
+import { rateLimit } from "@/helpers/security/requests";
+import { auth } from "@clerk/nextjs/server";
+import { and, eq } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { payment } from "@/lib/db/schema";
+import { getRazorpayClient, verifyRazorpaySignature } from "@/helpers/razorpay";
+import { ownedPaymentOrder, settleGatewayPayment } from "@/helpers/payments/service";
+import { orderError, readOrderRequest } from "@/helpers/orders/http";
+import { OrderInputError } from "@/helpers/orders/input";
 
 export async function POST(request: Request) {
+  const { userId } = await auth();
+  if (!userId) return Response.json({ error: "Please sign in to confirm payment." }, { status: 401 });
   try {
-    const user = await currentUser();
-    if (!user) {
-      return NextResponse.json({ error: "Please log in to continue." }, { status: 401 });
-    }
-
-    const body = await request.json();
-    const { orderId, razorpay_order_id, razorpay_payment_id, razorpay_signature } = body;
-
-    if (!orderId || !razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
-      return NextResponse.json({ error: "Missing required payment verification details." }, { status: 400 });
-    }
-
-    const order = await getOrder(orderId, user.id);
-    if (!order) {
-      return NextResponse.json({ error: "Order not found." }, { status: 404 });
-    }
-
-    const isValidSignature = verifyRazorpaySignature({
-      orderId: razorpay_order_id,
-      paymentId: razorpay_payment_id,
-      signature: razorpay_signature,
-    });
-
-    if (!isValidSignature) {
-      return NextResponse.json({ error: "Payment verification failed: Invalid signature." }, { status: 400 });
-    }
-
-    const amountMinor = minorAmount(order.totalAmount);
-
-    const result = await confirmOrderPayment({
-      orderId: order.id,
-      paymentId: razorpay_payment_id,
-      amountMinor,
-      currency: "INR",
-    });
-
-    try {
-      await db.insert(payment).values({
-        orderId: order.id,
-        paymentId: razorpay_payment_id,
-        paymentOrderId: razorpay_order_id,
-        paymentStatus: "captured",
-        paymentMethod: "online",
-        paymentAmount: amountMinor,
-        paymentMeta: { signature: razorpay_signature },
-      });
-    } catch (paymentErr) {
-      console.warn("Could not record payment row in db:", paymentErr);
-    }
-
-    return NextResponse.json({
-      success: true,
-      orderId: order.id,
-      orderReference: orderReference(order.id),
-      status: result.order.status,
-      paymentId: razorpay_payment_id,
-    });
-  } catch (err) {
-    console.error("Error verifying Razorpay payment:", err);
-    return NextResponse.json(
-      { error: err instanceof Error ? err.message : "Payment confirmation failed." },
-      { status: 500 }
-    );
-  }
+    rateLimit(`payment-verify:${userId}`, 30);
+    const body = await readOrderRequest(request);
+    const { orderId, razorpay_order_id: gatewayId, razorpay_payment_id: paymentId, razorpay_signature: signature } = body;
+    if (typeof orderId !== "string" || typeof gatewayId !== "string" || !/^order_[a-zA-Z0-9]+$/.test(gatewayId) || typeof paymentId !== "string" || !/^pay_[a-zA-Z0-9]+$/.test(paymentId) || typeof signature !== "string") throw new OrderInputError("We couldn’t confirm this payment. Please check your order and try again.");
+    await ownedPaymentOrder(orderId, userId);
+    const [attempt] = await db.select().from(payment).where(and(eq(payment.orderId, orderId), eq(payment.paymentOrderId, gatewayId))).limit(1);
+    if (!attempt?.paymentOrderId || !verifyRazorpaySignature({ orderId: attempt.paymentOrderId, paymentId, signature })) throw new OrderInputError("Payment confirmation does not match this order.");
+    const entity = await getRazorpayClient().payments.fetch(paymentId);
+    if (entity.order_id !== attempt.paymentOrderId || Number(entity.amount) !== attempt.paymentAmount || entity.currency !== "INR") throw new OrderInputError("Payment details do not match this order.");
+    if (entity.status !== "captured") return Response.json({ paid: false, orderId, pending: true }, { status: 202 });
+    const result = await settleGatewayPayment(entity);
+    return Response.json({ paid: true, orderId, status: result.order.status, requiresAttention: result.requiresAttention });
+  } catch (error) { return orderError(error, "Payment is being checked. View your order for the latest status."); }
 }
-

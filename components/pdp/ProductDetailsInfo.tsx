@@ -2,7 +2,9 @@
 
 import { variantName } from "@/helpers/store/variant";
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 import { formatINR, type ProductItem } from "@/data/products";
+import { Button } from "@/components/ui/Button";
 import { useStore } from "@/components/store/StoreContext";
 
 interface ProductDetailsInfoProps {
@@ -14,12 +16,11 @@ interface ProductDetailsInfoProps {
 }
 
 export function ProductDetailsInfo({ product, variantId, onVariantChange, quantity, onQuantityChange: setQuantity }: ProductDetailsInfoProps) {
+  const router = useRouter();
   const { addToCart, setCartOpen, isWishlisted, toggleWishlist } = useStore();
-  const [agreedTerms, setAgreedTerms] = useState(false);
-  const [termsError, setTermsError] = useState(false);
   const [askModalOpen, setAskModalOpen] = useState(false);
   const [shareToast, setShareToast] = useState(false);
-  const [isAdding, setIsAdding] = useState(false);
+  const [purchaseError, setPurchaseError] = useState("");
 
   const wishlisted = isWishlisted(product.slug);
   const hasMultipleVariants = (product.variants?.length ?? 0) > 1 && !product.variants?.every(v => {
@@ -42,32 +43,23 @@ export function ProductDetailsInfo({ product, variantId, onVariantChange, quanti
 
   const handleAddToCart = () => {
     if (!product.inStock) return;
-    if (!agreedTerms) {
-      setTermsError(true);
+    setPurchaseError("");
+    if (!addToCart(product, variantName(product), quantity)) {
+      setPurchaseError("This quantity cannot be added. Check available stock or review the item already in your cart.");
       return;
     }
-    setTermsError(false);
-    setIsAdding(true);
-    addToCart(product, variantName(product), quantity);
-    setTimeout(() => {
-      setIsAdding(false);
-      setCartOpen(true);
-    }, 350);
+    setCartOpen(true);
   };
 
   const handleBuyItNow = () => {
     if (!product.inStock) return;
-    if (!agreedTerms) {
-      setTermsError(true);
+    setPurchaseError("");
+    if (!addToCart(product, variantName(product), quantity)) {
+      setPurchaseError("This quantity cannot be added. Review your cart before checkout.");
       return;
     }
-    addToCart(product, variantName(product), quantity);
-    const text = encodeURIComponent(
-      `Hello Colors by Nisha! I would like to Buy Now:\n• Product: ${product.name}\n• Option: ${variantName(product)}\n• Qty: ${quantity}\n• Total: ${formatINR(
-        product.price * quantity
-      )}\nLink: https://colorsbynisha.com/products/${product.slug}`
-    );
-    window.open(`https://wa.me/919799330455?text=${text}`, "_blank");
+    setCartOpen(false);
+    router.push("/checkout");
   };
 
   const handleShare = async () => {
@@ -93,12 +85,12 @@ export function ProductDetailsInfo({ product, variantId, onVariantChange, quanti
   return (
     <div className="flex flex-col space-y-4">
       {/* Product Title */}
-      <h1 className="font-display text-3xl font-normal leading-tight tracking-normal md:text-4xl text-ink uppercase">
+      <h1 className="break-words font-display text-2xl font-normal leading-tight tracking-normal sm:text-3xl md:text-4xl text-ink uppercase">
         {product.name}
       </h1>
 
       {/* Price */}
-      <div className="flex items-center gap-3">
+      <div className="flex flex-wrap items-center gap-3">
         <span className="font-display text-xl md:text-2xl font-bold text-ink">
           {formatINR(product.price)}
         </span>
@@ -120,7 +112,7 @@ export function ProductDetailsInfo({ product, variantId, onVariantChange, quanti
       {/* Actions Section: ID used for sticky mobile bar trigger */}
       <div id="pdp-main-buy-actions" className="space-y-3.5 pt-1">
         {/* Row: Pill Quantity, Navy ADD TO CART, Wishlist Heart */}
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
           {/* Pill Quantity Selector */}
           <div className="flex items-center justify-between rounded-md bg-[#f4f4f4] px-4 py-2.5 w-[115px] md:w-[125px] shrink-0">
             <button
@@ -141,15 +133,7 @@ export function ProductDetailsInfo({ product, variantId, onVariantChange, quanti
             </button>
           </div>
 
-          {/* Navy ADD TO CART Button */}
-          <button
-            onClick={handleAddToCart}
-            id="pdp-add-to-cart"
-            disabled={isAdding || !product.inStock}
-            className="flex-1 rounded-md bg-[#2d254d] hover:bg-[#231c3d] py-3.5 px-4 font-display text-xs md:text-sm font-bold uppercase tracking-wider text-white shadow-xs transition-colors cursor-pointer text-center"
-          >
-            {!product.inStock ? "OUT OF STOCK" : isAdding ? "ADDING..." : "ADD TO CART"}
-          </button>
+              <Button id="pdp-add-to-cart" type="button" variant="hero" onClick={handleAddToCart} disabled={!product.inStock} className="min-w-0! flex-1 px-3! disabled:cursor-not-allowed disabled:opacity-50">{product.inStock ? "Add to cart" : "Out of stock"}</Button>
 
           {/* Circular Wishlist Button */}
           <button
@@ -175,41 +159,12 @@ export function ProductDetailsInfo({ product, variantId, onVariantChange, quanti
           </button>
         </div>
 
-        {/* Terms & Conditions Checkbox */}
-        <div className="flex items-center gap-2 text-xs text-neutral-700 pt-0.5">
-          <input
-            type="checkbox"
-            id="terms-check"
-            checked={agreedTerms}
-            onChange={(e) => {
-              setAgreedTerms(e.target.checked);
-              if (e.target.checked) setTermsError(false);
-            }}
-            className="size-4 rounded-md border-neutral-300 accent-[#2d254d] cursor-pointer"
-          />
-          <label htmlFor="terms-check" className="cursor-pointer select-none">
-            I agree with <strong className="font-semibold text-ink">Terms & Conditions</strong>
-          </label>
-        </div>
-        {termsError && (
-          <p className="text-xs text-red-600 font-medium">Please accept the Terms & Conditions.</p>
-        )}
+            {purchaseError && <p role="alert" className="text-sm text-[#9e5144]">{purchaseError}</p>}
 
-        {/* Coral / Salmon Buy It Now Button */}
-        <button
-          disabled={!product.inStock}
-          onClick={handleBuyItNow}
-          className={`w-full rounded-md py-3.5 px-6 font-display text-xs md:text-sm font-semibold text-white shadow-xs transition-colors cursor-pointer text-center tracking-wide ${
-            agreedTerms && product.inStock
-              ? "bg-[#d0473e] hover:bg-[#b93c34]"
-              : "bg-[#dd8984] hover:bg-[#d07b76]"
-          }`}
-        >
-          Buy It Now
-        </button>
+            <Button type="button" variant="hero" disabled={!product.inStock} onClick={handleBuyItNow} className="w-full disabled:cursor-not-allowed disabled:opacity-50">Buy now</Button>
 
         {/* Utility Links: Ask a question & Share */}
-        <div className="flex items-center gap-6 pt-1 text-xs text-neutral-600 font-medium">
+        <div className="flex flex-wrap items-center gap-x-6 gap-y-3 pt-1 text-xs text-neutral-600 font-medium">
           <button
             onClick={() => setAskModalOpen(true)}
             className="flex items-center gap-1.5 hover:text-ink transition cursor-pointer"

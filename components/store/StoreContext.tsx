@@ -1,8 +1,11 @@
 "use client";
 
-import React, { createContext, useCallback, useContext, useEffect, useState } from "react";
+import React, { createContext, useCallback, useContext, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import type { ProductItem } from "@/data/products";
+import { cartStorage, wishlistStorage } from "@/helpers/store/browser-storage";
 import { selectVariant } from "@/helpers/store/variant";
+import { findProductOption } from "@/helpers/store/product-option";
+import { isUuid } from "@/helpers/orders/input";
 
 export interface CartItem {
   id: string;
@@ -19,8 +22,9 @@ export interface CartItem {
 
 interface StoreContextType {
   cart: CartItem[];
+  cartReady: boolean;
   wishlist: string[]; // slugs
-  addToCart: (product: ProductItem, size?: string, quantity?: number) => void;
+  addToCart: (product: ProductItem, size?: string, quantity?: number) => boolean;
   removeFromCart: (index: number) => void;
   updateQuantity: (index: number, quantity: number) => void;
   syncCart: (products: ProductItem[]) => void;
@@ -37,68 +41,53 @@ interface StoreContextType {
   clearNotification: () => void;
 }
 
+const subscribeReady = () => () => {};
+
 const StoreContext = createContext<StoreContextType | undefined>(undefined);
 
 export function StoreProvider({ children }: { children: React.ReactNode }) {
-  const [cart, setCart] = useState<CartItem[]>(() => {
-    if (typeof window === "undefined") return [];
-    try {
-      const saved = localStorage.getItem("cbn_cart");
-      const items: unknown = saved ? JSON.parse(saved) : [];
-      return Array.isArray(items)
-        ? items
-            .filter((item): item is CartItem =>
-              Boolean(
-                item &&
-                  typeof item.slug === "string" &&
-                  typeof item.size === "string" &&
-                  typeof item.price === "number" &&
-                  Number.isFinite(item.price) &&
-                  Number.isInteger(item.quantity) &&
-                  item.quantity > 0
-              )
-            )
-            .map(item => ({ ...item, available: true }))
-            .slice(0, 50)
-        : [];
-    } catch {
-      return [];
-    }
-  });
-
-  const [wishlist, setWishlist] = useState<string[]>(() => {
-    if (typeof window === "undefined") return [];
-    try {
-      const saved = localStorage.getItem("cbn_wishlist");
-      return saved ? JSON.parse(saved) : [];
-    } catch {
-      return [];
-    }
-  });
+  const cart = useSyncExternalStore(cartStorage.subscribe, cartStorage.getSnapshot, cartStorage.getServerSnapshot);
+  const wishlist = useSyncExternalStore(wishlistStorage.subscribe, wishlistStorage.getSnapshot, wishlistStorage.getServerSnapshot);
+  const cartReady = useSyncExternalStore(subscribeReady, () => true, () => false);
+  const setCart = cartStorage.update;
+  const setWishlist = wishlistStorage.update;
 
   const [cartOpen, setCartOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [notification, setNotification] = useState<string | null>(null);
+  const notificationTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => () => { if (notificationTimer.current) clearTimeout(notificationTimer.current); }, []);
+
+  const clearNotification = useCallback(() => {
+    if (notificationTimer.current) clearTimeout(notificationTimer.current);
+    setNotification(null);
+  }, []);
+
+  function notify(message: string) {
+    if (notificationTimer.current) clearTimeout(notificationTimer.current);
+    setNotification(message);
+    notificationTimer.current = setTimeout(() => setNotification(null), 3000);
+  }
 
   const syncCart = useCallback((products: ProductItem[]) => {
-    if (!products || !products.length) return;
     const catalog = new Map(products.map(product => [product.slug, product]));
     setCart(current => current.map(item => {
-      const product = catalog.get(item.slug);
-      if (!product) return { ...item, available: true };
+      const named = products.filter(product => product.name.trim().toLowerCase() === item.name?.trim().toLowerCase());
+      const product = catalog.get(item.slug) ?? (named.length === 1 ? named[0] : undefined);
+      if (!product) return { ...item, available: false };
 
-      let variantId = item.variantId;
-      if (!variantId && product.variants?.length) {
-        const matched = product.variants.find(v => v.name.toLowerCase() === item.size.toLowerCase()) ?? product.variants[0];
-        variantId = matched?.id;
-      }
+      const matched = findProductOption(product.variants ?? [], product.price, item.size, item.variantId);
+      const variantId = matched?.id;
 
+      if ((product.variants?.length && !variantId) || (item.variantId && item.variantId !== "v1" && !matched)) return { ...item, available: false };
       const selected = variantId ? selectVariant(product, variantId) : product;
       const isAvailable = product.inStock !== false && (selected.inStock !== false);
       return {
         ...item,
-        variantId: variantId ?? item.variantId,
+        slug: product.slug,
+        variantId,
+        size: matched && (!item.size || ["Standard", "Free Size"].includes(item.size) || item.variantId === "v1") ? matched.name : item.size,
         name: selected.name,
         price: selected.price,
         image: selected.images[0] || item.image || "/product-placeholder.svg",
@@ -106,7 +95,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
         available: isAvailable,
       };
     }));
-  }, []);
+  }, [setCart]);
 
   const completeOrder = useCallback((purchased: CartItem[]) => {
     setCart(current => current.flatMap(item => {
@@ -116,66 +105,28 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       return quantity > 0 ? [{ ...item, quantity }] : [];
     }));
     setCartOpen(false);
-  }, []);
-
-  // Save to localStorage whenever cart or wishlist updates
-  useEffect(() => {
-    try {
-      localStorage.setItem("cbn_cart", JSON.stringify(cart));
-    } catch {
-      // ignore
-    }
-  }, [cart]);
-
-  useEffect(() => {
-    try {
-      localStorage.setItem("cbn_wishlist", JSON.stringify(wishlist));
-    } catch {
-      // ignore
-    }
-  }, [wishlist]);
+  }, [setCart]);
 
   const addToCart = (product: ProductItem, size = "Standard", quantity = 1) => {
-    if (!product.inStock || !Number.isFinite(quantity) || quantity < 1) return;
-    const limit = product.stockCount ?? Infinity;
-    const qty = Math.min(limit, Math.max(1, Math.floor(quantity)));
-    const finalPrice = typeof product.price === "number" ? product.price : Number(product.price) || 0;
-    const finalImage = product.images?.[0] || "/Home/images/015_kesari_rang__IMG_0124.jpg";
-
-    const matchedVariant = product.variantId
-      ? product.variants?.find(v => v.id === product.variantId)
-      : (product.variants?.find(v => v.name.toLowerCase() === size.toLowerCase()) ?? product.variants?.[0]);
-    const finalVariantId = product.variantId ?? matchedVariant?.id;
-
-    setCart((prev) => {
-      const existing = prev.findIndex(
-        (item) => item.slug === product.slug && (item.variantId || "") === (finalVariantId || "") && item.size === size
-      );
-      if (existing !== -1) {
-        const copy = [...prev];
-        const nextQty = Math.min(limit, copy[existing].quantity + qty);
-        copy[existing] = { ...copy[existing], quantity: nextQty, available: true, price: finalPrice, image: finalImage, stockCount: product.stockCount, variantId: finalVariantId };
-        return copy;
-      }
-      return [
-        ...prev,
-        {
-          id: `${product.slug}-${size}-${finalVariantId || "default"}`,
-          slug: product.slug,
-          name: product.name,
-          price: finalPrice,
-          image: finalImage,
-          size,
-          variantId: finalVariantId,
-          stockCount: product.stockCount,
-          quantity: qty,
-          available: true,
-        },
-      ];
+    if (!isUuid(product.id) || !product.inStock || !Number.isFinite(quantity) || quantity < 1) return false;
+    const option = findProductOption(product.variants ?? [], product.price, size, product.variantId);
+    if ((product.variants?.length || product.variantId) && (!option || !isUuid(option.id))) return false;
+    const selected = option ? selectVariant(product, option.id) : product;
+    if (!selected.inStock) return false;
+    const limit = Math.min(99, selected.stockCount ?? 99);
+    const qty = Math.min(limit, Math.floor(quantity));
+    const selectedSize = option && ["Standard", "Free Size"].includes(size) ? option.name : size;
+    const previous = cartStorage.getSnapshot();
+    const existing = previous.findIndex(item => item.slug === product.slug && (item.variantId || "") === (option?.id || "") && item.size === selectedSize);
+    if (existing !== -1 && previous[existing].quantity >= limit) return false;
+    setCart(current => {
+      const entry = { id: `${product.slug}-${selectedSize}-${option?.id || "default"}`, slug: product.slug, name: selected.name, price: selected.price, image: selected.images[0] || "/product-placeholder.svg", size: selectedSize, variantId: option?.id, stockCount: selected.stockCount, quantity: qty, available: true };
+      if (existing === -1) return [...current, entry];
+      return current.map((item, index) => index === existing ? { ...entry, quantity: Math.min(limit, item.quantity + qty) } : item);
     });
-
-    setNotification(`Added "${product.name}" to cart`);
+    notify(`Added "${selected.name}" to cart`);
     setCartOpen(true);
+    return true;
   };
 
   const removeFromCart = (index: number) => {
@@ -192,7 +143,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       const copy = [...prev];
       if (copy[index]) {
         const limit = copy[index].stockCount ?? Infinity;
-        copy[index] = { ...copy[index], quantity: Math.min(limit, Math.floor(quantity)) };
+        copy[index] = { ...copy[index], quantity: limit === 0 ? Math.max(1, Math.min(99, Math.floor(quantity))) : Math.max(1, Math.min(99, limit, Math.floor(quantity))) };
       }
       return copy;
     });
@@ -222,12 +173,12 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     });
   };
 
-  const clearNotification = () => setNotification(null);
 
   return (
     <StoreContext.Provider
       value={{
         cart,
+        cartReady,
         wishlist,
         addToCart,
         removeFromCart,

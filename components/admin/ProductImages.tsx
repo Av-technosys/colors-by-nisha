@@ -1,5 +1,7 @@
 "use client";
 
+import { UserFacingError, friendlyError } from "@/helpers/errors";
+
 import Image from "next/image";
 import { useEffect, useId, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight, ImagePlus, LoaderCircle, RefreshCw, Trash2 } from "lucide-react";
@@ -47,11 +49,11 @@ export function ProductImages({ images, onChange, onBusyChange, disabled }: Prod
       form.set("image", image.file);
       form.set("folder", "products");
       const result = await uploadImageAction(form);
-      if (result.error || !result.token) throw new Error(result.error || "Upload failed. Please re-upload the image.");
+      if (result.error || !result.token) throw new UserFacingError(result.error || "Upload failed. Please re-upload the image.");
       if (!mounted.current) { void discardImageUploadAction(result.token, "products"); return; }
       commit(currentImages.current.map(item => item.clientId === image.clientId ? { ...item, url: result.url, uploadToken: result.token, status: "uploaded", file: undefined, error: "" } : item));
     } catch (error) {
-      if (mounted.current) commit(currentImages.current.map(item => item.clientId === image.clientId ? { ...item, status: "failed", error: error instanceof Error ? error.message : "Upload failed. Please re-upload the image." } : item));
+      if (mounted.current) commit(currentImages.current.map(item => item.clientId === image.clientId ? { ...item, status: "failed", error: friendlyError(error, "Upload failed. Please re-upload the image.") } : item));
     }
   }
 
@@ -101,7 +103,7 @@ export function ProductImages({ images, onChange, onBusyChange, disabled }: Prod
     try {
       for (const file of files) {
         if (!IMAGE_TYPES.includes(file.type) || !file.size || file.size > MAX_IMAGE_BYTES) {
-          throw new Error("Choose JPG, PNG, WebP, or GIF images of 5 MB or less.");
+          throw new UserFacingError("Choose JPG, PNG, WebP, or GIF images of 5 MB or less.");
         }
         const url = URL.createObjectURL(file);
         urls.current.add(url);
@@ -111,7 +113,7 @@ export function ProductImages({ images, onChange, onBusyChange, disabled }: Prod
         catch {
           URL.revokeObjectURL(url);
           urls.current.delete(url);
-          throw new Error(`“${file.name}” could not be opened as an image.`);
+          throw new UserFacingError(`“${file.name}” could not be opened as an image.`);
         }
         if (!mounted.current) return;
         added.push({ id: "", clientId: crypto.randomUUID(), url, file, status: "uploading" });
@@ -123,7 +125,7 @@ export function ProductImages({ images, onChange, onBusyChange, disabled }: Prod
       for (const image of added) await upload(image);
     } catch (error) {
       added.forEach(image => { URL.revokeObjectURL(image.url); urls.current.delete(image.url); });
-      if (mounted.current) setError(error instanceof Error ? error.message : "The images could not be opened.");
+      if (mounted.current) setError(friendlyError(error, "The images could not be opened."));
     } finally {
       if (mounted.current) {
         setReading(false);

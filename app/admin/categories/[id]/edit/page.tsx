@@ -1,3 +1,4 @@
+import { FormSkeleton } from "@/components/ui/Skeleton";
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { connection } from "next/server";
@@ -20,5 +21,5 @@ async function EditCategory({ params }: PageProps) {
 }
 
 export default function EditCategoryPage({ params }: PageProps) {
-  return <Suspense fallback={<p className="text-sm text-neutral-500">Loading category…</p>}><EditCategory params={params} /></Suspense>;
+  return <Suspense fallback={<FormSkeleton />}><EditCategory params={params} /></Suspense>;
 }

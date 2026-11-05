@@ -1,5 +1,7 @@
 "use client";
 
+import { UserFacingError, friendlyError } from "@/helpers/errors";
+
 import Image from "next/image";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
@@ -129,7 +131,7 @@ export default function BlogForm({ initialBlog, categories }: { initialBlog?: Ad
         upload.set("image", file);
         upload.set("folder", "blogs");
         const result = await uploadImageAction(upload);
-        if (result.error || !result.token) throw new Error(result.error || "Please re-upload the image.");
+        if (result.error || !result.token) throw new UserFacingError(result.error || "Please re-upload the image.");
         if (fileReader.current !== reader) { void discardImageUploadAction(result.token, "blogs"); return; }
         if (imageUpload.current) void discardImageUploadAction(imageUpload.current, "blogs");
         imageUpload.current = result.token;
@@ -138,7 +140,7 @@ export default function BlogForm({ initialBlog, categories }: { initialBlog?: Ad
         toast.success("Banner image uploaded.", { id: "banner-image" });
       } catch (error) {
         if (fileReader.current === reader) {
-          const message = error instanceof Error ? error.message : "Upload failed. Please re-upload the image.";
+          const message = friendlyError(error, "Upload failed. Please re-upload the image.");
           setImageFailed(true);
           setErrors(current => ({ ...current, mainBannerImage: message }));
           toast.error(message);
@@ -206,7 +208,7 @@ export default function BlogForm({ initialBlog, categories }: { initialBlog?: Ad
         <Field id="blog-title" label="Title" error={errors.title}><input id="blog-title" required value={values.title} onChange={event => update("title", event.target.value)} aria-invalid={Boolean(errors.title)} aria-describedby={errors.title ? "blog-title-error" : undefined} className="h-11 w-full rounded-md border border-[#e5e1da] px-3 text-base sm:text-sm outline-none aria-invalid:border-red-400 focus:border-purple focus:ring-2 focus:ring-purple/10" /></Field>
         <Field id="blog-slug" label="Slug" error={errors.slug}><input id="blog-slug" required value={values.slug} onChange={event => update("slug", event.target.value)} aria-invalid={Boolean(errors.slug)} aria-describedby={`blog-slug-hint${errors.slug ? " blog-slug-error" : ""}`} className="h-11 w-full rounded-md border border-[#e5e1da] px-3 text-base sm:text-sm outline-none aria-invalid:border-red-400 focus:border-purple focus:ring-2 focus:ring-purple/10" /><p id="blog-slug-hint" className="mt-2 break-all text-xs text-neutral-400">Article URL: /blog/{values.slug || "your-blog-title"}</p></Field>
         <div className="grid min-w-0 gap-5 md:grid-cols-2 xl:grid-cols-3">
-          <Field id="blog-category" label="Category" error={errors.categoryId}><select id="blog-category" required value={values.categoryId} onChange={event => update("categoryId", event.target.value)} aria-invalid={Boolean(errors.categoryId)} aria-describedby={errors.categoryId ? "blog-category-error" : undefined} className="h-11 w-full rounded-md border border-[#e5e1da] bg-white px-3 text-base sm:text-sm outline-none aria-invalid:border-red-400 focus:border-purple focus:ring-2 focus:ring-purple/10"><option value="">Select category</option>{categories.map(category => <option key={category.id} value={category.id}>{category.name}</option>)}</select>{!categories.length && <p className="mt-2 text-xs text-neutral-500">Add a category on the Categories page first.</p>}</Field>
+          <Field id="blog-category" label="Category" error={errors.categoryId}><select id="blog-category" required value={values.categoryId} onChange={event => update("categoryId", event.target.value)} aria-invalid={Boolean(errors.categoryId)} aria-describedby={errors.categoryId ? "blog-category-error" : undefined} className="h-11 w-full rounded-md border border-[#e5e1da] bg-white px-3 text-base sm:text-sm outline-none aria-invalid:border-red-400 focus:border-purple focus:ring-2 focus:ring-purple/10"><option value="">Select category</option>{categories.map(category => <option key={category.id} value={category.id}>{category.name}</option>)}</select>{!categories.length && <p className="mt-2 text-xs text-neutral-500">Add a blog category using Manage categories on the Blogs page first.</p>}</Field>
           <Field id="blog-author" label="Author name" error={errors.authorName}><input id="blog-author" required value={values.authorName} onChange={event => update("authorName", event.target.value)} aria-invalid={Boolean(errors.authorName)} aria-describedby={errors.authorName ? "blog-author-error" : undefined} className="h-11 w-full rounded-md border border-[#e5e1da] px-3 text-base sm:text-sm outline-none aria-invalid:border-red-400 focus:border-purple focus:ring-2 focus:ring-purple/10" /></Field>
           <Field id="blog-date" label="Publish date" error={errors.publishDate}><input id="blog-date" type="date" required value={values.publishDate} onChange={event => update("publishDate", event.target.value)} aria-invalid={Boolean(errors.publishDate)} aria-describedby={errors.publishDate ? "blog-date-error" : undefined} className="h-11 w-full min-w-0 rounded-md border border-[#e5e1da] bg-white px-3 text-base sm:text-sm outline-none aria-invalid:border-red-400 focus:border-purple focus:ring-2 focus:ring-purple/10" /></Field>
         </div>

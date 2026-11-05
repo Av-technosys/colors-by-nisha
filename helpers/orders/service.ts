@@ -4,23 +4,24 @@ import { revalidatePath } from "next/cache";
 
 import { and, asc, desc, eq, ilike, inArray, isNull, or, sql } from "drizzle-orm";
 import { db } from "@/lib/db";
-import { orders, orderItems, products, productVariants, productMedia, users } from "@/lib/db/schema";
+import { orders, orderItems, products, productVariants, productMedia, users, payment } from "@/lib/db/schema";
 import { imageUrl } from "@/helpers/storage/s3";
+import { findProductOption } from "@/helpers/store/product-option";
 import { decimalAmount, isUuid, minorAmount, nextStatuses, orderStatuses, OrderInputError, parseOrderLines, type CartQuote, type parseDelivery } from "./input";
 
 export async function quoteCart(input: unknown): Promise<CartQuote> {
   const lines = parseOrderLines(input);
+  const slugs = [...new Set(lines.map(item => item.slug))];
   const catalog = await db.query.products.findMany({
-    where: inArray(products.slug, [...new Set(lines.map(item => item.slug))]),
+    where: or(inArray(products.slug, slugs), inArray(sql`trim(both '-' from regexp_replace(lower(${products.name}), '[^a-z0-9]+', '-', 'g'))`, slugs)),
     with: { variants: true, media: { orderBy: [asc(productMedia.position), asc(productMedia.id)] } },
   });
   const quantities = new Map<string, number>();
   const items = await Promise.all(lines.map(async line => {
-    const product = catalog.find(item => item.slug === line.slug);
+    const named = catalog.filter(item => item.name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "") === line.slug);
+    const product = catalog.find(item => item.slug === line.slug) ?? (named.length === 1 ? named[0] : undefined);
     if (!product || product.status !== "active") throw new OrderInputError("An item is no longer available. Please review your cart.");
-    const variant = product.variants.find(item => item.id === line.variantId)
-      ?? product.variants.find(item => line.size && item.name.toLowerCase() === line.size.toLowerCase())
-      ?? (product.variants.length > 0 && !line.variantId ? product.variants[0] : undefined);
+    const variant = findProductOption(product.variants, product.price, line.size, line.variantId);
     if ((product.variants.length > 0 || line.variantId) && !variant) throw new OrderInputError(`Please choose an available option for ${product.name} on its product page.`);
     if (variant) {
       const quantity = (quantities.get(variant.id) ?? 0) + line.quantity;
@@ -31,7 +32,7 @@ export async function quoteCart(input: unknown): Promise<CartQuote> {
     if (minorAmount(price) <= 0) throw new OrderInputError(`${product.name} is unavailable for checkout.`);
     const media = product.media.find(item => variant && item.variantId === variant.id) ?? product.media.find(item => !item.variantId) ?? product.media[0];
     return {
-      ...line, variantId: variant?.id ?? line.variantId ?? undefined, productId: product.id, name: product.name, price, sku: variant?.sku ?? product.sku,
+      ...line, slug: product.slug, size: variant?.name ?? line.size, variantId: variant?.id ?? line.variantId ?? undefined, productId: product.id, name: product.name, price, sku: variant?.sku ?? product.sku,
       imageKey: media?.key ?? null, image: media ? await imageUrl(media.key).catch(() => "/product-placeholder.svg") : "/product-placeholder.svg",
     };
   }));
@@ -47,7 +48,7 @@ export async function placeOrder(userId: string, input: Record<string, unknown>,
     return existing.id;
   }
   const quote = await quoteCart(input.items);
-  if (input.expectedSubtotal !== quote.subtotal) throw new OrderInputError("Prices have changed. Refresh your order summary before placing the order.");
+  if (input.expectedSubtotal !== quote.subtotal) throw new OrderInputError("Prices have changed. Please review your updated order summary before paying.", "price_changed");
   return db.transaction(async tx => {
     const [order] = await tx.insert(orders).values({
       id: input.id as string, userId, addressLine1: address.address, addressLine2: address.apartment || null,
@@ -91,8 +92,8 @@ export async function listOrders(input: { page?: string; query?: string; status?
     search ? or(ilike(sql<string>`${orders.id}::text`, `%${search}%`), ilike(users.fullName, `%${search}%`), ilike(users.email, `%${search}%`)) : undefined,
   );
   const rows = await db.select({
-    id: orders.id, status: orders.status, totalAmount: orders.totalAmount, createdAt: orders.createdAt,
-    customerName: users.fullName, customerEmail: users.email, totalCount: sql<number>`count(*) over()::int`,
+    id: orders.id, status: orders.status, paidAt: orders.paidAt, totalAmount: orders.totalAmount, createdAt: orders.createdAt,
+    customerName: users.fullName, customerEmail: users.email, paidCount: sql<number>`count(*) filter (where ${orders.paidAt} is not null) over()::int`, activeCount: sql<number>`count(*) filter (where ${orders.paidAt} is not null and ${orders.status} not in ('delivered', 'cancelled')) over()::int`, totalCount: sql<number>`count(*) over()::int`,
   }).from(orders).leftJoin(users, eq(orders.userId, users.id)).where(where)
     .orderBy(desc(orders.createdAt), desc(orders.id)).limit(20).offset((page - 1) * 20);
   let total = rows[0]?.totalCount ?? 0;
@@ -100,7 +101,7 @@ export async function listOrders(input: { page?: string; query?: string; status?
     const [count] = await db.select({ total: sql<number>`count(*)::int` }).from(orders).leftJoin(users, eq(orders.userId, users.id)).where(where);
     total = count.total;
   }
-  return { rows, page, total, pageCount: Math.max(1, Math.ceil(total / 20)) };
+  return { rows, page, total, paidCount: rows[0]?.paidCount ?? 0, activeCount: rows[0]?.activeCount ?? 0, pageCount: Math.max(1, Math.ceil(total / 20)) };
 }
 
 type OrderTransaction = Parameters<Parameters<typeof db.transaction>[0]>[0];
@@ -123,14 +124,17 @@ async function changeOrderStock(tx: OrderTransaction, orderId: string, restore: 
 }
 
 // Verified payments only
-export async function confirmOrderPayment(input: { orderId: string; paymentId: string; amountMinor: number; currency: string }) {
-  if (!isUuid(input.orderId) || !/^[a-zA-Z0-9_-]{5,100}$/.test(input.paymentId)) throw new OrderInputError("Invalid payment reference.");
+export async function confirmOrderPayment(input: { orderId: string; paymentId: string; amountMinor: number; currency: string; paymentOrderId: string; paymentMethod?: string }) {
+  if (!isUuid(input.orderId) || !/^pay_[a-zA-Z0-9]{1,90}$/.test(input.paymentId) || !/^order_[a-zA-Z0-9]{1,90}$/.test(input.paymentOrderId)) throw new OrderInputError("We couldn’t confirm this payment. Please check your order and try again.");
   if (!Number.isSafeInteger(input.amountMinor) || input.amountMinor <= 0 || input.currency !== "INR") throw new OrderInputError("Invalid payment amount or currency.");
   const result = await db.transaction(async tx => {
     const [order] = await tx.select().from(orders).where(eq(orders.id, input.orderId)).for("update");
     if (!order) throw new OrderInputError("Order not found.");
     if (minorAmount(order.totalAmount) !== input.amountMinor) throw new OrderInputError("The payment amount does not match this order.");
     if (order.paymentId && order.paymentId !== input.paymentId) throw new OrderInputError("This order already has a different payment.");
+    const [attempt] = await tx.select().from(payment).where(and(eq(payment.orderId, order.id), eq(payment.paymentOrderId, input.paymentOrderId))).orderBy(desc(payment.createdAt)).limit(1);
+    if (!attempt || attempt.paymentAmount !== input.amountMinor) throw new OrderInputError("Payment attempt does not match this order.");
+    await tx.update(payment).set({ paymentId: input.paymentId, paymentStatus: "captured", paymentMethod: input.paymentMethod?.slice(0, 50) || "online" }).where(eq(payment.id, attempt.id));
     if (order.paidAt && (order.stockDeductedAt || order.status === "cancelled")) return { order, requiresAttention: order.status === "cancelled", issue: order.status === "cancelled" ? "Review the cancelled order for a payment refund." : null };
     const issue = order.status === "cancelled" ? "Payment received after cancellation. Review and refund through the payment provider." : await changeOrderStock(tx, order.id, false);
     const now = new Date();
@@ -141,6 +145,8 @@ export async function confirmOrderPayment(input: { orderId: string; paymentId: s
     return { order: updated, requiresAttention: Boolean(issue), issue };
   });
   revalidatePath("/admin");
+  revalidatePath("/dashboard");
+  revalidatePath("/admin/payments");
   revalidatePath("/admin/orders");
   revalidatePath(`/admin/orders/${input.orderId}`);
   revalidatePath("/orders");
@@ -166,6 +172,7 @@ export async function updateOrder(id: string, values: ReturnType<typeof parseDel
         stockDeductedAt = new Date();
       }
     }
+    if (!["pending", "cancelled"].includes(values.status) && (!order.paidAt || !stockDeductedAt)) throw new OrderInputError("Confirm payment and allocate stock before fulfilling this order.");
     if (order.stockDeductedAt && ["processing", "packed"].includes(order.status) && values.status === "cancelled") await changeOrderStock(tx, order.id, true);
     if (["shipped", "out_for_delivery", "delivered"].includes(values.status) && (!values.courierName || !values.trackingNumber)) throw new OrderInputError("Add the courier and tracking number before dispatching.");
     const now = new Date();

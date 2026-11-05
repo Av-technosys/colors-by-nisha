@@ -8,6 +8,7 @@ import type { CatalogData, CatalogRow } from "@/helpers/admin/catalog";
 import type { ActionState } from "@/helpers/admin/validation";
 import { PageHeading, StatusBadge } from "./AdminUI";
 import { ProductCsvUpload } from "./ProductCsvUpload";
+import { BlogCategoryManager } from "./blogs/BlogCategoryManager";
 
 type CatalogTableProps = {
   title: string;
@@ -89,7 +90,8 @@ export function CatalogTable({ title, singular, description, basePath, columns, 
         title={title}
         description={description}
         action={(
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-3">
+            {basePath === "/admin/blogs" && <BlogCategoryManager onChange={reload} />}
             {basePath === "/admin/products" && <ProductCsvUpload onImportSuccess={reload} />}
             <Link
               href={`${basePath}/new`}
@@ -105,7 +107,7 @@ export function CatalogTable({ title, singular, description, basePath, columns, 
         <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#eeeae4] p-5">
           <h2 className="font-display text-lg">All {title.toLowerCase()} <span className="ml-2 rounded-md bg-[#f2eff6] px-2 py-1 text-xs text-purple">{loading ? "—" : records.length}</span></h2>
           <div className="flex w-full flex-wrap gap-3 sm:w-auto">
-            <label className="relative min-w-0 flex-1 sm:w-60">
+            <label className="relative min-w-0 basis-full sm:flex-1 sm:basis-0 sm:w-60">
               <span className="sr-only">Search {title.toLowerCase()}</span><Search size={16} className="absolute left-3 top-3.5 text-neutral-400" aria-hidden="true" />
               <input value={query} onChange={event => { setQuery(event.target.value); setPage(1); }} placeholder={`Search ${title.toLowerCase()}…`} className="min-h-11 w-full rounded-md border border-[#e5e1da] pl-9 pr-3 text-xs" />
             </label>

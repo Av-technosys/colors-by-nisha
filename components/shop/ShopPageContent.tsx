@@ -1,34 +1,60 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { formatINR, type ProductItem } from "@/data/products";
+import { readShopFilters, shopFilterUrl } from "@/helpers/store/shop-filters";
 import { ShopProductCard } from "./ShopProductCard";
 import { QuickViewModal } from "./QuickViewModal";
 
 interface ShopPageContentProps {
-  initialCategory?: string;
-  initialSearch?: string;
   products: ProductItem[];
 }
 
-export function ShopPageContent({ initialCategory, initialSearch, products: allProducts }: ShopPageContentProps) {
+export function ShopPageContent({ products: allProducts }: ShopPageContentProps) {
+  const params = useSearchParams();
   const maxPrice = Math.max(1, ...allProducts.map(product => product.price));
+  const filters = useMemo(() => readShopFilters(params, maxPrice), [params, maxPrice]);
+  const { category: selectedCategory, search: searchQuery, inStockOnly, priceRange, sort: sortBy } = filters;
+  const queryKey = params.toString();
+  const [priceDraft, setPriceDraft] = useState({ key: queryKey, value: priceRange[1] });
+  const tempPriceMax = priceDraft.key === queryKey ? priceDraft.value : priceRange[1];
+  const setTempPriceMax = (value: number) => setPriceDraft({ key: queryKey, value });
+
+  function updateFilters(changes: Record<string, string | null>) {
+    const href = shopFilterUrl(window.location.href, changes);
+    if (href !== `${window.location.pathname}${window.location.search}${window.location.hash}`) window.history.pushState(null, "", href);
+  }
+  const setSelectedCategory = (value: string) => updateFilters({ category: value === "all" ? null : value, page: null });
+  const setSearchQuery = (value: string) => updateFilters({ search: value || null, query: null, q: null, page: null });
+  const setInStockOnly = (value: boolean) => updateFilters({ in_stock: value ? "1" : null, page: null });
+  const setPriceRange = ([minimum, maximum]: [number, number]) => updateFilters({ min_price: minimum > 0 ? String(minimum) : null, max_price: maximum < maxPrice ? String(maximum) : null, page: null });
+  const setSortBy = (value: string) => updateFilters({ sort: value === "featured" ? null : value, page: null });
+  const setCurrentPage = (value: number) => updateFilters({ page: value > 1 ? String(value) : null });
   const categoryOptions = [{ key: "all", label: "All Products", count: allProducts.length },
     ...Array.from(new Map(allProducts.filter(product => product.categorySlug).map(product => [product.categorySlug!, product.category])).entries()).map(([key, label]) => ({ key, label, count: allProducts.filter(product => product.categorySlug === key).length }))];
 
   // Filter States
-  const [selectedCategory, setSelectedCategory] = useState<string>(initialCategory || "all");
-  const [searchQuery, setSearchQuery] = useState<string>(initialSearch || "");
-  const [inStockOnly, setInStockOnly] = useState<boolean>(false);
-  const [priceRange, setPriceRange] = useState<[number, number]>([0, maxPrice]);
-  const [tempPriceMax, setTempPriceMax] = useState<number>(maxPrice);
-  const [sortBy, setSortBy] = useState<string>("featured");
   const [columnCount, setColumnCount] = useState<2 | 3 | 4>(3);
   const [mobileFilterOpen, setMobileFilterOpen] = useState<boolean>(false);
   const [quickViewProduct, setQuickViewProduct] = useState<ProductItem | null>(null);
 
+  useEffect(() => {
+    if (!mobileFilterOpen) return;
+    const overflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const closeOnEscape = (event: KeyboardEvent) => { if (event.key === "Escape") setMobileFilterOpen(false); };
+    const closeOnResize = () => { if (window.innerWidth >= 1024) setMobileFilterOpen(false); };
+    window.addEventListener("keydown", closeOnEscape);
+    window.addEventListener("resize", closeOnResize);
+    return () => {
+      document.body.style.overflow = overflow;
+      window.removeEventListener("keydown", closeOnEscape);
+      window.removeEventListener("resize", closeOnResize);
+    };
+  }, [mobileFilterOpen]);
+
   // Pagination State
-  const [currentPage, setCurrentPage] = useState<number>(1);
   const pageSize = 12;
 
   // Accordion toggle states in sidebar
@@ -91,6 +117,7 @@ export function ShopPageContent({ initialCategory, initialSearch, products: allP
 
   // Total pages
   const totalPages = Math.ceil(filteredProducts.length / pageSize) || 1;
+  const currentPage = Math.min(filters.page, totalPages);
   const paginatedProducts = useMemo(() => {
     const start = (currentPage - 1) * pageSize;
     return filteredProducts.slice(start, start + pageSize);
@@ -105,12 +132,8 @@ export function ShopPageContent({ initialCategory, initialSearch, products: allP
     priceRange[1] < maxPrice;
 
   const resetFilters = () => {
-    setSearchQuery("");
-    setSelectedCategory("all");
-    setInStockOnly(false);
-    setPriceRange([0, maxPrice]);
+    updateFilters({ category: null, search: null, query: null, q: null, in_stock: null, min_price: null, max_price: null, page: null });
     setTempPriceMax(maxPrice);
-    setCurrentPage(1);
   };
 
   const handlePageChange = (page: number) => {
@@ -121,14 +144,14 @@ export function ShopPageContent({ initialCategory, initialSearch, products: allP
   return (
     <div className="bg-white text-ink pb-10 md:pb-14">
       {/* Page Heading - Normal white bg with only Products */}
-      <div className="mx-auto w-[calc(100%-2rem)] max-w-[1328px] md:w-full pt-8 pb-6 md:pt-10 md:pb-8 text-center">
+      <div className="mx-auto w-[calc(100%-2rem)] max-w-[1328px] sm:w-[calc(100%-3rem)] lg:w-[calc(100%-4rem)] pt-8 pb-6 md:pt-10 md:pb-8 text-center">
         <h1 className="font-display text-3xl font-normal leading-tight tracking-normal md:text-4xl text-ink">
           Products
         </h1>
       </div>
 
       {/* Main Container */}
-      <div className="mx-auto w-[calc(100%-2rem)] max-w-[1328px] md:w-full">
+      <div className="mx-auto w-[calc(100%-2rem)] max-w-[1328px] sm:w-[calc(100%-3rem)] lg:w-[calc(100%-4rem)]">
         <div className="flex gap-8 lg:gap-12">
           {/* Desktop Filter Sidebar */}
           <aside className="hidden lg:block w-[280px] shrink-0">
@@ -282,7 +305,7 @@ export function ShopPageContent({ initialCategory, initialSearch, products: allP
               </div>
 
               {/* Right side: Layout Switcher & Sort By */}
-              <div className="flex items-center gap-4 ml-auto">
+              <div className="flex min-w-0 flex-wrap items-center gap-3 ml-auto">
                 {/* Column Switcher (desktop) */}
                 <div className="hidden sm:flex items-center gap-1 border border-neutral-200 rounded-md p-0.5">
                   {[2, 3, 4].map((cols) => (
@@ -309,7 +332,7 @@ export function ShopPageContent({ initialCategory, initialSearch, products: allP
                     id="shop-sort"
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value)}
-                    className="rounded-md border border-neutral-300 bg-white px-3 py-1.5 text-xs font-medium text-ink focus:border-ink focus:outline-none cursor-pointer"
+                    className="min-h-11 max-w-full rounded-md border border-neutral-300 bg-white px-3 py-1.5 text-sm font-medium text-ink focus:border-ink focus:outline-none cursor-pointer"
                   >
                     <option value="featured">Featured</option>
                     <option value="title-ascending">Alphabetically, A-Z</option>
@@ -422,7 +445,7 @@ export function ShopPageContent({ initialCategory, initialSearch, products: allP
                 >
                   ‹
                 </button>
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                {Array.from({ length: Math.min(3, totalPages) }, (_, i) => Math.max(1, Math.min(currentPage - 1, totalPages - 2)) + i).map((page) => (
                   <button
                     key={page}
                     onClick={() => handlePageChange(page)}
@@ -461,7 +484,7 @@ export function ShopPageContent({ initialCategory, initialSearch, products: allP
           aria-label="Filters"
         >
           <div
-            className="flex h-full w-[85%] max-w-[340px] flex-col bg-white shadow-2xl animate-in slide-in-from-left duration-250"
+            className="flex h-dvh w-[85%] max-w-[340px] flex-col bg-white shadow-2xl animate-in slide-in-from-left duration-250"
             style={{ overscrollBehavior: "contain" }}
             onClick={(e) => e.stopPropagation()}
           >
@@ -476,7 +499,7 @@ export function ShopPageContent({ initialCategory, initialSearch, products: allP
               </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto p-5 space-y-6" style={{ overscrollBehavior: "contain" }}>
+            <div className="min-h-0 flex-1 overflow-y-auto p-5 space-y-6" style={{ overscrollBehavior: "contain" }}>
               {/* Category */}
               <div>
                 <h3 className="font-display text-xs font-semibold uppercase tracking-wider text-neutral-500 mb-3">
@@ -531,7 +554,7 @@ export function ShopPageContent({ initialCategory, initialSearch, products: allP
               </div>
             </div>
 
-            <div className="border-t border-neutral-200 p-4 space-y-2 bg-neutral-50">
+            <div className="shrink-0 border-t border-neutral-200 p-4 pb-[max(1rem,env(safe-area-inset-bottom))] space-y-2 bg-neutral-50">
               <button
                 onClick={() => {
                   setPriceRange([0, tempPriceMax]);

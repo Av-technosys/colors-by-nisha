@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useStore } from "@/components/store/StoreContext";
@@ -8,16 +8,36 @@ import { images } from "@/data/home";
 
 export function MobileMenuDrawer() {
   const { cart, menuOpen, setMenuOpen, setCartOpen, wishlist } = useStore();
+  const drawerRef = useRef<HTMLDivElement>(null);
   const cartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
 
   useEffect(() => {
+    if (!menuOpen) return;
+    const previousOverflow = document.body.style.overflow;
+    const previousFocus = document.activeElement as HTMLElement | null;
+    document.body.style.overflow = "hidden";
+    drawerRef.current?.focus();
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && menuOpen) {
+      if (e.key === "Escape") {
         setMenuOpen(false);
       }
+      if (e.key !== "Tab") return;
+      const controls = drawerRef.current?.querySelectorAll<HTMLElement>('a[href], button:not([disabled])');
+      if (!controls?.length) return;
+      const first = controls[0];
+      const last = controls[controls.length - 1];
+      if (e.shiftKey && (document.activeElement === first || document.activeElement === drawerRef.current)) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
     };
+    const handleResize = () => { if (window.innerWidth >= 1024) setMenuOpen(false); };
     window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
+    window.addEventListener("resize", handleResize);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("resize", handleResize);
+      previousFocus?.focus();
+    };
   }, [menuOpen, setMenuOpen]);
 
   if (!menuOpen) return null;
@@ -32,7 +52,10 @@ export function MobileMenuDrawer() {
       aria-label="Mobile Navigation Menu"
     >
       <div
-        className="relative flex h-full w-[85%] max-w-[340px] flex-col bg-white shadow-2xl animate-in slide-in-from-left duration-250"
+        ref={drawerRef}
+        id="mobile-menu"
+        tabIndex={-1}
+        className="relative flex h-dvh w-[90%] max-w-[340px] flex-col bg-white shadow-2xl outline-none animate-in slide-in-from-left duration-250"
         style={{ overscrollBehavior: "contain" }}
         onClick={(e) => e.stopPropagation()}
       >
@@ -51,7 +74,7 @@ export function MobileMenuDrawer() {
         </div>
 
         {/* Navigation Links */}
-        <nav className="flex-1 overflow-y-auto px-5 py-4 divide-y divide-neutral-100 font-display" style={{ overscrollBehavior: "contain" }}>
+        <nav className="min-h-0 flex-1 overflow-y-auto px-5 py-4 divide-y divide-neutral-100 font-display" style={{ overscrollBehavior: "contain" }}>
           <div className="py-2 space-y-1">
             <Link
               href="/"
@@ -102,6 +125,7 @@ export function MobileMenuDrawer() {
 
           {/* Quick Links */}
           <div className="py-3 space-y-1 text-sm text-neutral-700">
+            <Link href="/dashboard" onClick={() => setMenuOpen(false)} className="block min-h-11 py-2 px-1 hover:text-ink transition">My account & orders</Link>
             <Link
               href="/about"
               onClick={() => setMenuOpen(false)}
@@ -138,7 +162,7 @@ export function MobileMenuDrawer() {
               <span className="text-xs text-neutral-400">View</span>
             </button>
             <Link
-              href="/shop"
+              href="/wishlist"
               onClick={() => setMenuOpen(false)}
               className="flex w-full items-center justify-between py-2 px-1 text-sm text-neutral-700 hover:text-ink text-left"
             >
@@ -149,7 +173,7 @@ export function MobileMenuDrawer() {
         </nav>
 
         {/* Footer Support */}
-        <div className="border-t border-neutral-100 p-5 bg-[#faf8f5] space-y-3">
+        <div className="shrink-0 border-t border-neutral-100 p-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] bg-[#faf8f5] space-y-3">
           <a
             href="https://wa.me/919799330455?text=Hello%20Colors%20by%20Nisha!%20I%20need%20assistance."
             target="_blank"

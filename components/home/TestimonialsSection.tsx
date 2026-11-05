@@ -14,7 +14,7 @@ export function TestimonialsSection({ onSelect }: { onSelect: (product: Product)
   return (
     <Reveal>
       <section className="bg-ice py-10 md:py-14">
-        <div className="mx-auto w-[calc(100%-2rem)] max-w-[1328px] md:w-full">
+        <div className="mx-auto w-[calc(100%-2rem)] max-w-[1328px] sm:w-[calc(100%-3rem)] lg:w-[calc(100%-4rem)]">
           <SectionHeading>Spotted in Colors by Nisha</SectionHeading>
           <div ref={rail} className="relative flex snap-x snap-mandatory items-stretch gap-4 overflow-x-auto [scrollbar-width:none] lg:gap-5">{[0, 1, 2].flatMap(copy => reviews.map(item => <article aria-hidden={copy !== 1 || undefined} className="flex basis-full shrink-0 snap-start flex-col overflow-hidden rounded-md bg-white sm:basis-[calc((100%_-_16px)/2)] lg:basis-[calc((100%_-_60px)/4)]" key={`${copy}-${item.name}`}>
             <div className="relative aspect-4/3 shrink-0">

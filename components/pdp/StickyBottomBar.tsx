@@ -49,11 +49,11 @@ export function StickyBottomBar({ product, quantity, onQuantityChange: setQuanti
   return (
     <aside
       aria-label="Sticky Add to Cart Bar"
-      className="fixed inset-x-0 z-30 bg-white/95 backdrop-blur-md border-t border-neutral-200 shadow-[0_-4px_25px_rgba(0,0,0,0.08)] animate-in slide-in-from-bottom duration-300 bottom-[52px] md:bottom-0 py-2.5 md:py-3"
+      className="fixed inset-x-0 z-30 bg-white/95 backdrop-blur-md border-t border-neutral-200 shadow-[0_-4px_25px_rgba(0,0,0,0.08)] animate-in slide-in-from-bottom duration-300 bottom-[calc(64px+env(safe-area-inset-bottom))] md:bottom-0 py-2.5 md:py-3"
     >
-      <div className="mx-auto w-[calc(100%-2rem)] max-w-[1328px] md:w-full flex items-center justify-between gap-4">
+      <div className="mx-auto w-[calc(100%-2rem)] max-w-[1328px] sm:w-[calc(100%-3rem)] lg:w-[calc(100%-4rem)] flex items-center justify-between gap-4">
         {/* Desktop Left Side: Thumbnail & Product Name */}
-        <div className="hidden md:flex items-center gap-3.5 min-w-0">
+        <div className="hidden lg:flex items-center gap-3.5 min-w-0">
           <div className="relative size-11 shrink-0 overflow-hidden rounded-md border border-neutral-200 bg-neutral-100">
             {(() => {
               const img = product.images?.[0] || "/Home/images/015_kesari_rang__IMG_0124.jpg";
@@ -75,12 +75,12 @@ export function StickyBottomBar({ product, quantity, onQuantityChange: setQuanti
         </div>
 
         {/* Right Side: Price Pill, Quantity, Add to Cart & Inside-Strap Scroll-To-Top Button */}
-        <div className="flex items-center gap-2.5 md:gap-3.5 w-full md:w-auto justify-between md:justify-end">
+        <div className="flex items-center min-w-0 gap-2 md:gap-3.5 w-full md:w-auto justify-between md:justify-end">
           {/* Price Pill with Dropdown */}
           <div className="relative shrink-0">
             <button
               onClick={() => setPriceDropdownOpen(!priceDropdownOpen)}
-              className="flex items-center justify-between gap-2 md:gap-3 rounded-md border border-neutral-300 bg-white px-3.5 md:px-4 py-2 text-xs md:text-sm font-bold text-ink shadow-2xs hover:border-neutral-400 transition cursor-pointer"
+              className="flex items-center justify-between gap-2 md:gap-3 rounded-md border border-neutral-300 bg-white px-2 md:px-4 py-2 text-xs md:text-sm font-bold text-ink shadow-2xs hover:border-neutral-400 transition cursor-pointer"
               aria-expanded={priceDropdownOpen}
             >
               <span>{formatINR(product.price)}</span>
@@ -125,7 +125,7 @@ export function StickyBottomBar({ product, quantity, onQuantityChange: setQuanti
           <button
             onClick={onAdd}
             disabled={!product.inStock}
-            className="flex-1 md:flex-none rounded-md bg-[#2d254d] hover:bg-[#231c3d] py-2.5 px-5 md:px-8 font-display text-xs md:text-sm font-bold uppercase tracking-wider text-white shadow-xs transition-colors cursor-pointer text-center"
+            className="min-w-0 flex-1 md:flex-none rounded-md bg-[#2d254d] hover:bg-[#231c3d] py-2.5 px-3 md:px-8 font-display text-xs md:text-sm font-bold uppercase tracking-wider text-white shadow-xs transition-colors cursor-pointer text-center"
           >
             {product.inStock ? "ADD TO CART" : "OUT OF STOCK"}
           </button>

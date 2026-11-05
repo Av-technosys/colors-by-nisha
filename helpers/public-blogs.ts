@@ -2,7 +2,7 @@ import "server-only";
 
 import { desc, eq } from "drizzle-orm";
 import { db } from "@/lib/db";
-import { blogs, categories } from "@/lib/db/schema";
+import { blogs, blogCategories } from "@/lib/db/schema";
 import { imageUrl } from "@/helpers/storage/s3";
 import { sanitizeBlogContent } from "@/helpers/admin/blog-content.server";
 import { getBlogContentText } from "@/helpers/admin/blog-content";
@@ -26,7 +26,7 @@ export function formatBlogDate(dateStr: string | Date | null | undefined): strin
 export async function resolveBlogBannerImage(blog: { id: string; mainBannerImage: string; updatedAt: Date }): Promise<string> {
   if (!blog.mainBannerImage) return "/Home/images/015_kesari_rang__IMG_0124.jpg";
   if (blog.mainBannerImage.startsWith("data:")) {
-    return `/api/admin/blogs/${blog.id}/image?v=${blog.updatedAt.getTime()}`;
+    return `/api/blogs/${blog.id}/image?v=${blog.updatedAt.getTime()}`;
   }
   if (blog.mainBannerImage.startsWith("/") || /^https?:\/\//i.test(blog.mainBannerImage)) {
     return blog.mainBannerImage;
@@ -34,7 +34,7 @@ export async function resolveBlogBannerImage(blog: { id: string; mainBannerImage
   try {
     return await imageUrl(blog.mainBannerImage);
   } catch {
-    return `/api/admin/blogs/${blog.id}/image?v=${blog.updatedAt.getTime()}`;
+    return `/api/blogs/${blog.id}/image?v=${blog.updatedAt.getTime()}`;
   }
 }
 
@@ -51,7 +51,7 @@ export async function getPublicBlogPosts(): Promise<BlogPost[]> {
         id: blogs.id,
         title: blogs.title,
         slug: blogs.slug,
-        category: categories.name,
+        category: blogCategories.name,
         categoryId: blogs.categoryId,
         publishDate: blogs.publishDate,
         mainBannerImage: blogs.mainBannerImage,
@@ -64,7 +64,7 @@ export async function getPublicBlogPosts(): Promise<BlogPost[]> {
         createdAt: blogs.createdAt,
       })
       .from(blogs)
-      .innerJoin(categories, eq(blogs.categoryId, categories.id))
+      .innerJoin(blogCategories, eq(blogs.categoryId, blogCategories.id))
       .where(eq(blogs.isDraft, false))
       .orderBy(desc(blogs.publishDate), desc(blogs.createdAt));
 

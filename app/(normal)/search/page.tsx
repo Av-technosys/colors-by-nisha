@@ -1,5 +1,8 @@
 "use client";
 
+import { Skeleton } from "@/components/ui/Skeleton";
+import { CollectionSkeleton } from "@/components/ui/PageSkeletons";
+
 import { QuickViewModal } from "@/components/shop/QuickViewModal";
 import { money } from "@/data/home";
 import { productsData, type ProductItem } from "@/data/products";
@@ -15,6 +18,7 @@ function SearchPageContent() {
   const initialQuery = searchParams.get("q") || searchParams.get("search") || searchParams.get("query") || "";
   const [query, setQuery] = useState(initialQuery);
   const [allProducts, setAllProducts] = useState<ProductItem[]>(productsData);
+  const [loadingProducts, setLoadingProducts] = useState(true);
   const [selectedProduct, setSelectedProduct] = useState<ProductItem | null>(null);
 
   useEffect(() => {
@@ -25,7 +29,7 @@ function SearchPageContent() {
           setAllProducts(data.products);
         }
       })
-      .catch(() => {});
+      .catch(() => {}).finally(() => setLoadingProducts(false));
   }, []);
 
   const normalizedQuery = query.trim().toLowerCase();
@@ -50,7 +54,7 @@ function SearchPageContent() {
 
   return (
     <main className="min-h-screen bg-white">
-      <div className="mx-auto w-[calc(100%-2rem)] max-w-[1328px] md:w-full py-10 md:py-14 relative min-h-[70vh] flex flex-col">
+      <div className="mx-auto w-[calc(100%-2rem)] max-w-[1328px] sm:w-[calc(100%-3rem)] lg:w-[calc(100%-4rem)] py-10 md:py-14 relative min-h-[70vh] flex flex-col">
         {/* Title (Shown on Empty Search matching Image 1) */}
         {!normalizedQuery && (
           <h1 className="font-display text-3xl font-normal leading-tight tracking-normal md:text-4xl text-center text-[#111111] mb-6 md:mb-8">
@@ -102,7 +106,7 @@ function SearchPageContent() {
               </p>
             </div>
 
-            {results.length > 0 ? (
+            {loadingProducts ? <div role="status" aria-label="Loading search results" className="grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-5">{[0, 1, 2, 3, 4].map(item => <div key={item} className="space-y-3"><Skeleton className="aspect-[2/3] w-full" /><Skeleton className="h-4 w-3/4" /><Skeleton className="h-3 w-1/3" /></div>)}</div> : results.length > 0 ? (
               <>
                 {/* 5-Column Grid Matching Image 2 */}
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-5">
@@ -170,11 +174,7 @@ function SearchPageContent() {
 export default function SearchPage() {
   return (
     <Suspense
-      fallback={
-        <div className="min-h-[50vh] flex items-center justify-center font-display uppercase tracking-wider text-sm text-neutral-400">
-          Loading Search...
-        </div>
-      }
+      fallback={<CollectionSkeleton title="Search" filters={false} />}
     >
       <SearchPageContent />
     </Suspense>

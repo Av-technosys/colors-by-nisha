@@ -1,77 +1,22 @@
 import "server-only";
 
-import crypto from "node:crypto";
 import Razorpay from "razorpay";
+import { validPaymentSignature } from "@/helpers/payments/signature";
 
-let razorpayInstance: Razorpay | null = null;
+let client: Razorpay | undefined;
 
-export function getRazorpayClient(): Razorpay {
-  if (!razorpayInstance) {
-    const key_id = process.env.RAZORPAY_KEY_ID || process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "rzp_test_TwMIYwBJVxsDcO";
-    const key_secret = process.env.RAZORPAY_KEY_SECRET || "KCZMzuTLpuZ80I3DlEIbiZlS";
-
-    razorpayInstance = new Razorpay({
-      key_id,
-      key_secret,
-    });
-  }
-
-  return razorpayInstance;
+export function razorpayKeyId() {
+  const key = process.env.RAZORPAY_KEY_ID || process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID;
+  if (!key || !process.env.RAZORPAY_KEY_SECRET) throw new Error("Payment configuration is unavailable.");
+  return key;
 }
-
-export const razorpay = new Proxy({} as Razorpay, {
-  get(_target, prop) {
-    const client = getRazorpayClient();
-    const value = (client as unknown as Record<string | symbol, unknown>)[prop];
-    return typeof value === "function" ? (value as Function).bind(client) : value;
-  },
-});
-
-export function verifyRazorpaySignature({
-  orderId,
-  paymentId,
-  signature,
-}: {
-  orderId: string;
-  paymentId: string;
-  signature: string;
-}): boolean {
-  const secret = process.env.RAZORPAY_KEY_SECRET;
-  if (!secret || !signature || !orderId || !paymentId) {
-    return false;
-  }
-
-  const generatedSignature = crypto
-    .createHmac("sha256", secret)
-    .update(`${orderId}|${paymentId}`)
-    .digest("hex");
-
-  return crypto.timingSafeEqual(
-    Buffer.from(generatedSignature, "utf-8"),
-    Buffer.from(signature, "utf-8")
-  );
+export function getRazorpayClient() {
+  client ??= new Razorpay({ key_id: razorpayKeyId(), key_secret: process.env.RAZORPAY_KEY_SECRET! });
+  return client;
 }
-
-export function verifyRazorpayWebhookSignature({
-  body,
-  signature,
-}: {
-  body: string;
-  signature: string;
-}): boolean {
-  const secret = process.env.RAZORPAY_WEBHOOK_SECRET;
-  if (!secret || !signature || !body) {
-    return false;
-  }
-
-  const generatedSignature = crypto
-    .createHmac("sha256", secret)
-    .update(body)
-    .digest("hex");
-
-  return crypto.timingSafeEqual(
-    Buffer.from(generatedSignature, "utf-8"),
-    Buffer.from(signature, "utf-8")
-  );
+export function verifyRazorpaySignature(input: { orderId: string; paymentId: string; signature: string }) {
+  return validPaymentSignature(`${input.orderId}|${input.paymentId}`, input.signature, process.env.RAZORPAY_KEY_SECRET);
 }
-
+export function verifyRazorpayWebhookSignature(input: { body: string; signature: string }) {
+  return validPaymentSignature(input.body, input.signature, process.env.RAZORPAY_WEBHOOK_SECRET);
+}

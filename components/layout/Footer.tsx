@@ -11,13 +11,13 @@ export interface FooterProps {
   onPanel?: (name: string) => void;
 }
 
-export function Footer({ onShop: _onShop, onPanel: _onPanel }: FooterProps = {}) {
+export function Footer() {
   const [subscribed, setSubscribed] = useState(false);
 
   return (
     <footer id="footer" className="bg-purple text-[13px] text-white">
       <Container className="grid grid-cols-2 gap-x-5 gap-y-8 py-10 md:grid-cols-[2fr_1fr_1fr] md:gap-8 md:py-14 lg:grid-cols-[2fr_1fr_1fr_1.25fr_2fr]">
-        <div className="col-span-2 md:col-span-1">
+        <div className="col-span-2 min-w-0 md:col-span-1">
           <div className="relative h-[125px] w-[100px]">
             <Photo id={2} alt="Colors by Nisha Vijay" contain />
           </div>
@@ -28,7 +28,7 @@ export function Footer({ onShop: _onShop, onPanel: _onPanel }: FooterProps = {})
           <a className="mb-2 block" href="tel:+919799330455">
             +91 97993 30455
           </a>
-          <a className="mb-2 block" href="mailto:colorbynishavijay@gmail.com">
+          <a className="mb-2 block break-words" href="mailto:colorbynishavijay@gmail.com">
             colorbynishavijay@gmail.com
           </a>
           <a
@@ -86,7 +86,7 @@ export function Footer({ onShop: _onShop, onPanel: _onPanel }: FooterProps = {})
             </Link>
           ))}
         </div>
-        <div className="col-span-2 md:col-start-2 lg:col-span-1 lg:col-start-auto">
+        <div className="col-span-2 min-w-0 md:col-start-2 lg:col-span-1 lg:col-start-auto">
           <h3 className="mb-4 font-display text-[17px] md:mb-5 md:text-lg">
             Subscribe to Our Newsletter
           </h3>
@@ -119,7 +119,7 @@ export function Footer({ onShop: _onShop, onPanel: _onPanel }: FooterProps = {})
           </p>
         </div>
       </Container>
-      <Container className="flex flex-col justify-between gap-1.5 border-t border-white/15 pt-3.5 pb-24 text-center text-xs md:flex-row md:pb-3.5 md:text-sm">
+      <Container className="flex flex-col justify-between gap-1.5 border-t border-white/15 pt-3.5 pb-4 text-center text-xs md:flex-row md:pb-3.5 md:text-sm">
         <span>© 2026 Colors by Nisha Vijay. All rights reserved.</span>
         <span>
           Developed by{" "}

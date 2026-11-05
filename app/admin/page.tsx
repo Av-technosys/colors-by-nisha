@@ -1,13 +1,12 @@
+import { AdminDashboardSkeleton } from "@/components/ui/PageSkeletons";
 import { Dashboard } from "@/components/admin/Dashboard";
 import { Suspense } from "react";
-import { requireAdmin } from "@/helpers/auth/access";
-import { listOrders } from "@/helpers/orders/service";
+import { getAdminDashboard } from "@/helpers/admin/dashboard";
 
 async function Overview() {
-  await requireAdmin();
-  return <Dashboard orders={await listOrders()} />;
+  return <Dashboard data={await getAdminDashboard()} />;
 }
 
 export default function AdminPage() {
-  return <Suspense fallback={<p className="py-16 text-sm text-neutral-500">Loading dashboard…</p>}><Overview /></Suspense>;
+  return <Suspense fallback={<AdminDashboardSkeleton />}><Overview /></Suspense>;
 }

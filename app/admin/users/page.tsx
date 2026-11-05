@@ -1,3 +1,4 @@
+import { TableSkeleton } from "@/components/ui/Skeleton";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
@@ -63,5 +64,5 @@ async function CustomerList({ searchParams }: { searchParams: Promise<Search> })
 }
 
 export default function UsersPage({ searchParams }: { searchParams: Promise<Search> }) {
-  return <Suspense fallback={<p className="text-sm text-neutral-500">Loading customers…</p>}><CustomerList searchParams={searchParams} /></Suspense>;
+  return <Suspense fallback={<TableSkeleton />}><CustomerList searchParams={searchParams} /></Suspense>;
 }

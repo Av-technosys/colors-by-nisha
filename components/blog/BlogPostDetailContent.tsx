@@ -50,9 +50,9 @@ export function BlogPostDetailContent({
   return (
     <div className="bg-white text-ink pb-10 md:pb-14">
       {/* 1. Centered Breadcrumb (Matches Screenshot: Home · Blogs · Post Title) */}
-      <section className="mx-auto w-[calc(100%-2rem)] max-w-[1328px] md:w-full pt-8 pb-6 md:pt-10 md:pb-8 text-center">
+      <section className="mx-auto w-[calc(100%-2rem)] max-w-[1328px] sm:w-[calc(100%-3rem)] lg:w-[calc(100%-4rem)] pt-8 pb-6 md:pt-10 md:pb-8 text-center">
         <nav aria-label="Breadcrumb">
-          <ol className="inline-flex items-center justify-center gap-2 text-xs text-neutral-500 font-medium font-sans flex-wrap">
+          <ol className="inline-flex max-w-full items-center justify-center gap-2 text-xs text-neutral-500 font-medium font-sans flex-wrap">
             <li>
               <Link href="/" className="hover:text-ink transition-colors">
                 Home
@@ -65,7 +65,7 @@ export function BlogPostDetailContent({
               </Link>
             </li>
             <li className="text-neutral-400 select-none">·</li>
-            <li className="text-neutral-700 font-semibold truncate max-w-xs md:max-w-md">
+            <li className="text-neutral-700 min-w-0 font-semibold truncate max-w-full md:max-w-md">
               {post.title}
             </li>
           </ol>
@@ -112,7 +112,7 @@ export function BlogPostDetailContent({
         {/* Dynamic Rich HTML Content (from Admin Database) */}
         {post.contentHtml ? (
           <div
-            className="blog-rich-content text-sm md:text-[15px] text-neutral-600 leading-relaxed font-sans space-y-4
+            className="blog-rich-content min-w-0 break-words text-sm md:text-[15px] text-neutral-600 leading-relaxed font-sans space-y-4
               [&_h2]:font-display [&_h2]:text-xl md:[&_h2]:text-2xl [&_h2]:font-bold [&_h2]:text-ink [&_h2]:mt-7 [&_h2]:mb-2.5 [&_h2]:leading-snug
               [&_h3]:font-display [&_h3]:text-lg md:[&_h3]:text-xl [&_h3]:font-bold [&_h3]:text-ink [&_h3]:mt-6 [&_h3]:mb-2 [&_h3]:leading-snug
               [&_h4]:font-display [&_h4]:text-base md:[&_h4]:text-lg [&_h4]:font-bold [&_h4]:text-ink [&_h4]:mt-5 [&_h4]:mb-2 [&_h4]:leading-snug
@@ -123,10 +123,10 @@ export function BlogPostDetailContent({
               [&_a]:text-[#d0473e] [&_a]:underline [&_a]:underline-offset-2 [&_a:hover]:text-ink
               [&_strong]:font-semibold [&_strong]:text-ink
               [&_blockquote]:border-l-2 [&_blockquote]:border-neutral-300 [&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:text-neutral-500 [&_blockquote]:my-5
-              [&_table]:w-full [&_table]:border-collapse [&_table]:my-6 [&_table]:text-xs
+              [&_table]:block [&_table]:max-w-full [&_table]:overflow-x-auto [&_table]:w-full [&_table]:border-collapse [&_table]:my-6 [&_table]:text-xs
               [&_th]:border [&_th]:border-neutral-200 [&_th]:bg-neutral-50 [&_th]:p-2.5 [&_th]:font-semibold [&_th]:text-ink
               [&_td]:border [&_td]:border-neutral-200 [&_td]:p-2.5
-              [&_img]:rounded-md [&_img]:my-6 [&_img]:max-w-full"
+              [&_pre]:max-w-full [&_pre]:overflow-x-auto [&_img]:h-auto [&_img]:rounded-md [&_img]:my-6 [&_img]:max-w-full"
             dangerouslySetInnerHTML={{ __html: post.contentHtml }}
           />
         ) : (
@@ -256,7 +256,7 @@ export function BlogPostDetailContent({
       </main>
 
       {/* 8. Related Posts Section (Matches Screenshot) */}
-      <section className="mx-auto w-[calc(100%-2rem)] max-w-[1328px] md:w-full pt-10 md:pt-14">
+      <section className="mx-auto w-[calc(100%-2rem)] max-w-[1328px] sm:w-[calc(100%-3rem)] lg:w-[calc(100%-4rem)] pt-10 md:pt-14">
         <h2 className="font-display text-2xl font-medium leading-tight tracking-normal md:text-3xl text-ink text-center mb-8">
           Related Posts
         </h2>

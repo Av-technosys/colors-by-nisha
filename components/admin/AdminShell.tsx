@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useCallback, useLayoutEffect, useState, type ReactNode } from "react";
+import { Suspense, useCallback, useLayoutEffect, useState, type ReactNode } from "react";
 import { CreditCard, DoorOpen, FileText, LayoutDashboard, Mail, Menu, Package, ShoppingBag, Tags, Users } from "lucide-react";
 import { Toaster } from "sonner";
 import { Modal } from "@/components/ui/Modal";
@@ -22,8 +22,7 @@ function scrollToTop() {
   window.scrollTo({ top: 0, left: 0, behavior: "instant" });
 }
 
-function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
-  const pathname = usePathname();
+function Sidebar({ onNavigate, pathname = "" }: { onNavigate?: () => void; pathname?: string }) {
 
   function navigate() {
     onNavigate?.();
@@ -75,21 +74,29 @@ function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
   );
 }
 
-export function AdminShell({ children }: { children: ReactNode }) {
+function ActiveSidebar({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = usePathname();
+  return <Sidebar pathname={pathname} onNavigate={onNavigate} />;
+}
+function NavigationScrollReset() {
+  const pathname = usePathname();
+  useLayoutEffect(scrollToTop, [pathname]);
+  return null;
+}
+
+export function AdminShell({ children }: { children: ReactNode }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const closeMenu = useCallback(() => setMenuOpen(false), []);
 
-  useLayoutEffect(scrollToTop, [pathname]);
-
   return (
     <div className="min-h-dvh bg-[#f7f6f3] text-ink">
+      <Suspense fallback={null}><NavigationScrollReset /></Suspense>
       <Toaster position="bottom-right" richColors toastOptions={{ className: "rounded-md!" }} />
       <a href="#admin-content" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-80 focus:bg-white focus:p-3">Skip to content</a>
-      <aside className="fixed inset-y-0 left-0 z-40 hidden w-[238px] lg:block"><Sidebar /></aside>
+      <aside className="fixed inset-y-0 left-0 z-40 hidden w-[238px] lg:block"><Suspense fallback={<Sidebar />}><ActiveSidebar /></Suspense></aside>
       {menuOpen && (
         <Modal title="Admin navigation" onClose={closeMenu} className="h-[85dvh] w-full max-w-sm">
-          <Sidebar onNavigate={closeMenu} />
+          <Suspense fallback={<Sidebar onNavigate={closeMenu} />}><ActiveSidebar onNavigate={closeMenu} /></Suspense>
         </Modal>
       )}
       <div className="min-w-0 lg:pl-[238px]">
@@ -97,11 +104,11 @@ export function AdminShell({ children }: { children: ReactNode }) {
           aria-label="Open navigation"
           aria-expanded={menuOpen}
           onClick={() => setMenuOpen(true)}
-          className="fixed bottom-5 right-5 z-40 grid size-12 place-items-center rounded-md bg-purple text-white shadow-lg lg:hidden"
+          className="fixed bottom-[max(1.25rem,env(safe-area-inset-bottom))] right-5 z-40 grid size-12 place-items-center rounded-md bg-purple text-white shadow-lg lg:hidden"
         >
           <Menu size={20} aria-hidden="true" />
         </button>
-        <main id="admin-content" className="mx-auto max-w-[1600px] p-5 sm:p-8 xl:p-10">{children}</main>
+        <main id="admin-content" className="mx-auto min-w-0 max-w-[1600px] px-4 pt-5 pb-24 sm:px-8 sm:pt-8 lg:pb-8 xl:p-10">{children}</main>
       </div>
     </div>
   );

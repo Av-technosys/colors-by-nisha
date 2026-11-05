@@ -1,3 +1,4 @@
+import { adminAccessError } from "@/helpers/auth/access";
 import { eq } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { blogs } from "@/lib/db/schema";
@@ -6,6 +7,8 @@ import { decodeBannerImage } from "@/helpers/admin/blog-images";
 import { validateId } from "@/helpers/admin/validation";
 
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
+  const denied = await adminAccessError();
+  if (denied) return denied;
   const { id } = await params;
   try { validateId(id); } catch { return new Response(null, { status: 404 }); }
   try {

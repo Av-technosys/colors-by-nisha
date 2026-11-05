@@ -53,11 +53,11 @@ export function ContactPageContent() {
         setStatus("success");
       } else {
         setStatus("error");
-        setErrorMessage(res.error || "Failed to submit enquiry. Please try again.");
+        setErrorMessage(res.error || "We couldn’t send your message. Please try again.");
       }
     } catch {
       setStatus("error");
-      setErrorMessage("An unexpected error occurred. Please try again or reach out on WhatsApp.");
+      setErrorMessage("We couldn’t send your message right now. Please try again or contact us on WhatsApp.");
     }
   };
 
@@ -73,7 +73,7 @@ export function ContactPageContent() {
   return (
     <div className="bg-white text-ink">
       {/* Top Breadcrumb & Page Heading (Identical font size, family & tracking to Shop & Home) */}
-      <section className="mx-auto w-[calc(100%-2rem)] max-w-[1328px] md:w-full pt-8 pb-6 md:pt-10 md:pb-8 text-center">
+      <section className="mx-auto w-[calc(100%-2rem)] max-w-[1328px] sm:w-[calc(100%-3rem)] lg:w-[calc(100%-4rem)] pt-8 pb-6 md:pt-10 md:pb-8 text-center">
         {/* Breadcrumb: Home · Contact (text-xs font-medium matching Shop & PDP) */}
         <nav aria-label="Breadcrumb" className="mb-2">
           <ol className="inline-flex items-center gap-2 text-xs text-neutral-500 font-medium font-sans">
@@ -94,7 +94,7 @@ export function ContactPageContent() {
       </section>
 
       {/* Google Map Section with Interactive Location Card (Matches Screenshot 1) */}
-      <section className="mx-auto w-[calc(100%-2rem)] max-w-[1328px] md:w-full pb-10 md:pb-14">
+      <section className="mx-auto w-[calc(100%-2rem)] max-w-[1328px] sm:w-[calc(100%-3rem)] lg:w-[calc(100%-4rem)] pb-10 md:pb-14">
         <div className="relative overflow-hidden rounded-md border border-neutral-200/90 shadow-sm bg-neutral-100">
           {/* Floating Google Place Card */}
           <div className="relative md:absolute md:top-5 md:left-5 z-10 m-3 md:m-0 max-w-sm rounded-md bg-white/95 backdrop-blur-md p-4 shadow-xl border border-neutral-100/80">
@@ -153,7 +153,7 @@ export function ContactPageContent() {
 
       {/* Two-Column Section: Support Customer & Contact Us Form (Matches Screenshot 2) */}
       <section className="bg-[#eff8f8] py-10 md:py-14 border-t border-neutral-100">
-        <div className="mx-auto w-[calc(100%-2rem)] max-w-[1328px] md:w-full">
+        <div className="mx-auto w-[calc(100%-2rem)] max-w-[1328px] sm:w-[calc(100%-3rem)] lg:w-[calc(100%-4rem)]">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-start">
             {/* Left Column: Support Customer */}
             <div className="lg:col-span-5 space-y-6">

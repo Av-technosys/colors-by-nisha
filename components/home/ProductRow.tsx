@@ -23,7 +23,7 @@ export function ProductRow({ title, items, id, video, videoOnRight = false, onPl
   const { rail, scroll } = useLoopingRail(items.length, !!video);
 
   return <Reveal>
-    <section id={id} className="mx-auto w-[calc(100%-2rem)] max-w-[1328px] md:w-full py-10 md:py-14">
+    <section id={id} className="mx-auto w-[calc(100%-2rem)] max-w-[1328px] sm:w-[calc(100%-3rem)] lg:w-[calc(100%-4rem)] py-10 md:py-14">
       <SectionHeading>{title}</SectionHeading>
       <div className={`flex items-start gap-4 lg:gap-5 ${videoOnRight ? "flex-row-reverse" : ""}`}>
         {video && <button className="group relative block aspect-9/16 w-[calc((100%_-_16px)/2)] shrink-0 overflow-hidden rounded-md bg-neutral-100 md:w-1/4" onClick={() => onPlay?.(video)} aria-label={`Play ${title} video`}>

@@ -1,439 +1,75 @@
 "use client";
 
-import React, { useEffect, useState, useSyncExternalStore } from "react";
+import { useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { ArrowLeft, ArrowRight, Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
 import { formatINR, type ProductItem } from "@/data/products";
 import { useStore } from "@/components/store/StoreContext";
-import { QuickViewModal } from "@/components/shop/QuickViewModal";
-import { IoEyeOutline } from "react-icons/io5";
-
-const noopSubscribe = () => () => {};
+import { ItemSkeleton, FormSkeleton } from "@/components/ui/Skeleton";
+import { Button } from "@/components/ui/Button";
+import { Container } from "@/components/layout/Container";
 
 interface CartPageContentProps {
   initialCrossSellProducts?: ProductItem[];
 }
 
 export function CartPageContent({ initialCrossSellProducts }: CartPageContentProps = {}) {
-  const isMounted = useSyncExternalStore(noopSubscribe, () => true, () => false);
-  const { cart, updateQuantity, removeFromCart, syncCart } = useStore();
+  const { cart, cartReady, updateQuantity, removeFromCart, syncCart } = useStore();
   const router = useRouter();
-  const [selectedQuickProduct, setSelectedQuickProduct] = useState<ProductItem | null>(null);
-  const [agreedTerms, setAgreedTerms] = useState(false);
-  const [termsError, setTermsError] = useState(false);
-
-  const [crossSellIndex, setCrossSellIndex] = useState(0);
-  const allProducts = initialCrossSellProducts ?? [];
   useEffect(() => {
     if (initialCrossSellProducts) syncCart(initialCrossSellProducts);
   }, [initialCrossSellProducts, syncCart]);
+
+  const quantity = cart.reduce((total, item) => total + item.quantity, 0);
+  const subtotal = cart.reduce((total, item) => total + item.price * item.quantity, 0);
   const hasUnavailableItems = cart.some(item => item.available === false || (item.stockCount !== undefined && item.quantity > item.stockCount));
 
-  const crossSellProducts = allProducts.filter((p) => !cart.some((c) => c.slug === p.slug)).slice(0, 6);
-
-  const subtotal = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
-  const freeShippingThreshold = 10000;
-  const isFreeShipping = subtotal >= freeShippingThreshold || cart.length === 0;
-
-  const handleCheckout = () => {
-    if (!agreedTerms) {
-      setTermsError(true);
-      return;
-    }
-    setTermsError(false);
-
-    router.push("/checkout");
-  };
-
-  return (
-    <div className="bg-white text-ink pb-24">
-      {/* 1. Breadcrumb & Page Heading (Matches Screenshot) */}
-      <section className="mx-auto w-[calc(100%-2rem)] max-w-[1328px] md:w-full pt-8 pb-6 md:pt-10 md:pb-8 text-center">
-        {/* Breadcrumb: Home · Your Shopping Cart */}
-        <nav aria-label="Breadcrumb" className="mb-2">
-          <ol className="inline-flex items-center gap-2 text-xs text-neutral-500 font-medium font-sans">
-            <li>
-              <Link href="/" className="hover:text-ink transition-colors">
-                Home
-              </Link>
-            </li>
-            <li className="text-neutral-400 select-none">·</li>
-            <li className="text-neutral-700 font-semibold">Your Shopping Cart</li>
-          </ol>
-        </nav>
-
-        {/* Title: Shopping Cart */}
-        <h1 className="font-display text-3xl font-normal leading-tight tracking-normal md:text-4xl text-ink">
-          Shopping Cart
-        </h1>
-
-        {/* Subtitle */}
-        <p className="mt-2 text-sm md:text-[15px] text-neutral-500 font-sans max-w-lg mx-auto">
-          Review your selected items before purchase. Enjoy a seamless shopping experience!
-        </p>
+  return <Container className="pb-16 pt-8 text-ink md:pb-24 md:pt-12">
+    <Link href="/shop" className="inline-flex min-h-9 items-center gap-2 text-xs text-neutral-500 transition hover:text-purple"><ArrowLeft size={14} />Continue shopping</Link>
+    <header className="mb-8 mt-5 flex flex-wrap items-end justify-between gap-4 border-b border-[#e8e3da] pb-7 md:mb-10 md:mt-8">
+      <div><p className="mb-3 text-[10px] uppercase tracking-[0.2em] text-[#94764d]">Colors by Nisha</p><h1 className="font-display text-3xl md:text-5xl">Your shopping bag</h1></div>
+      {cartReady && quantity > 0 && <p className="pb-1 text-sm text-neutral-500">{quantity} {quantity === 1 ? "piece" : "pieces"} selected</p>}
+    </header>
+    {!cartReady ? <div className="grid items-start gap-10 lg:grid-cols-[minmax(0,1.7fr)_minmax(0,1fr)]"><ItemSkeleton count={3} /><FormSkeleton fields={3} /></div> : !cart.length ? <section className="mx-auto max-w-md py-14 text-center md:py-20">
+      <span className="mx-auto mb-6 grid size-16 place-items-center rounded-full bg-[#f7f4ee] text-[#94764d]"><ShoppingBag size={25} strokeWidth={1.3} /></span>
+      <h2 className="font-display text-2xl">Your bag is waiting</h2><p className="mt-3 text-sm leading-relaxed text-neutral-500">Discover a piece to make your next occasion special.</p>
+      <Button variant="hero" onClick={() => router.push("/shop")} className="mt-7">Explore the collection</Button>
+    </section> : <div className="grid items-start gap-8 lg:grid-cols-[minmax(0,1.7fr)_minmax(0,1fr)] lg:gap-14">
+      <section aria-label="Cart items" className="min-w-0">
+        <div className="hidden justify-between border-b border-[#e8e3da] pb-4 text-[10px] uppercase tracking-[0.16em] text-neutral-400 sm:flex"><span>Your selection</span><span>Amount</span></div>
+        <div className="divide-y divide-[#e8e3da]">{cart.map((item, index) => {
+          const unavailable = item.available === false;
+          const overStock = item.stockCount !== undefined && item.quantity > item.stockCount;
+          const limit = Math.min(99, item.stockCount ?? 99);
+          return <article key={`${item.slug}-${item.variantId}-${item.size}-${index}`} className="flex gap-4 py-6 first:pt-0 sm:gap-6 sm:first:pt-6">
+            <Link href={`/products/${item.slug}`} className="relative aspect-2/3 w-24 shrink-0 self-start overflow-hidden rounded-md bg-[#f4f1eb] sm:w-32"><Image src={item.image || "/product-placeholder.svg"} alt={item.name} fill unoptimized sizes="(min-width: 640px) 128px, 96px" className="object-cover transition duration-500 hover:scale-105" /></Link>
+            <div className="flex min-w-0 flex-1 flex-col justify-between gap-4 py-1">
+              <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-2">
+                <div className="min-w-0"><Link href={`/products/${item.slug}`} className="break-words font-display text-base hover:text-purple sm:text-xl">{item.name}</Link><p className="mt-2 text-xs text-neutral-500">{item.size || "Standard"}</p><p className="mt-2 text-xs text-neutral-400">{formatINR(item.price)} each</p></div>
+                <p className="text-sm font-medium sm:text-base">{formatINR(item.price * item.quantity)}</p>
+              </div>
+              {(unavailable || overStock) && <p role="status" className="text-xs leading-relaxed text-[#9e5144]">{unavailable ? "This option is no longer available. Please remove it or choose another option." : `Only ${item.stockCount} available. Please reduce the quantity.`}</p>}
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div className="inline-flex items-center rounded-md border border-[#e8e3da] bg-[#faf9f6]" role="group" aria-label={`Quantity for ${item.name}, ${item.size}`}>
+                  <button type="button" disabled={item.quantity <= 1} onClick={() => updateQuantity(index, item.quantity - 1)} aria-label={`Decrease quantity of ${item.name}`} className="grid size-9 place-items-center text-purple disabled:opacity-25 sm:size-10"><Minus size={13} /></button>
+                  <span aria-live="polite" className="w-7 text-center text-xs tabular-nums">{item.quantity}</span>
+                  <button type="button" disabled={unavailable || item.quantity >= limit} onClick={() => updateQuantity(index, item.quantity + 1)} aria-label={`Increase quantity of ${item.name}`} className="grid size-9 place-items-center text-purple disabled:opacity-25 sm:size-10"><Plus size={13} /></button>
+                </div>
+                <button type="button" onClick={() => removeFromCart(index)} aria-label={`Remove ${item.name}`} className="inline-flex min-h-9 items-center gap-1.5 text-xs text-neutral-400 transition hover:text-[#9e5144]"><Trash2 size={13} />Remove</button>
+              </div>
+            </div>
+          </article>;
+        })}</div>
       </section>
-
-      {/* Main 2-Column Content Layout */}
-      <div className="mx-auto w-[calc(100%-2rem)] max-w-[1328px] md:w-full">
-        {!isMounted ? (
-          /* Initial loading placeholder matching server & client to prevent hydration mismatch */
-          <div className="py-24 text-center max-w-md mx-auto">
-            <div className="inline-block size-7 rounded-full border-2 border-neutral-200 border-t-[#2d254d] animate-spin mb-3" />
-            <p className="text-xs font-medium text-neutral-400 font-sans tracking-wide">
-              Loading your cart...
-            </p>
-          </div>
-        ) : cart.length === 0 ? (
-          /* Empty Cart View */
-          <div className="py-20 text-center max-w-md mx-auto">
-            <div className="mx-auto size-20 rounded-md bg-neutral-100 text-neutral-400 flex items-center justify-center mb-4">
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4zM3 6h18M16 10a4 4 0 0 1-8 0" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </div>
-            <h2 className="font-display text-2xl font-bold text-ink">Your cart is empty</h2>
-            <p className="mt-2 text-sm text-neutral-500 font-sans">
-              Discover our handcrafted festive & bridal collections and find your dream ensemble.
-            </p>
-            <div className="mt-6">
-              <Link
-                href="/shop"
-                className="inline-block rounded-md bg-[#2d254d] px-8 py-3.5 font-display text-xs md:text-sm font-bold uppercase tracking-wider text-white shadow-xs hover:bg-[#201938] transition"
-              >
-                Continue Shopping
-              </Link>
-            </div>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start">
-            {/* Left Column: Cart Table, Trust Badges, You may also like */}
-            <div className="lg:col-span-8 space-y-10">
-              {/* Cart Table */}
-              <div className="overflow-x-auto">
-                <table className="w-full text-left font-sans text-sm">
-                  <thead>
-                    <tr className="border-b border-neutral-200 text-xs font-bold uppercase tracking-wider text-neutral-700">
-                      <th className="pb-3 font-semibold">Product</th>
-                      <th className="pb-3 text-center font-semibold">Price</th>
-                      <th className="pb-3 text-center font-semibold">Quantity</th>
-                      <th className="pb-3 text-right font-semibold">Total</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-neutral-100">
-                    {cart.map((item, index) => {
-                      const itemImage = item.image || "/Home/images/015_kesari_rang__IMG_0124.jpg";
-                      return (
-                      <tr key={`${item.slug}-${index}`} className="align-middle">
-                        {/* Product Column */}
-                        <td className="py-5 pr-4">
-                          <div className="flex items-center gap-4">
-                            <div className="relative aspect-2/3 w-16 md:w-20 shrink-0 overflow-hidden rounded-md bg-neutral-100 border border-neutral-100">
-                              <Image
-                                src={itemImage}
-                                unoptimized={typeof itemImage === "string" && (itemImage.startsWith("http") || itemImage.startsWith("data:"))}
-                                alt={item.name}
-                                fill
-                                sizes="80px"
-                                className="object-cover object-top"
-                              />
-                            </div>
-                            <div className="min-w-0">
-                              <Link
-                                href={`/products/${item.slug}`}
-                                className="font-display text-xs md:text-sm font-bold uppercase text-ink hover:underline tracking-tight block"
-                              >
-                                {item.name}
-                              </Link>
-                              {item.size && item.size !== "Standard" && (
-                                <p className="text-[11px] text-neutral-500 mt-0.5">
-                                  {["XS", "S", "M", "L", "XL", "XXL", "Custom"].includes(item.size) ? `Size: ${item.size}` : `Option: ${item.size}`}
-                                </p>
-                              )}
-                              {item.available === false && <p className="mt-2 text-xs text-[#9e5144]">Currently unavailable</p>}
-                              {item.stockCount !== undefined && item.quantity > item.stockCount && <p className="mt-2 text-xs text-[#9e5144]">Only {item.stockCount} available</p>}
-                              <button
-                                onClick={() => removeFromCart(index)}
-                                className="mt-2 text-xs text-neutral-400 hover:text-red-600 underline underline-offset-2 transition cursor-pointer"
-                              >
-                                Remove
-                              </button>
-                            </div>
-                          </div>
-                        </td>
-
-                        {/* Price Column */}
-                        <td className="py-5 px-3 text-center font-display text-xs md:text-sm font-semibold text-neutral-800 whitespace-nowrap">
-                          {formatINR(item.price)}
-                        </td>
-
-                        {/* Quantity Pill Column */}
-                        <td className="py-5 px-3 text-center whitespace-nowrap">
-                          <div className="inline-flex items-center justify-between rounded-md bg-[#f4f4f4] px-3.5 py-1.5 w-[105px]">
-                            <button
-                              onClick={() => updateQuantity(index, item.quantity - 1)}
-                              className="text-base text-neutral-600 hover:text-ink font-medium px-1 cursor-pointer select-none"
-                              aria-label="Decrease quantity"
-                            >
-                              —
-                            </button>
-                            <span className="text-xs font-semibold text-ink select-none">{item.quantity}</span>
-                            <button
-                              onClick={() => updateQuantity(index, item.quantity + 1)}
-                              className="text-base text-neutral-600 hover:text-ink font-medium px-1 cursor-pointer select-none"
-                              aria-label="Increase quantity"
-                            >
-                              +
-                            </button>
-                          </div>
-                        </td>
-
-                        {/* Total Column */}
-                        <td className="py-5 pl-4 text-right font-display text-xs md:text-sm font-bold text-ink whitespace-nowrap">
-                          {formatINR(item.price * item.quantity)}
-                        </td>
-                      </tr>
-                    );
-                    })}
-                  </tbody>
-                </table>
-              </div>
-
-              {/* Trust Badges (Matches Screenshot 3 boxes: Have Questions?, Secure Shopping, Privacy Protection) */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
-                {/* 1. Have Questions */}
-                <div className="rounded-md bg-[#f9fafb] p-4 text-center border border-neutral-100 flex flex-col items-center">
-                  <div className="mb-2 size-8 rounded-md bg-white shadow-2xs flex items-center justify-center text-neutral-700">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M3 18v-6a9 9 0 0 1 18 0v6" />
-                      <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z" />
-                    </svg>
-                  </div>
-                  <h4 className="font-display font-bold text-xs text-ink uppercase tracking-tight">Have Questions?</h4>
-                  <p className="mt-1 text-[11px] text-neutral-500 font-sans leading-tight">
-                    Our experts are here to help! Call us free.
-                  </p>
-                </div>
-
-                {/* 2. Secure Shopping */}
-                <div className="rounded-md bg-[#f9fafb] p-4 text-center border border-neutral-100 flex flex-col items-center">
-                  <div className="mb-2 size-8 rounded-md bg-white shadow-2xs flex items-center justify-center text-neutral-700">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-                    </svg>
-                  </div>
-                  <h4 className="font-display font-bold text-xs text-ink uppercase tracking-tight">Secure Shopping</h4>
-                  <p className="mt-1 text-[11px] text-neutral-500 font-sans leading-tight">
-                    All transactions are protected by SSL technology.
-                  </p>
-                </div>
-
-                {/* 3. Privacy Protection */}
-                <div className="rounded-md bg-[#f9fafb] p-4 text-center border border-neutral-100 flex flex-col items-center">
-                  <div className="mb-2 size-8 rounded-md bg-white shadow-2xs flex items-center justify-center text-neutral-700">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                    </svg>
-                  </div>
-                  <h4 className="font-display font-bold text-xs text-ink uppercase tracking-tight">Privacy Protection</h4>
-                  <p className="mt-1 text-[11px] text-neutral-500 font-sans leading-tight">
-                    Your privacy is always our top priority.
-                  </p>
-                </div>
-              </div>
-
-              {/* You may also like... Cross-Sell Box (Matches Screenshot) */}
-              {crossSellProducts.length > 0 && (
-                <div className="pt-2">
-                  <h3 className="font-display font-bold text-sm md:text-base text-ink mb-3">
-                    You may also like...
-                  </h3>
-
-                  <div className="rounded-md border border-neutral-200/80 p-4 bg-white">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      {crossSellProducts
-                        .slice(crossSellIndex * 2, crossSellIndex * 2 + 2)
-                        .map((product) => {
-                          const productImage = product.images?.[0] || "/Home/images/015_kesari_rang__IMG_0124.jpg";
-                          return (
-                          <div
-                            key={product.id}
-                            className="flex items-center gap-3.5 p-2 rounded-md hover:bg-neutral-50 transition"
-                          >
-                            <Link
-                              href={`/products/${product.slug}`}
-                              className="relative aspect-2/3 w-16 shrink-0 overflow-hidden rounded-md bg-neutral-100"
-                            >
-                              <Image
-                                src={productImage}
-                                unoptimized={typeof productImage === "string" && (productImage.startsWith("http") || productImage.startsWith("data:"))}
-                                alt={product.name}
-                                fill
-                                sizes="64px"
-                                className="object-cover object-top"
-                              />
-                            </Link>
-
-                            <div className="min-w-0 flex-1">
-                              <Link
-                                href={`/products/${product.slug}`}
-                                className="font-display font-bold text-xs text-ink uppercase truncate block hover:underline"
-                              >
-                                {product.name}
-                              </Link>
-                              <p className="font-display text-xs font-semibold text-neutral-700 mt-0.5">
-                                {formatINR(product.price)}
-                              </p>
-                              <div className="mt-2 flex items-center gap-2">
-                                <button
-                                  onClick={() => setSelectedQuickProduct(product)}
-                                  className="rounded-md bg-[#2d254d] hover:bg-[#201938] px-3.5 py-1.5 font-display text-[10px] font-bold uppercase tracking-wider text-white shadow-2xs transition cursor-pointer"
-                                >
-                                  CHOOSE OPTIONS
-                                </button>
-                                <button
-                                  onClick={() => setSelectedQuickProduct(product)}
-                                  className="size-7 grid place-items-center rounded-md bg-neutral-100 hover:bg-neutral-200 text-ink transition cursor-pointer"
-                                  aria-label={`Quick view ${product.name}`}
-                                  title="Quick view"
-                                >
-                                  <IoEyeOutline size={15} />
-                                </button>
-                              </div>
-                            </div>
-                          </div>
-                        );
-                        })}
-                    </div>
-
-                    {/* Pagination Dots */}
-                    {crossSellProducts.length > 2 && (
-                      <div className="flex justify-center items-center gap-1.5 pt-4">
-                        {[0, 1, 2].map((dot) => (
-                          <button
-                            key={dot}
-                            onClick={() => setCrossSellIndex(dot)}
-                            className={`size-1.5 rounded-md transition-all cursor-pointer ${
-                              crossSellIndex === dot ? "bg-ink w-3" : "bg-neutral-300"
-                            }`}
-                            aria-label={`Go to slide ${dot + 1}`}
-                          />
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Right Column: Order Summary Card (Matches Screenshot) */}
-            <div className="lg:col-span-4 space-y-6">
-              <div className="rounded-md bg-[#f9fafb] p-5 md:p-6 border border-neutral-200/70 shadow-2xs space-y-5 font-sans">
-                {/* Free Shipping Progress Indicator */}
-                <div>
-                  <div className="flex justify-between items-center text-xs font-medium text-neutral-700 mb-1.5">
-                    <span>
-                      {isFreeShipping ? (
-                        <strong className="text-emerald-700 font-semibold">
-                          Congratulations! You&apos;ve got free shipping!
-                        </strong>
-                      ) : (
-                        <span>
-                          Add <strong>{formatINR(freeShippingThreshold - subtotal)}</strong> more for Free Shipping!
-                        </span>
-                      )}
-                    </span>
-                    <span className="text-emerald-600">🚚</span>
-                  </div>
-
-                  <div className="h-1.5 w-full overflow-hidden rounded-md bg-neutral-200">
-                    <div
-                      className="h-full rounded-md bg-emerald-600 transition-all duration-500"
-                      style={{
-                        width: isFreeShipping ? "100%" : `${Math.min(100, (subtotal / freeShippingThreshold) * 100)}%`,
-                      }}
-                    />
-                  </div>
-                </div>
-
-                <p className="border-t border-neutral-200/60 pt-4 text-xs leading-relaxed text-neutral-500">Shipping charges will be confirmed separately. No payment is collected when you submit your order.</p>
-
-                {hasUnavailableItems && <p role="alert" className="text-xs leading-relaxed text-[#9e5144]">Some items are unavailable or exceed current stock. Update your cart before checkout.</p>}
-                {/* Order subtotal */}
-                <div className="pt-4 border-t border-neutral-200/80 space-y-3">
-                  <div className="flex justify-between items-baseline">
-                    <span className="font-display font-semibold text-sm text-neutral-800">Subtotal:</span>
-                    <span className="font-display font-bold text-base md:text-lg text-ink">
-                      {formatINR(subtotal)} INR
-                    </span>
-                  </div>
-                  <p className="text-[11px] text-neutral-500 leading-tight">
-                    Items total. Shipping charges confirmed separately.
-                  </p>
-
-                  {/* Terms Checkbox */}
-                  <div className="pt-1">
-                    <label className="flex items-center gap-2 text-xs text-neutral-700 cursor-pointer select-none">
-                      <input
-                        type="checkbox"
-                        checked={agreedTerms}
-                        onChange={(e) => {
-                          setAgreedTerms(e.target.checked);
-                          if (e.target.checked) setTermsError(false);
-                        }}
-                        className="size-4 rounded-md border-neutral-300 accent-[#2d254d] cursor-pointer"
-                      />
-                      <span>
-                        I agree with <strong className="font-semibold text-ink">Terms & Conditions</strong>
-                      </span>
-                    </label>
-                    {termsError && (
-                      <p className="text-xs text-red-600 font-medium mt-1">Please accept the Terms & Conditions.</p>
-                    )}
-                  </div>
-
-                  {/* Checkout Button */}
-                  <button
-                    onClick={handleCheckout}
-                    disabled={hasUnavailableItems}
-                    className="w-full rounded-md bg-[#64597b] hover:bg-[#524867] py-3.5 px-6 font-display text-xs md:text-sm font-bold uppercase tracking-wider text-white shadow-xs transition-colors cursor-pointer text-center disabled:cursor-not-allowed disabled:opacity-50"
-                  >
-                    CONTINUE TO CHECKOUT
-                  </button>
-                </div>
-              </div>
-
-              {/* Delivery Information & Up to 10-Day Guarantee (Matches Screenshot) */}
-              <div className="rounded-md bg-white p-5 border border-neutral-100 shadow-2xs space-y-3 font-sans text-xs">
-                <div>
-                  <h5 className="font-display font-bold text-xs text-ink uppercase tracking-tight">
-                    Delivery Information
-                  </h5>
-                  <p className="mt-1 text-neutral-500 leading-relaxed">
-                    Customised orders will be delivered within 15 days.
-                  </p>
-                </div>
-
-                <div className="pt-2 border-t border-neutral-100">
-                  <h5 className="font-display font-bold text-xs text-ink uppercase tracking-tight">
-                    Up to 10-Day Guarantee
-                  </h5>
-                  <p className="mt-1 text-neutral-500 leading-relaxed">
-                    Bad luck with your tights? Simply contact us within 10 days of receiving your order and we will customised them for free!
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
-
-      {selectedQuickProduct && (
-        <QuickViewModal
-          product={selectedQuickProduct}
-          onClose={() => setSelectedQuickProduct(null)}
-        />
-      )}
-    </div>
-  );
+      <aside className="min-w-0 rounded-md border border-[#e8e3da] bg-[#faf9f6] p-6 md:p-8 lg:sticky lg:top-28" aria-label="Order summary">
+        <p className="mb-2 text-[10px] uppercase tracking-[0.18em] text-[#94764d]">Almost yours</p><h2 className="font-display text-2xl">Order summary</h2>
+        <dl className="mt-7 space-y-4 text-sm"><div className="flex justify-between gap-4 text-neutral-500"><dt>Items ({quantity})</dt><dd className="text-ink">{formatINR(subtotal)}</dd></div><div className="flex justify-between gap-4 text-xs text-neutral-500"><dt>Shipping</dt><dd>Confirmed separately</dd></div><div className="flex items-center justify-between gap-4 border-t border-[#e8e3da] pt-5"><dt className="font-medium">Items total</dt><dd className="font-display text-xl">{formatINR(subtotal)}</dd></div></dl>
+        {hasUnavailableItems && <p role="alert" className="mt-5 text-xs leading-relaxed text-[#9e5144]">Review the marked items before completing your order.</p>}
+        <Button variant="hero" onClick={() => router.push("/checkout")} className="mt-7 w-full gap-3">Continue to checkout<ArrowRight size={15} /></Button>
+        <p className="mt-4 text-center text-xs leading-relaxed text-neutral-400">Choose your saved address at checkout.</p>
+      </aside>
+    </div>}
+  </Container>;
 }

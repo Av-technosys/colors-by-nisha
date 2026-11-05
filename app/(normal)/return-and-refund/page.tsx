@@ -14,7 +14,7 @@ export default function ReturnAndRefundPage() {
         className="w-full pt-8 pb-6 md:pt-10 md:pb-8"
         aria-label="Page Header"
       >
-        <div className="mx-auto w-[calc(100%-2rem)] max-w-[1328px] md:w-full">
+        <div className="mx-auto w-[calc(100%-2rem)] max-w-[1328px] sm:w-[calc(100%-3rem)] lg:w-[calc(100%-4rem)]">
           <h1 className="font-display text-3xl font-normal leading-tight tracking-normal md:text-4xl text-center text-ink">
             Return & Refund
           </h1>
@@ -23,7 +23,7 @@ export default function ReturnAndRefundPage() {
 
       {/* 2. Content Container */}
       <section
-        className="mx-auto w-[calc(100%-2rem)] max-w-[1328px] md:w-full pb-10 md:pb-14"
+        className="mx-auto w-[calc(100%-2rem)] max-w-[1328px] sm:w-[calc(100%-3rem)] lg:w-[calc(100%-4rem)] pb-10 md:pb-14"
         aria-label="Policy Content"
       >
         <div className="space-y-6 font-sans text-sm md:text-[15px] font-normal leading-relaxed text-ink">

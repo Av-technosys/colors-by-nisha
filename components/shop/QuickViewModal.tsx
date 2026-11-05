@@ -6,6 +6,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { formatINR, type ProductItem } from "@/data/products";
+import { Modal } from "@/components/ui/Modal";
+import { Button } from "@/components/ui/Button";
 import { useStore } from "@/components/store/StoreContext";
 
 interface QuickViewModalProps {
@@ -19,10 +21,8 @@ export function QuickViewModal({ product: originalProduct, onClose }: QuickViewM
   const router = useRouter();
   const { addToCart, setCartOpen, isWishlisted, toggleWishlist } = useStore();
   const [quantity, setQuantity] = useState(1);
-  const [agreedTerms, setAgreedTerms] = useState(false);
-  const [termsError, setTermsError] = useState(false);
   const [activeImageIdx, setActiveImageIdx] = useState(0);
-  const [isAdding, setIsAdding] = useState(false);
+  const [purchaseError, setPurchaseError] = useState("");
 
   if (!product) return null;
 
@@ -46,34 +46,25 @@ export function QuickViewModal({ product: originalProduct, onClose }: QuickViewM
 
   const handleAddToCart = () => {
     if (!product.inStock) return;
-    if (!agreedTerms) {
-      setTermsError(true);
+    setPurchaseError("");
+    if (!addToCart(product, variantName(product), quantity)) {
+      setPurchaseError("This quantity cannot be added. Check available stock or review the item already in your cart.");
       return;
     }
-    setTermsError(false);
-    setIsAdding(true);
-    addToCart(product, variantName(product), quantity);
-    setTimeout(() => {
-      setIsAdding(false);
-      onClose();
-      setCartOpen(true);
-    }, 350);
+    onClose();
+    setCartOpen(true);
   };
 
   const handleBuyItNow = () => {
     if (!product.inStock) return;
-    if (!agreedTerms) {
-      setTermsError(true);
+    setPurchaseError("");
+    if (!addToCart(product, variantName(product), quantity)) {
+      setPurchaseError("This quantity cannot be added. Review your cart before checkout.");
       return;
     }
-    addToCart(product, variantName(product), quantity);
-    const text = encodeURIComponent(
-      `Hello Colors by Nisha! I want to Buy Now:\n• Product: ${product.name}\n• Option: ${variantName(product)}\n• Qty: ${quantity}\n• Total: ${formatINR(
-        product.price * quantity
-      )}\nLink: https://colorsbynisha.com/products/${product.slug}`
-    );
-    window.open(`https://wa.me/919799330455?text=${text}`, "_blank");
+    setCartOpen(false);
     onClose();
+    router.push("/checkout");
   };
 
   const handleGoToPDP = () => {
@@ -82,24 +73,17 @@ export function QuickViewModal({ product: originalProduct, onClose }: QuickViewM
   };
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-3 md:p-6 backdrop-blur-xs animate-in fade-in duration-200"
-      style={{ overscrollBehavior: "contain" }}
-      onClick={onClose}
-      role="dialog"
-      aria-modal="true"
-      aria-label={product.name}
-    >
+    <Modal title={product.name} onClose={onClose} className="w-full max-w-[960px]">
       <div
-        className="relative flex w-full max-w-[960px] flex-col md:flex-row overflow-hidden rounded-md bg-white shadow-2xl animate-in zoom-in-95 duration-200 max-h-[90vh]"
+        className="relative flex w-full min-w-0 flex-col rounded-md bg-white shadow-2xl animate-in zoom-in-95 duration-200 md:flex-row"
         style={{ overscrollBehavior: "contain" }}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Left Side: Product Image with Floating Left/Right Arrows */}
-        <div className="relative md:w-1/2 bg-neutral-100 flex items-center justify-center overflow-hidden">
+        <div className="relative flex shrink-0 items-center justify-center overflow-hidden bg-neutral-100 md:w-1/2">
           <div
             onClick={handleGoToPDP}
-            className="group relative aspect-2/3 w-full cursor-pointer overflow-hidden"
+            className="group relative h-[32dvh] min-h-40 w-full cursor-pointer overflow-hidden md:aspect-2/3 md:h-auto md:min-h-full"
             title="Click to view full product details"
           >
             <Image
@@ -108,7 +92,7 @@ export function QuickViewModal({ product: originalProduct, onClose }: QuickViewM
               alt={product.name}
               fill
               sizes="(min-width: 768px) 480px, 100vw"
-              className="object-cover object-top transition-transform duration-500 group-hover:scale-102"
+              className="object-contain object-top transition-transform duration-500 group-hover:scale-102 md:object-cover"
               priority
             />
           </div>
@@ -141,20 +125,9 @@ export function QuickViewModal({ product: originalProduct, onClose }: QuickViewM
 
         {/* Right Side: Exact Fields Matching colorsbynisha.com Quick View */}
         <div
-          className="relative flex flex-1 flex-col overflow-y-auto p-6 md:p-8 space-y-4 no-scrollbar"
+          className="relative flex min-w-0 flex-1 flex-col space-y-4 p-4 sm:p-6 md:max-h-[calc(100dvh-3rem)] md:overflow-y-auto md:p-8"
           style={{ overscrollBehavior: "contain" }}
         >
-          {/* Close Button Top Right */}
-          <button
-            onClick={onClose}
-            className="absolute right-4 top-4 z-20 size-8 grid place-items-center rounded-md text-neutral-400 hover:text-ink transition hover:bg-neutral-100 cursor-pointer"
-            aria-label="Close dialog"
-          >
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M1 1l12 12M13 1L1 13" strokeLinecap="round" />
-            </svg>
-          </button>
-
           {/* Product Title (Links to PDP) */}
           <div className="pr-8">
             <Link
@@ -162,14 +135,14 @@ export function QuickViewModal({ product: originalProduct, onClose }: QuickViewM
               onClick={onClose}
               className="group inline-block"
             >
-              <h2 className="font-display text-2xl md:text-3xl font-bold uppercase tracking-tight text-ink group-hover:text-neutral-700 transition leading-snug">
+              <h2 className="break-words font-display text-xl md:text-3xl font-bold uppercase tracking-tight text-ink group-hover:text-neutral-700 transition leading-snug">
                 {product.name}
               </h2>
             </Link>
           </div>
 
           {/* Price */}
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-3">
             <span className="font-display text-xl md:text-2xl font-bold text-ink">
               {formatINR(product.price)}
             </span>
@@ -187,13 +160,13 @@ export function QuickViewModal({ product: originalProduct, onClose }: QuickViewM
 
           {hasMultipleVariants && <label className="space-y-2 text-sm">
             <span className="block font-medium">Choose an option</span>
-            <select value={variantId} onChange={event => { setVariantId(event.target.value); setQuantity(1); setActiveImageIdx(0); }} className="w-full rounded-md border border-neutral-300 bg-white p-3">
+            <select value={variantId} onChange={event => { setVariantId(event.target.value); setPurchaseError(""); setQuantity(1); setActiveImageIdx(0); }} className="w-full rounded-md border border-neutral-300 bg-white p-3">
               {product.variants?.map(variant => <option key={variant.id} value={variant.id}>{variant.name}{variant.stock === 0 ? " — Out of stock" : ""}</option>)}
             </select>
           </label>}
           {/* Action Row: Pill Quantity, Navy ADD TO CART, Wishlist Heart */}
           <div className="space-y-3.5 pt-2">
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3">
               {/* Pill Quantity Selector */}
               <div className="flex items-center justify-between rounded-md bg-[#f4f4f4] px-4 py-2.5 w-[115px] shrink-0">
                 <button
@@ -214,14 +187,7 @@ export function QuickViewModal({ product: originalProduct, onClose }: QuickViewM
                 </button>
               </div>
 
-              {/* Navy ADD TO CART button */}
-              <button
-                onClick={handleAddToCart}
-                disabled={isAdding || !product.inStock}
-                className="flex-1 rounded-md bg-[#2d254d] hover:bg-[#231c3d] py-3.5 px-4 font-display text-xs md:text-sm font-bold uppercase tracking-wider text-white shadow-xs transition-colors cursor-pointer text-center"
-              >
-                {!product.inStock ? "OUT OF STOCK" : isAdding ? "ADDING..." : "ADD TO CART"}
-              </button>
+              <Button type="button" variant="hero" onClick={handleAddToCart} disabled={!product.inStock} className="min-w-0! flex-1 px-3! disabled:cursor-not-allowed disabled:opacity-50">{product.inStock ? "Add to cart" : "Out of stock"}</Button>
 
               {/* Circular Wishlist Button */}
               <button
@@ -247,34 +213,9 @@ export function QuickViewModal({ product: originalProduct, onClose }: QuickViewM
               </button>
             </div>
 
-            {/* Terms & Conditions Checkbox */}
-            <div className="flex items-center gap-2 text-xs text-neutral-700 pt-0.5">
-              <input
-                type="checkbox"
-                id="modal-terms-check"
-                checked={agreedTerms}
-                onChange={(e) => {
-                  setAgreedTerms(e.target.checked);
-                  if (e.target.checked) setTermsError(false);
-                }}
-                className="size-4 rounded-md border-neutral-300 accent-[#2d254d] cursor-pointer"
-              />
-              <label htmlFor="modal-terms-check" className="cursor-pointer select-none">
-                I agree with <strong className="font-semibold text-ink">Terms & Conditions</strong>
-              </label>
-            </div>
-            {termsError && (
-              <p className="text-xs text-red-600 font-medium">Please accept the Terms & Conditions.</p>
-            )}
+            {purchaseError && <p role="alert" className="text-sm text-[#9e5144]">{purchaseError}</p>}
 
-            {/* Coral / Salmon Buy It Now Button */}
-            <button
-              disabled={!product.inStock}
-              onClick={handleBuyItNow}
-              className="w-full rounded-md bg-[#dd8984] hover:bg-[#d07b76] py-3.5 px-6 font-display text-xs md:text-sm font-semibold text-white shadow-xs transition-colors cursor-pointer text-center tracking-wide"
-            >
-              Buy It Now
-            </button>
+            <Button type="button" variant="hero" disabled={!product.inStock} onClick={handleBuyItNow} className="w-full disabled:cursor-not-allowed disabled:opacity-50">Buy now</Button>
           </div>
 
           {/* Full Details Redirect Link */}
@@ -292,6 +233,6 @@ export function QuickViewModal({ product: originalProduct, onClose }: QuickViewM
           </div>
         </div>
       </div>
-    </div>
+    </Modal>
   );
 }
