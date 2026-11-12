@@ -19,7 +19,7 @@ export function QuickViewModal({ product: originalProduct, onClose }: QuickViewM
   const [variantId, setVariantId] = useState(originalProduct?.variants?.find(variant => variant.stock !== 0)?.id || originalProduct?.variants?.[0]?.id || "");
   const product = originalProduct ? selectVariant(originalProduct, variantId) : null;
   const router = useRouter();
-  const { addToCart, setCartOpen, isWishlisted, toggleWishlist } = useStore();
+  const { addToCart, setCartOpen, isWishlisted, toggleWishlist, setSearchOpen } = useStore();
   const [quantity, setQuantity] = useState(1);
   const [activeImageIdx, setActiveImageIdx] = useState(0);
   const [purchaseError, setPurchaseError] = useState("");
@@ -52,6 +52,7 @@ export function QuickViewModal({ product: originalProduct, onClose }: QuickViewM
       return;
     }
     onClose();
+    setSearchOpen(false);
     setCartOpen(true);
   };
 
@@ -63,27 +64,29 @@ export function QuickViewModal({ product: originalProduct, onClose }: QuickViewM
       return;
     }
     setCartOpen(false);
+    setSearchOpen(false);
     onClose();
     router.push("/checkout");
   };
 
   const handleGoToPDP = () => {
     onClose();
+    setSearchOpen(false);
     router.push(`/products/${product.slug}`);
   };
 
   return (
-    <Modal title={product.name} onClose={onClose} className="w-full max-w-[960px]">
+    <Modal title={product.name} onClose={onClose} className="w-full max-w-[960px] overflow-y-auto md:overflow-hidden">
       <div
-        className="relative flex w-full min-w-0 flex-col rounded-md bg-white shadow-2xl animate-in zoom-in-95 duration-200 md:flex-row"
+        className="relative flex w-full min-w-0 flex-col rounded-md bg-white shadow-2xl animate-in zoom-in-95 duration-200 md:flex-row md:max-h-[calc(100dvh-3rem)]"
         style={{ overscrollBehavior: "contain" }}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Left Side: Product Image with Floating Left/Right Arrows */}
-        <div className="relative flex shrink-0 items-center justify-center overflow-hidden bg-neutral-100 md:w-1/2">
+        <div className="relative flex shrink-0 items-center justify-center overflow-hidden bg-neutral-100 md:w-1/2 md:self-stretch">
           <div
             onClick={handleGoToPDP}
-            className="group relative h-[32dvh] min-h-40 w-full cursor-pointer overflow-hidden md:aspect-2/3 md:h-auto md:min-h-full"
+            className="group relative h-[32dvh] min-h-40 w-full cursor-pointer overflow-hidden md:h-full md:min-h-0"
             title="Click to view full product details"
           >
             <Image
@@ -132,7 +135,10 @@ export function QuickViewModal({ product: originalProduct, onClose }: QuickViewM
           <div className="pr-8">
             <Link
               href={`/products/${product.slug}`}
-              onClick={onClose}
+              onClick={() => {
+                onClose();
+                setSearchOpen(false);
+              }}
               className="group inline-block"
             >
               <h2 className="break-words font-display text-xl md:text-3xl font-bold uppercase tracking-tight text-ink group-hover:text-neutral-700 transition leading-snug">
@@ -222,7 +228,10 @@ export function QuickViewModal({ product: originalProduct, onClose }: QuickViewM
           <div className="pt-2 text-center">
             <Link
               href={`/products/${product.slug}`}
-              onClick={onClose}
+              onClick={() => {
+                onClose();
+                setSearchOpen(false);
+              }}
               className="inline-flex items-center gap-1.5 text-xs font-medium text-neutral-500 hover:text-ink underline underline-offset-4 transition"
             >
               View full details
