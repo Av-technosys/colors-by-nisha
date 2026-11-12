@@ -181,7 +181,7 @@ export default function AboutUsPage() {
               </p>
               <Link
                 href="/shop"
-                className="inline-flex items-center justify-center bg-[#2d254d] text-[#FCF1D8] hover:bg-[#d4af37] hover:text-[#2d254d] font-display text-[16px] font-[500] uppercase tracking-[1.5px] leading-normal px-8 py-3.5 rounded-md transition-all duration-300 shadow-sm cursor-pointer"
+                className="inline-flex items-center justify-center bg-[#2d254d] text-[#FCF1D8] hover:bg-[#d4af37] hover:text-[#2d254d] font-display text-[14px] font-normal uppercase tracking-[1.5px] leading-normal px-8 py-3.5 rounded-md transition-all duration-300 shadow-sm cursor-pointer"
               >
                 EXPLORE COLLECTION
               </Link>
@@ -190,7 +190,7 @@ export default function AboutUsPage() {
         </div>
       </section>
 
-      {/* 4. Section 4: Timeless Products (Matches Reference Image 2) */}
+      {/* 4. Section 4: Timeless Products*/}
       <section className="w-full py-10 md:py-14 bg-white" aria-label="Timeless Products">
         <div className="mx-auto w-[calc(100%-2rem)] max-w-[1328px] sm:w-[calc(100%-3rem)] lg:w-[calc(100%-4rem)]">
           <div className="grid items-center gap-10 md:grid-cols-2 md:gap-12 lg:gap-16">
@@ -211,7 +211,7 @@ export default function AboutUsPage() {
               </p>
               <Link
                 href="/shop"
-                className="inline-flex items-center justify-center bg-[#2d254d] text-[#FCF1D8] hover:bg-[#d4af37] hover:text-[#2d254d] font-display text-[16px] font-[500] uppercase tracking-[1.5px] leading-normal px-10 py-3.5 rounded-md transition-all duration-300 shadow-sm cursor-pointer"
+                className="inline-flex items-center justify-center bg-[#2d254d] text-[#FCF1D8] hover:bg-[#d4af37] hover:text-[#2d254d] font-display text-[14px] font-normal uppercase tracking-[1.5px] leading-normal px-10 py-3.5 rounded-md transition-all duration-300 shadow-sm cursor-pointer"
               >
                 SHOP NOW
               </Link>

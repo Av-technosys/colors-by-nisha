@@ -29,7 +29,7 @@ export function CartPageContent({ initialCrossSellProducts }: CartPageContentPro
   return <Container className="pb-16 pt-8 text-ink md:pb-24 md:pt-12">
     <Link href="/shop" className="inline-flex min-h-9 items-center gap-2 text-xs text-neutral-500 transition hover:text-purple"><ArrowLeft size={14} />Continue shopping</Link>
     <header className="mb-8 mt-5 flex flex-wrap items-end justify-between gap-4 border-b border-[#e8e3da] pb-7 md:mb-10 md:mt-8">
-      <div><p className="mb-3 text-[10px] uppercase tracking-[0.2em] text-[#94764d]">Colors by Nisha</p><h1 className="font-display text-3xl md:text-5xl">Your shopping bag</h1></div>
+      <div><p className="mb-3 text-[10px] uppercase tracking-[0.2em] text-[#94764d]">Colors by Nisha</p><h1 className="font-display text-2xl md:text-4xl">Your shopping bag</h1></div>
       {cartReady && quantity > 0 && <p className="pb-1 text-sm text-neutral-500">{quantity} {quantity === 1 ? "piece" : "pieces"} selected</p>}
     </header>
     {!cartReady ? <div className="grid items-start gap-10 lg:grid-cols-[minmax(0,1.7fr)_minmax(0,1fr)]"><ItemSkeleton count={3} /><FormSkeleton fields={3} /></div> : !cart.length ? <section className="mx-auto max-w-md py-14 text-center md:py-20">
