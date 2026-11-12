@@ -34,6 +34,13 @@ export function SearchModal() {
     setSelectedProduct(null);
   }, [setSearchOpen]);
 
+  // Close search overlay on browser back/forward navigation
+  useEffect(() => {
+    const handlePopState = () => handleClose();
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, [handleClose]);
+
   useEffect(() => {
     if (searchOpen) {
       document.body.style.overflow = "hidden";

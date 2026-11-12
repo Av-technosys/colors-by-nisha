@@ -210,7 +210,7 @@ export default function AboutUsPage() {
                 This exquisite lehenga celebrates Indian heritage through divine embroidered motifs, delicate pearl embellishments, floral artistry, and majestic peacock designs. Soft pastel hues and intricate lotus borders bring timeless elegance to every detail.
               </p>
               <Link
-                href="/shop"
+                href="/products/raasleela"
                 className="inline-flex items-center justify-center bg-[#2d254d] text-[#FCF1D8] hover:bg-[#d4af37] hover:text-[#2d254d] font-display text-[14px] font-normal uppercase tracking-[1.5px] leading-normal px-10 py-3.5 rounded-md transition-all duration-300 shadow-sm cursor-pointer"
               >
                 SHOP NOW
