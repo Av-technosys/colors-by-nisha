@@ -1,5 +1,8 @@
 "use client";
 
+import { Form } from "@/components/ui/Form";
+
+
 import { useCallback, useState, useTransition, type FormEvent } from "react";
 import { Pencil, Tags, Trash2 } from "lucide-react";
 import { loadBlogCategories, saveBlogCategory, deleteBlogCategory } from "@/app/admin/blogs/category-actions";
@@ -96,7 +99,7 @@ export function BlogCategoryManager({ onChange }: { onChange: () => void }) {
             </li>)}
           </ul>
         </div>
-        <form onSubmit={save} autoComplete="off">
+        <Form onSubmit={save} autoComplete="off">
           <h3 className="mb-4 font-display text-lg">{form.id ? "Edit category" : "Add category"}</h3>
           <input type="hidden" name="id" value={form.id} />
           <fieldset disabled={pending} className="grid gap-4 sm:grid-cols-2 disabled:opacity-60">
@@ -114,7 +117,7 @@ export function BlogCategoryManager({ onChange }: { onChange: () => void }) {
               <button type="submit" className="min-h-11 rounded-md bg-purple px-5 text-sm text-white">{pending ? "Saving…" : form.id ? "Save changes" : "Add category"}</button>
             </div>
           </fieldset>
-        </form>
+        </Form>
       </>}
     </Modal>}
   </>;

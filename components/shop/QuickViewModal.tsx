@@ -153,7 +153,7 @@ export function QuickViewModal({ product: originalProduct, onClose }: QuickViewM
               {formatINR(product.price)}
             </span>
             {product.originalPrice && (
-              <span className="text-base text-neutral-400 line-through">
+              <span className="text-base text-neutral-600 line-through">
                 {formatINR(product.originalPrice)}
               </span>
             )}
@@ -176,18 +176,21 @@ export function QuickViewModal({ product: originalProduct, onClose }: QuickViewM
               {/* Pill Quantity Selector */}
               <div className="flex items-center justify-between rounded-md bg-[#f4f4f4] px-4 py-2.5 w-[115px] shrink-0">
                 <button
+                  type="button"
+                  disabled={quantity <= 1}
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  className="text-base text-neutral-600 hover:text-ink font-medium px-1 cursor-pointer select-none"
-                  aria-label="Decrease quantity"
+                  className="grid size-9 place-items-center text-base text-neutral-600 hover:text-ink font-medium disabled:cursor-not-allowed disabled:opacity-40"
+                  aria-label={`Decrease quantity of ${product.name}`}
                 >
                   —
                 </button>
                 <span className="text-sm font-semibold text-ink select-none">{quantity}</span>
                 <button
+                  type="button"
                   disabled={!product.inStock || quantity >= (product.stockCount ?? Infinity)}
-              onClick={() => setQuantity(Math.min(product.stockCount ?? Infinity, quantity + 1))}
-                  className="text-base text-neutral-600 hover:text-ink font-medium px-1 cursor-pointer select-none"
-                  aria-label="Increase quantity"
+                  onClick={() => setQuantity(Math.min(product.stockCount ?? Infinity, quantity + 1))}
+                  className="grid size-9 place-items-center text-base text-neutral-600 hover:text-ink font-medium disabled:cursor-not-allowed disabled:opacity-40"
+                  aria-label={`Increase quantity of ${product.name}`}
                 >
                   +
                 </button>

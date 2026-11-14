@@ -38,7 +38,7 @@ export function CartPageContent({ initialCrossSellProducts }: CartPageContentPro
       <Button variant="hero" onClick={() => router.push("/shop")} className="mt-7">Explore the collection</Button>
     </section> : <div className="grid items-start gap-8 lg:grid-cols-[minmax(0,1.7fr)_minmax(0,1fr)] lg:gap-14">
       <section aria-label="Cart items" className="min-w-0">
-        <div className="hidden justify-between border-b border-[#e8e3da] pb-4 text-[10px] uppercase tracking-[0.16em] text-neutral-400 sm:flex"><span>Your selection</span><span>Amount</span></div>
+        <div className="hidden justify-between border-b border-[#e8e3da] pb-4 text-[10px] uppercase tracking-[0.16em] text-neutral-600 sm:flex"><span>Your selection</span><span>Amount</span></div>
         <div className="divide-y divide-[#e8e3da]">{cart.map((item, index) => {
           const unavailable = item.available === false;
           const overStock = item.stockCount !== undefined && item.quantity > item.stockCount;
@@ -47,7 +47,7 @@ export function CartPageContent({ initialCrossSellProducts }: CartPageContentPro
             <Link href={`/products/${item.slug}`} className="relative aspect-2/3 w-24 shrink-0 self-start overflow-hidden rounded-md bg-[#f4f1eb] sm:w-32"><Image src={item.image || "/product-placeholder.svg"} alt={item.name} fill unoptimized sizes="(min-width: 640px) 128px, 96px" className="object-cover transition duration-500 hover:scale-105" /></Link>
             <div className="flex min-w-0 flex-1 flex-col justify-between gap-4 py-1">
               <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-2">
-                <div className="min-w-0"><Link href={`/products/${item.slug}`} className="break-words font-display text-base hover:text-purple sm:text-xl">{item.name}</Link><p className="mt-2 text-xs text-neutral-500">{item.size || "Standard"}</p><p className="mt-2 text-xs text-neutral-400">{formatINR(item.price)} each</p></div>
+                <div className="min-w-0"><Link href={`/products/${item.slug}`} className="break-words font-display text-base hover:text-purple sm:text-xl">{item.name}</Link><p className="mt-2 text-xs text-neutral-500">{item.size || "Standard"}</p><p className="mt-2 text-xs text-neutral-600">{formatINR(item.price)} each</p></div>
                 <p className="text-sm font-medium sm:text-base">{formatINR(item.price * item.quantity)}</p>
               </div>
               {(unavailable || overStock) && <p role="status" className="text-xs leading-relaxed text-[#9e5144]">{unavailable ? "This option is no longer available. Please remove it or choose another option." : `Only ${item.stockCount} available. Please reduce the quantity.`}</p>}
@@ -57,7 +57,7 @@ export function CartPageContent({ initialCrossSellProducts }: CartPageContentPro
                   <span aria-live="polite" className="w-7 text-center text-xs tabular-nums">{item.quantity}</span>
                   <button type="button" disabled={unavailable || item.quantity >= limit} onClick={() => updateQuantity(index, item.quantity + 1)} aria-label={`Increase quantity of ${item.name}`} className="grid size-9 place-items-center text-purple disabled:opacity-25 sm:size-10"><Plus size={13} /></button>
                 </div>
-                <button type="button" onClick={() => removeFromCart(index)} aria-label={`Remove ${item.name}`} className="inline-flex min-h-9 items-center gap-1.5 text-xs text-neutral-400 transition hover:text-[#9e5144]"><Trash2 size={13} />Remove</button>
+                <button type="button" onClick={() => removeFromCart(index)} aria-label={`Remove ${item.name}`} className="inline-flex min-h-9 items-center gap-1.5 text-xs text-neutral-600 transition hover:text-[#9e5144]"><Trash2 size={13} />Remove</button>
               </div>
             </div>
           </article>;
@@ -68,7 +68,7 @@ export function CartPageContent({ initialCrossSellProducts }: CartPageContentPro
         <dl className="mt-7 space-y-4 text-sm"><div className="flex justify-between gap-4 text-neutral-500"><dt>Items ({quantity})</dt><dd className="text-ink">{formatINR(subtotal)}</dd></div><div className="flex justify-between gap-4 text-xs text-neutral-500"><dt>Shipping</dt><dd>Confirmed separately</dd></div><div className="flex items-center justify-between gap-4 border-t border-[#e8e3da] pt-5"><dt className="font-medium">Items total</dt><dd className="font-display text-xl">{formatINR(subtotal)}</dd></div></dl>
         {hasUnavailableItems && <p role="alert" className="mt-5 text-xs leading-relaxed text-[#9e5144]">Review the marked items before completing your order.</p>}
         <Button variant="hero" onClick={() => router.push("/checkout")} className="mt-7 w-full gap-3">Continue to checkout<ArrowRight size={15} /></Button>
-        <p className="mt-4 text-center text-xs leading-relaxed text-neutral-400">Choose your saved address at checkout.</p>
+        <p className="mt-4 text-center text-xs leading-relaxed text-neutral-600">Choose your saved address at checkout.</p>
       </aside>
     </div>}
   </Container>;

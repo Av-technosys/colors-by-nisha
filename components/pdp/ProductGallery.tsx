@@ -3,6 +3,8 @@
 import React, { useState, useRef } from "react";
 import Image from "next/image";
 import { useStore } from "@/components/store/StoreContext";
+import { Portal } from "@/components/ui/Portal";
+import { useModalBehavior } from "@/components/ui/useModalBehavior";
 
 interface ProductGalleryProps {
   images: string[];
@@ -15,9 +17,11 @@ export function ProductGallery({ images, productName, productSlug }: ProductGall
   const [isZoomed, setIsZoomed] = useState(false);
   const [mousePos, setMousePos] = useState({ x: 50, y: 50 });
   const [lightboxOpen, setLightboxOpen] = useState(false);
+  const lightboxRef = useRef<HTMLDivElement>(null);
 
   const { isWishlisted, toggleWishlist } = useStore();
   const wishlisted = isWishlisted(productSlug);
+  useModalBehavior(lightboxRef, lightboxOpen, () => setLightboxOpen(false));
 
   // Touch swipe support for mobile
   const touchStartX = useRef<number | null>(null);
@@ -100,7 +104,6 @@ export function ProductGallery({ images, productName, productSlug }: ProductGall
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
-            onClick={() => setLightboxOpen(true)}
           >
             {/* Active Image */}
             <Image
@@ -120,6 +123,13 @@ export function ProductGallery({ images, productName, productSlug }: ProductGall
                     }
                   : undefined
               }
+            />
+
+            <button
+              type="button"
+              onClick={() => setLightboxOpen(true)}
+              className="absolute inset-0 z-0 cursor-zoom-in rounded-md focus-visible:outline-2 focus-visible:outline-offset-[-4px] focus-visible:outline-white"
+              aria-label={`Open larger image of ${productName}`}
             />
 
             {/* Top Right Floating Wishlist Button */}
@@ -197,24 +207,29 @@ export function ProductGallery({ images, productName, productSlug }: ProductGall
 
       {/* Lightbox Modal */}
       {lightboxOpen && (
+        <Portal>
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 p-4 backdrop-blur-sm"
           style={{ overscrollBehavior: "contain" }}
           onClick={() => setLightboxOpen(false)}
-          role="dialog"
-          aria-modal="true"
         >
-          <button
-            onClick={() => setLightboxOpen(false)}
-            className="absolute right-5 top-5 z-20 grid size-10 place-items-center rounded-md bg-white/20 text-white hover:bg-white/40 transition text-xl cursor-pointer"
-            aria-label="Close lightbox"
-          >
-            ✕
-          </button>
           <div
+            ref={lightboxRef}
+            tabIndex={-1}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="product-lightbox-title"
             className="relative h-[calc(100dvh-5rem)] w-full max-w-4xl"
             onClick={(e) => e.stopPropagation()}
           >
+            <h2 id="product-lightbox-title" className="sr-only">Product images for {productName}</h2>
+            <button
+              onClick={() => setLightboxOpen(false)}
+              className="absolute right-5 top-5 z-20 grid size-10 place-items-center rounded-md bg-white/20 text-white hover:bg-white/40 transition text-xl cursor-pointer"
+              aria-label="Close lightbox"
+            >
+              ✕
+            </button>
             <Image
               src={activeImage}
               unoptimized={activeImage.startsWith("http")}
@@ -243,6 +258,7 @@ export function ProductGallery({ images, productName, productSlug }: ProductGall
             )}
           </div>
         </div>
+        </Portal>
       )}
     </>
   );

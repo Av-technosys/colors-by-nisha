@@ -1,7 +1,9 @@
 "use client";
 
-import { useEffect, useRef, type ReactNode } from "react";
+import { useId, useRef, type ReactNode } from "react";
 import { Icon } from "./Icon";
+import { Portal } from "./Portal";
+import { useModalBehavior } from "./useModalBehavior";
 
 export function Modal({ children, title, onClose, className = "" }: { children: ReactNode; title: string; onClose: () => void; className?: string }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -43,5 +45,5 @@ export function Modal({ children, title, onClose, className = "" }: { children: 
       <button className="absolute right-2.5 top-2.5 z-20 grid size-9 place-items-center rounded-md bg-white hover:bg-neutral-100 transition cursor-pointer" aria-label="Close" onClick={onClose}><Icon name="close" /></button>
       {children}
     </div>
-  </div>;
+  </div></Portal>;
 }

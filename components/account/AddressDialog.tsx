@@ -1,5 +1,8 @@
 "use client";
 
+import { Form } from "@/components/ui/Form";
+
+
 import { UserFacingError, friendlyError } from "@/helpers/errors";
 
 import { useState, type FormEvent } from "react";
@@ -40,9 +43,9 @@ export function AddressDialog({ account, address, onClose, onSaved, indiaOnly = 
   ] as const;
 
   return <Modal title={address ? "Edit address" : "Add address"} onClose={onClose} className="w-full max-w-xl p-6 md:p-8">
-    <p className="mb-2 text-[11px] uppercase tracking-[0.16em] text-neutral-400">Address book</p>
+    <p className="mb-2 text-[11px] uppercase tracking-[0.16em] text-neutral-600">Address book</p>
     <h2 className="pr-6 font-display text-2xl font-medium text-ink">{address ? "Edit saved address" : "A place for your next heirloom"}</h2>
-    <form onSubmit={save} className="mt-6 space-y-4">
+    <Form onSubmit={save} className="mt-6 space-y-4">
       <fieldset disabled={saving} className="grid grid-cols-1 gap-4 sm:grid-cols-2 disabled:opacity-70">
         <label className="space-y-2 text-xs font-medium text-neutral-600 sm:col-span-2"><span>Country / region</span><select disabled={indiaOnly} autoComplete="country-name" value={form.country} onChange={event => setForm(current => ({ ...current, country: event.target.value }))} className={inputClass}>{worldCountries.map(country => <option key={country.name}>{country.name}</option>)}</select></label>
         {fields.map(field => <label key={field.key} className={`space-y-2 text-xs font-medium text-neutral-600 ${["fullName", "address", "apartment", "phone"].includes(field.key) ? "sm:col-span-2" : ""}`}>
@@ -53,6 +56,6 @@ export function AddressDialog({ account, address, onClose, onSaved, indiaOnly = 
       </fieldset>
       {error && <p role="alert" className="rounded-md bg-[#f8efec] p-3 text-sm text-[#a54d42]">{error}</p>}
       <div className="flex justify-end gap-3 border-t border-neutral-100 pt-5"><button type="button" disabled={saving} onClick={onClose} className="rounded-md px-4 py-2.5 text-sm text-neutral-500">Cancel</button><button disabled={saving} className="min-h-11 rounded-md bg-purple px-5 py-2.5 text-sm font-medium text-white transition hover:bg-[#40345f] disabled:opacity-50">{saving ? "Saving…" : "Save address"}</button></div>
-    </form>
+    </Form>
   </Modal>;
 }

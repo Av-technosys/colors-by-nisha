@@ -1,5 +1,8 @@
 "use client";
 
+import { Form } from "@/components/ui/Form";
+
+
 import { useStore } from "@/components/store/StoreContext";
 import { QuickViewModal } from "@/components/shop/QuickViewModal";
 import { money } from "@/data/home";
@@ -8,6 +11,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
+import { useRef } from "react";
+import { Portal } from "@/components/ui/Portal";
+import { useModalBehavior } from "@/components/ui/useModalBehavior";
 import { IoCloseOutline, IoSearchOutline } from "react-icons/io5";
 
 export function SearchModal() {
@@ -16,6 +22,7 @@ export function SearchModal() {
   const [query, setQuery] = useState("");
   const [allProducts, setAllProducts] = useState<ProductItem[]>(productsData);
   const [selectedProduct, setSelectedProduct] = useState<ProductItem | null>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     fetch("/api/search")
@@ -89,18 +96,26 @@ export function SearchModal() {
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!query.trim()) return;
+    if (!query.trim()) {
+      const input = e.currentTarget.querySelector("input");
+      input?.setCustomValidity("Please enter a search term.");
+      input?.reportValidity();
+      return;
+    }
     handleClose();
     router.push(`/shop?search=${encodeURIComponent(query.trim())}`);
   };
 
   return (
+    <Portal>
     <>
       <div
-        className="fixed inset-0 z-50 bg-white overflow-y-auto animate-in fade-in duration-200"
+        ref={dialogRef}
+        tabIndex={-1}
+        className="fixed inset-0 z-50 bg-white overflow-y-auto animate-in fade-in duration-200 outline-none"
         role="dialog"
         aria-modal="true"
-        aria-label="Search site"
+        aria-labelledby="search-modal-title"
       >
         <div className="mx-auto w-[calc(100%-2rem)] max-w-[1328px] sm:w-[calc(100%-3rem)] lg:w-[calc(100%-4rem)] py-6 md:py-12 relative min-h-dvh flex flex-col">
           {/* Desktop Top-Right Close Button (Matches Desktop Screenshot) */}
@@ -113,23 +128,23 @@ export function SearchModal() {
           </button>
 
           {/* Title (Shown on Empty Search matching Image 1) */}
-          {!normalizedQuery && (
-            <h1 className="text-center font-display text-3xl md:text-4xl font-normal leading-tight text-[#111111] mb-5 md:mb-8 pt-2 md:pt-4">
+          <h1 id="search-modal-title" className={`text-center font-display text-3xl md:text-4xl font-normal leading-tight text-[#111111] mb-5 md:mb-8 pt-2 md:pt-4 ${normalizedQuery ? "sr-only" : ""}`}>
               Search Our Site
-            </h1>
-          )}
+          </h1>
 
           {/* Search Input Bar (Pill Shape with mobile close button on the side) */}
           <div className="w-full max-w-[620px] mx-auto mb-6 md:mb-10">
-            <form onSubmit={handleSearchSubmit} className="flex items-center gap-2.5">
+            <Form onInput={event => (event.target as HTMLInputElement).setCustomValidity("")} onSubmit={handleSearchSubmit} className="flex items-center gap-2.5">
               <div className="relative flex-1 flex items-center rounded-md border border-neutral-300 focus-within:border-black bg-white px-4 md:px-5 py-2.5 md:py-3.5 shadow-xs transition-colors">
                 <input
                   autoFocus
+                  aria-label="Search products"
+                  id="site-search-input"
                   type="text"
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   placeholder="I'm looking for..."
-                  className="w-full bg-transparent font-sans text-sm md:text-base outline-none pr-14 text-ink placeholder:text-neutral-400"
+                  className="w-full bg-transparent font-sans text-sm md:text-base outline-none pr-14 text-ink placeholder:text-neutral-500"
                 />
 
                 <div className="absolute right-3.5 md:right-4 flex items-center gap-1.5 md:gap-2">
@@ -162,7 +177,7 @@ export function SearchModal() {
               >
                 <IoCloseOutline size={26} />
               </button>
-            </form>
+            </Form>
           </div>
 
           {/* Search Results Area (Matching Image 2) */}
@@ -180,31 +195,32 @@ export function SearchModal() {
                   {/* 5-Column Grid Matching Image 2 */}
                   <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-5">
                     {results.map((product) => (
-                      <article
+                      <button
+                        type="button"
                         key={product.id || product.slug}
-                        className="group flex flex-col text-center cursor-pointer"
+                        className="group flex w-full appearance-none flex-col border-0 bg-transparent p-0 text-center focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#a66c40]"
                         onClick={() => handleProductClick(product)}
                       >
-                        <div className="relative aspect-2/3 w-full overflow-hidden rounded-md bg-neutral-100 shadow-xs">
+                        <span className="relative block aspect-2/3 w-full overflow-hidden rounded-md bg-neutral-100 shadow-xs">
                           <Image
                             src={
                               product.images[0] ||
                               "/product-placeholder.svg"
                             }
-                            alt={product.name}
+                            alt=""
                             fill
                             unoptimized
                             sizes="(min-width: 1024px) 20vw, (min-width: 768px) 25vw, 50vw"
                             className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
                           />
-                        </div>
-                        <h3 className="mt-3 font-display text-[14px] md:text-[15px] font-medium text-ink uppercase tracking-wide group-hover:text-purple transition-colors">
+                        </span>
+                        <span className="mt-3 block font-display text-[14px] md:text-[15px] font-medium text-ink uppercase tracking-wide group-hover:text-purple transition-colors">
                           {product.name}
-                        </h3>
-                        <p className="mt-1 font-sans text-xs md:text-sm text-neutral-600">
+                        </span>
+                        <span className="mt-1 block font-sans text-xs md:text-sm text-neutral-600">
                           {money(product.price)}
-                        </p>
-                      </article>
+                        </span>
+                      </button>
                     ))}
                   </div>
 
@@ -239,6 +255,7 @@ export function SearchModal() {
         />
       )}
     </>
+    </Portal>
   );
 }
 

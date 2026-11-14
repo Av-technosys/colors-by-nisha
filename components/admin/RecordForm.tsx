@@ -1,3 +1,4 @@
+import { Form } from "@/components/ui/Form";
 import type { FormEvent } from "react";
 import { Modal } from "@/components/ui/Modal";
 import type { AdminPageData, AdminRecord } from "@/data/admin";
@@ -38,7 +39,7 @@ export function RecordForm({ data, record, onSave, onClose }: RecordFormProps) {
       <h2 className="mb-1 pr-5 font-display text-2xl">{title}</h2>
       <p className="mb-6 text-xs text-neutral-400">Changes are saved in this preview only.</p>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <Form onSubmit={handleSubmit} className="space-y-4">
         <label className="block text-xs text-neutral-500">
           {data.columns[0]} name
           <input
@@ -100,7 +101,7 @@ export function RecordForm({ data, record, onSave, onClose }: RecordFormProps) {
             Save {data.singular}
           </button>
         </div>
-      </form>
+      </Form>
     </Modal>
   );
 }

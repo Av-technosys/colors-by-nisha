@@ -1,12 +1,14 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { X, Trash2, Truck, Package } from "lucide-react";
 import { formatINR } from "@/data/products";
 import { Button } from "@/components/ui/Button";
+import { Portal } from "@/components/ui/Portal";
+import { useModalBehavior } from "@/components/ui/useModalBehavior";
 import { useStore } from "./StoreContext";
 
 export function CartDrawer() {
@@ -14,28 +16,7 @@ export function CartDrawer() {
   const router = useRouter();
   const drawerRef = useRef<HTMLDivElement>(null);
 
-  // Close on Escape key
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && cartOpen) {
-        setCartOpen(false);
-      }
-    };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [cartOpen, setCartOpen]);
-
-  // Lock body scroll when open
-  useEffect(() => {
-    if (cartOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [cartOpen]);
+  useModalBehavior(drawerRef, cartOpen, () => setCartOpen(false));
 
   if (!cartOpen) return null;
 
@@ -53,23 +34,25 @@ export function CartDrawer() {
   };
 
   return (
+    <Portal>
     <div
       className="fixed inset-0 z-50 flex justify-end bg-black/50 backdrop-blur-[2px] transition-opacity animate-in fade-in duration-200"
       style={{ overscrollBehavior: "contain" }}
       onClick={() => setCartOpen(false)}
       role="dialog"
       aria-modal="true"
-      aria-label="Shopping Cart Drawer"
+      aria-labelledby="cart-drawer-title"
+      ref={drawerRef}
+      tabIndex={-1}
     >
       <div
-        ref={drawerRef}
         className="relative flex h-dvh w-full overflow-y-auto max-w-[460px] sm:max-w-[480px] flex-col bg-white shadow-2xl transition-transform animate-in slide-in-from-right duration-300"
         style={{ overscrollBehavior: "contain" }}
         onClick={(e) => e.stopPropagation()}
       >
         {/* 1. Header: Shopping Cart (Count) + Close button */}
         <div className="flex shrink-0 items-center justify-between border-b border-neutral-100 px-4 py-4 sm:px-6">
-          <h2 className="font-display text-base sm:text-lg font-bold tracking-tight text-ink">
+          <h2 id="cart-drawer-title" className="font-display text-base sm:text-lg font-bold tracking-tight text-ink">
             Shopping Cart ({totalCount})
           </h2>
           <button
@@ -186,9 +169,11 @@ export function CartDrawer() {
                     {/* Pill Quantity Counter: - 1 + */}
                     <div className="inline-flex items-center bg-[#f4f4f4] rounded-md border border-neutral-200/80 px-1 py-0.5">
                       <button
+                        type="button"
+                        disabled={item.quantity <= 1}
                         onClick={() => updateQuantity(index, item.quantity - 1)}
-                        className="px-2.5 py-0.5 text-xs text-neutral-600 hover:text-ink select-none font-medium transition cursor-pointer"
-                        aria-label="Decrease quantity"
+                        className="min-h-9 min-w-9 px-2.5 py-0.5 text-xs text-neutral-600 hover:text-ink select-none font-medium transition disabled:cursor-not-allowed disabled:opacity-40"
+                        aria-label={`Decrease quantity of ${item.name}`}
                       >
                         -
                       </button>
@@ -196,9 +181,11 @@ export function CartDrawer() {
                         {item.quantity}
                       </span>
                       <button
+                        type="button"
+                        disabled={item.available === false || (item.stockCount !== undefined && item.quantity >= item.stockCount)}
                         onClick={() => updateQuantity(index, item.quantity + 1)}
-                        className="px-2.5 py-0.5 text-xs text-neutral-600 hover:text-ink select-none font-medium transition cursor-pointer"
-                        aria-label="Increase quantity"
+                        className="min-h-9 min-w-9 px-2.5 py-0.5 text-xs text-neutral-600 hover:text-ink select-none font-medium transition disabled:cursor-not-allowed disabled:opacity-40"
+                        aria-label={`Increase quantity of ${item.name}`}
                       >
                         +
                       </button>
@@ -207,7 +194,7 @@ export function CartDrawer() {
                     {/* Trash Delete Icon */}
                     <button
                       onClick={() => removeFromCart(index)}
-                      className="text-neutral-400 hover:text-red-600 p-1 transition cursor-pointer"
+                      className="text-neutral-600 hover:text-red-600 p-1 transition cursor-pointer"
                       aria-label="Remove product"
                       title="Remove product"
                     >
@@ -251,5 +238,6 @@ export function CartDrawer() {
         )}
       </div>
     </div>
+    </Portal>
   );
 }

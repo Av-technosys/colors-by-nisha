@@ -1,5 +1,8 @@
 "use client";
 
+import { Form } from "@/components/ui/Form";
+
+
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useTransition, type FormEvent } from "react";
@@ -39,7 +42,7 @@ export function CategoryForm({ category }: { category?: typeof categories.$infer
   return (
     <>
       <PageHeading eyebrow="Categories" title={category ? "Edit category" : "Add category"} description="Give your category a name and a unique URL slug." />
-      <form autoComplete="off" onSubmit={handleSubmit} className="max-w-3xl rounded-md border border-[#e8e5df] bg-white p-5 sm:p-7">
+      <Form autoComplete="off" onSubmit={handleSubmit} className="max-w-3xl rounded-md border border-[#e8e5df] bg-white p-5 sm:p-7">
         <input type="hidden" name="id" value={category?.id ?? ""} />
         <fieldset disabled={pending} className="space-y-6 disabled:opacity-60">
           <label className="block text-xs text-neutral-500">
@@ -57,7 +60,7 @@ export function CategoryForm({ category }: { category?: typeof categories.$infer
             <button type="submit" className="min-h-11 rounded-md bg-purple px-5 font-display text-sm text-white disabled:opacity-50">{pending ? "Saving…" : "Save category"}</button>
           </div>
         </fieldset>
-      </form>
+      </Form>
     </>
   );
 }
