@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 import { formatINR, type ProductItem } from "@/data/products";
 import { readShopFilters, shopFilterUrl } from "@/helpers/store/shop-filters";
 import { ShopProductCard } from "./ShopProductCard";
 import { QuickViewModal } from "./QuickViewModal";
+import { useModalBehavior } from "@/components/ui/useModalBehavior";
 
 interface ShopPageContentProps {
   products: ProductItem[];
@@ -37,19 +38,16 @@ export function ShopPageContent({ products: allProducts }: ShopPageContentProps)
   // Filter States
   const [columnCount, setColumnCount] = useState<2 | 3 | 4>(3);
   const [mobileFilterOpen, setMobileFilterOpen] = useState<boolean>(false);
+  const filterDialogRef = useRef<HTMLDivElement>(null);
   const [quickViewProduct, setQuickViewProduct] = useState<ProductItem | null>(null);
+
+  useModalBehavior(filterDialogRef, mobileFilterOpen, () => setMobileFilterOpen(false));
 
   useEffect(() => {
     if (!mobileFilterOpen) return;
-    const overflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    const closeOnEscape = (event: KeyboardEvent) => { if (event.key === "Escape") setMobileFilterOpen(false); };
     const closeOnResize = () => { if (window.innerWidth >= 1024) setMobileFilterOpen(false); };
-    window.addEventListener("keydown", closeOnEscape);
     window.addEventListener("resize", closeOnResize);
     return () => {
-      document.body.style.overflow = overflow;
-      window.removeEventListener("keydown", closeOnEscape);
       window.removeEventListener("resize", closeOnResize);
     };
   }, [mobileFilterOpen]);
@@ -181,7 +179,7 @@ export function ShopPageContent({ products: allProducts }: ShopPageContentProps)
                           }`}
                         >
                           <span>{cat.label}</span>
-                          <span className="text-xs text-neutral-400">({cat.count})</span>
+                          <span className="text-xs text-neutral-600">({cat.count})</span>
                         </button>
                       </li>
                     ))}
@@ -233,6 +231,7 @@ export function ShopPageContent({ products: allProducts }: ShopPageContentProps)
                     </div>
                     <input
                       type="range"
+                      aria-label="Maximum product price"
                       min={0}
                       max={maxPrice}
                       step={1}
@@ -348,7 +347,7 @@ export function ShopPageContent({ products: allProducts }: ShopPageContentProps)
             {/* Active Filters Pill Chips */}
             {hasActiveFilters && (
               <div className="flex flex-wrap items-center gap-2 pb-5">
-                <span className="text-xs font-medium text-neutral-400">Active filters:</span>
+                <span className="text-xs font-medium text-neutral-600">Active filters:</span>
                 {searchQuery.trim() && (
                   <span className="inline-flex items-center gap-1.5 rounded-md bg-neutral-100 px-3 py-1 text-xs font-medium text-ink">
                     Search: &ldquo;{searchQuery}&rdquo;
@@ -479,17 +478,19 @@ export function ShopPageContent({ products: allProducts }: ShopPageContentProps)
           className="fixed inset-0 z-50 flex justify-start bg-black/50 backdrop-blur-xs transition-opacity"
           style={{ overscrollBehavior: "contain" }}
           onClick={() => setMobileFilterOpen(false)}
-          role="dialog"
-          aria-modal="true"
-          aria-label="Filters"
         >
           <div
+            ref={filterDialogRef}
+            tabIndex={-1}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="shop-filter-title"
             className="flex h-dvh w-[85%] max-w-[340px] flex-col bg-white shadow-2xl animate-in slide-in-from-left duration-250"
             style={{ overscrollBehavior: "contain" }}
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between border-b border-neutral-200 px-5 py-4">
-              <h2 className="font-display text-base font-semibold uppercase tracking-wider text-ink">Filters</h2>
+              <h2 id="shop-filter-title" className="font-display text-base font-semibold uppercase tracking-wider text-ink">Filters</h2>
               <button
                 onClick={() => setMobileFilterOpen(false)}
                 className="grid size-8 place-items-center rounded-md text-neutral-500 hover:bg-neutral-100"
@@ -515,7 +516,7 @@ export function ShopPageContent({ products: allProducts }: ShopPageContentProps)
                       }`}
                     >
                       <span>{cat.label}</span>
-                      <span className="text-xs text-neutral-400">({cat.count})</span>
+                      <span className="text-xs text-neutral-600">({cat.count})</span>
                     </button>
                   ))}
                 </div>
@@ -544,6 +545,7 @@ export function ShopPageContent({ products: allProducts }: ShopPageContentProps)
                 </h3>
                 <input
                   type="range"
+                  aria-label="Maximum product price"
                   min={0}
                   max={maxPrice}
                   step={1}

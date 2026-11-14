@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { formatINR, type ProductItem } from "@/data/products";
 import { Button } from "@/components/ui/Button";
 import { useStore } from "@/components/store/StoreContext";
+import { Modal } from "@/components/ui/Modal";
 
 interface ProductDetailsInfoProps {
   product: ProductItem;
@@ -95,7 +96,7 @@ export function ProductDetailsInfo({ product, variantId, onVariantChange, quanti
           {formatINR(product.price)}
         </span>
         {product.originalPrice && (
-          <span className="text-base text-neutral-400 line-through">
+          <span className="text-base text-neutral-600 line-through">
             {formatINR(product.originalPrice)}
           </span>
         )}
@@ -116,18 +117,21 @@ export function ProductDetailsInfo({ product, variantId, onVariantChange, quanti
           {/* Pill Quantity Selector */}
           <div className="flex items-center justify-between rounded-md bg-[#f4f4f4] px-4 py-2.5 w-[115px] md:w-[125px] shrink-0">
             <button
+              type="button"
+              disabled={quantity <= 1}
               onClick={() => setQuantity(Math.max(1, quantity - 1))}
-              className="text-base text-neutral-600 hover:text-ink font-medium px-1 cursor-pointer select-none"
-              aria-label="Decrease quantity"
+              className="grid size-9 place-items-center text-base text-neutral-600 hover:text-ink font-medium disabled:cursor-not-allowed disabled:opacity-40"
+              aria-label={`Decrease quantity of ${product.name}`}
             >
               —
             </button>
             <span className="text-sm font-semibold text-ink select-none">{quantity}</span>
             <button
+              type="button"
               disabled={!product.inStock || quantity >= (product.stockCount ?? Infinity)}
               onClick={() => setQuantity(Math.min(product.stockCount ?? Infinity, quantity + 1))}
-              className="text-base text-neutral-600 hover:text-ink font-medium px-1 cursor-pointer select-none"
-              aria-label="Increase quantity"
+              className="grid size-9 place-items-center text-base text-neutral-600 hover:text-ink font-medium disabled:cursor-not-allowed disabled:opacity-40"
+              aria-label={`Increase quantity of ${product.name}`}
             >
               +
             </button>
@@ -222,26 +226,9 @@ export function ProductDetailsInfo({ product, variantId, onVariantChange, quanti
 
       {/* Ask Question Modal */}
       {askModalOpen && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-xs"
-          style={{ overscrollBehavior: "contain" }}
-          onClick={() => setAskModalOpen(false)}
-          role="dialog"
-          aria-modal="true"
-        >
-          <div
-            className="relative w-full max-w-md rounded-md bg-white p-6 shadow-2xl animate-in zoom-in-95 duration-200"
-            onClick={(e) => e.stopPropagation()}
-          >
+        <Modal title="Have a question?" onClose={() => setAskModalOpen(false)} className="w-full max-w-md p-6">
             <div className="flex justify-between items-center border-b border-neutral-100 pb-3">
               <h3 className="font-display font-semibold text-base text-ink uppercase">Have a question?</h3>
-              <button
-                onClick={() => setAskModalOpen(false)}
-                className="text-neutral-400 hover:text-ink text-sm p-1 cursor-pointer"
-                aria-label="Close"
-              >
-                ✕
-              </button>
             </div>
             <p className="mt-3 text-xs text-neutral-600 leading-relaxed">
               Our stylists are here to assist with sizing, customization, blouse adjustments, or delivery schedules for{" "}
@@ -265,8 +252,7 @@ export function ProductDetailsInfo({ product, variantId, onVariantChange, quanti
                 Email: colorbynishavijay@gmail.com
               </a>
             </div>
-          </div>
-        </div>
+        </Modal>
       )}
     </div>
   );

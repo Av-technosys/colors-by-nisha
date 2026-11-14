@@ -5,63 +5,49 @@ import Link from "next/link";
 import Image from "next/image";
 import { useStore } from "@/components/store/StoreContext";
 import { images } from "@/data/home";
+import { Portal } from "@/components/ui/Portal";
+import { useModalBehavior } from "@/components/ui/useModalBehavior";
 
 export function MobileMenuDrawer() {
   const { cart, menuOpen, setMenuOpen, setCartOpen, wishlist } = useStore();
   const drawerRef = useRef<HTMLDivElement>(null);
   const cartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
 
+  useModalBehavior(drawerRef, menuOpen, () => setMenuOpen(false));
+
   useEffect(() => {
     if (!menuOpen) return;
-    const previousOverflow = document.body.style.overflow;
-    const previousFocus = document.activeElement as HTMLElement | null;
-    document.body.style.overflow = "hidden";
-    drawerRef.current?.focus();
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        setMenuOpen(false);
-      }
-      if (e.key !== "Tab") return;
-      const controls = drawerRef.current?.querySelectorAll<HTMLElement>('a[href], button:not([disabled])');
-      if (!controls?.length) return;
-      const first = controls[0];
-      const last = controls[controls.length - 1];
-      if (e.shiftKey && (document.activeElement === first || document.activeElement === drawerRef.current)) { e.preventDefault(); last.focus(); }
-      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
-    };
     const handleResize = () => { if (window.innerWidth >= 1024) setMenuOpen(false); };
-    window.addEventListener("keydown", handleKeyDown);
     window.addEventListener("resize", handleResize);
     return () => {
-      document.body.style.overflow = previousOverflow;
-      window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("resize", handleResize);
-      previousFocus?.focus();
     };
   }, [menuOpen, setMenuOpen]);
 
   if (!menuOpen) return null;
 
   return (
+    <Portal>
     <div
       className="fixed inset-0 z-50 flex justify-start bg-black/50 backdrop-blur-xs transition-opacity lg:hidden"
       style={{ overscrollBehavior: "contain" }}
       onClick={() => setMenuOpen(false)}
-      role="dialog"
-      aria-modal="true"
-      aria-label="Mobile Navigation Menu"
     >
       <div
         ref={drawerRef}
         id="mobile-menu"
         tabIndex={-1}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="mobile-menu-title"
         className="relative flex h-dvh w-[90%] max-w-[340px] flex-col bg-white shadow-2xl outline-none animate-in slide-in-from-left duration-250"
         style={{ overscrollBehavior: "contain" }}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
         <div className="flex items-center justify-between border-b border-neutral-100 px-5 py-4">
-          <Link href="/" onClick={() => setMenuOpen(false)} className="relative block h-14 w-12">
+          <h2 id="mobile-menu-title" className="sr-only">Navigation menu</h2>
+          <Link href="/" onClick={() => setMenuOpen(false)} className="relative block h-14 w-12" aria-label="Colors by Nisha home">
             <Image src={images[1]} alt="Colors by Nisha" fill sizes="80px" className="object-contain" priority />
           </Link>
           <button
@@ -188,6 +174,7 @@ export function MobileMenuDrawer() {
         </div>
       </div>
     </div>
+    </Portal>
   );
 }
 

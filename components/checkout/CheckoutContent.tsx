@@ -1,5 +1,8 @@
 "use client";
 
+import { Form } from "@/components/ui/Form";
+
+
 import { UserFacingError, friendlyError } from "@/helpers/errors";
 
 import Image from "next/image";
@@ -138,11 +141,11 @@ export function CheckoutContent() {
     <p className="mb-2 text-[10px] uppercase tracking-[0.2em] text-[#94764d]">Colors by Nisha</p>
     <h1 className="font-display text-3xl md:text-4xl">A few details, then it’s yours.</h1>
     <p className="mb-9 mt-3 text-sm text-neutral-500">Choose your delivery address and complete your order.</p>
-    <form onSubmit={submit} className="grid items-start gap-8 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)] lg:gap-14">
+    <Form onSubmit={submit} className="grid items-start gap-8 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)] lg:gap-14">
       <fieldset disabled={busy} className="min-w-0 space-y-7 disabled:opacity-70">
         {signedOut ? <section className="rounded-md border border-[#e8e3da] p-7"><h2 className="font-display text-xl">Sign in to checkout</h2><p className="mt-3 text-sm text-neutral-500">Your cart will be waiting after you sign in.</p><Link href="/login?redirect_url=/checkout" className="mt-5 inline-block rounded-md bg-purple px-5 py-3 text-sm text-white">Sign in</Link></section> : accountError ? <div role="alert" className="rounded-md border border-[#e8e3da] p-7 text-sm">{accountError}<button type="button" onClick={() => setAccountRefresh(value => value + 1)} className="ml-3 text-purple underline">Try again</button></div> : !account ? <><FormSkeleton fields={2} /><FormSkeleton fields={6} /></> : <>
         <div className="flex flex-wrap items-center justify-between gap-3 rounded-md border border-[#e8e3da] px-5 py-4 text-sm">
-          <div className="min-w-0"><p className="text-[10px] uppercase tracking-[0.16em] text-neutral-400">Order updates</p><p className="mt-1 break-all text-neutral-600">{account.email}</p></div>
+          <div className="min-w-0"><p className="text-[10px] uppercase tracking-[0.16em] text-neutral-600">Order updates</p><p className="mt-1 break-all text-neutral-600">{account.email}</p></div>
           <Link href="/dashboard" className="min-h-9 content-center text-xs text-purple underline underline-offset-4">Edit account</Link>
         </div>
         <CheckoutAddresses account={account} selectedId={selectedAddressId} onSelect={selectAddress} onAccountChange={setAccount} />
@@ -160,8 +163,8 @@ export function CheckoutContent() {
         <Button variant="hero" type="submit" disabled={busy || !cartReady} className="mt-6 w-full disabled:cursor-not-allowed disabled:opacity-50 disabled:transform-none">
           {busy ? "Opening Razorpay…" : currentQuote ? `Pay ${formatINR(Number(currentQuote.subtotal))} with Razorpay` : "Proceed to Payment"}
         </Button>
-        <p className="mt-4 flex items-center justify-center gap-2 text-[11px] text-neutral-400"><LockKeyhole size={13} />100% Secure Payment powered by Razorpay</p>
+        <p className="mt-4 flex items-center justify-center gap-2 text-[11px] text-neutral-600"><LockKeyhole size={13} />100% Secure Payment powered by Razorpay</p>
       </section>
-    </form>
+    </Form>
   </Container>;
 }

@@ -83,7 +83,7 @@ export function BlogPageContent({ posts: initialPosts }: BlogPageContentProps = 
           </aside>
 
           {/* Right Main Grid: 3 Articles */}
-          <main className="flex-1 w-full">
+          <section aria-label="All blog posts" className="flex-1 w-full">
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 lg:gap-7 items-start">
               {posts.map((post) => (
                 <article key={post.id} className="group flex flex-col">
@@ -124,7 +124,7 @@ export function BlogPageContent({ posts: initialPosts }: BlogPageContentProps = 
                 </article>
               ))}
             </div>
-          </main>
+          </section>
         </div>
       </div>
     </div>

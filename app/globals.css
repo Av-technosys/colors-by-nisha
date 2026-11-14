@@ -19,3 +19,49 @@
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+@keyframes ui-enter {
+  from {
+    opacity: var(--ui-enter-opacity, 1);
+    transform: translate3d(var(--ui-enter-x, 0), var(--ui-enter-y, 0), 0) scale(var(--ui-enter-scale, 1));
+  }
+}
+
+@utility animate-in {
+  animation-name: ui-enter;
+  animation-fill-mode: both;
+}
+
+@utility fade-in {
+  --ui-enter-opacity: 0;
+}
+
+@utility zoom-in-95 {
+  --ui-enter-scale: .95;
+}
+
+@utility slide-in-from-right {
+  --ui-enter-x: 1rem;
+}
+
+@utility slide-in-from-left {
+  --ui-enter-x: -1rem;
+}
+
+@utility slide-in-from-bottom {
+  --ui-enter-y: 1rem;
+}
+
+@utility slide-in-from-bottom-2 {
+  --ui-enter-y: .5rem;
+}
+
+@utility slide-in-from-top-3 {
+  --ui-enter-y: -.75rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-in {
+    animation-duration: 0.01ms !important;
+  }
+}

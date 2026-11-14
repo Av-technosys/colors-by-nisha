@@ -1,6 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
+import { Portal } from "@/components/ui/Portal";
+import { useModalBehavior } from "@/components/ui/useModalBehavior";
 
 interface SizeGuideModalProps {
   isOpen: boolean;
@@ -9,6 +11,9 @@ interface SizeGuideModalProps {
 
 export function SizeGuideModal({ isOpen, onClose }: SizeGuideModalProps) {
   const [unit, setUnit] = useState<"inches" | "cm">("inches");
+  const dialogRef = useRef<HTMLDivElement>(null);
+
+  useModalBehavior(dialogRef, isOpen, onClose);
 
   if (!isOpen) return null;
 
@@ -22,22 +27,24 @@ export function SizeGuideModal({ isOpen, onClose }: SizeGuideModalProps) {
   ];
 
   return (
-    <div
+    <Portal><div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-xs"
       style={{ overscrollBehavior: "contain" }}
       onClick={onClose}
-      role="dialog"
-      aria-modal="true"
-      aria-label="Size Guide"
     >
       <div
+        ref={dialogRef}
+        tabIndex={-1}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="size-guide-title"
         className="relative max-h-[calc(100dvh-2rem)] w-full max-w-xl overflow-y-auto rounded-md bg-white p-4 sm:p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-200"
         style={{ overscrollBehavior: "contain" }}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-start justify-between gap-3 border-b border-neutral-200 pb-4">
           <div>
-            <h2 className="font-display text-xl font-medium tracking-wide uppercase text-ink">Size Guide</h2>
+            <h2 id="size-guide-title" className="font-display text-xl font-medium tracking-wide uppercase text-ink">Size Guide</h2>
             <p className="text-xs text-neutral-500">Standard measurements for lehengas & ethnic ensembles</p>
           </div>
           <button
@@ -100,7 +107,7 @@ export function SizeGuideModal({ isOpen, onClose }: SizeGuideModalProps) {
           <strong>Need Custom Measurements?</strong> We offer complimentary bespoke sizing on all couture lehengas. Select &quot;Custom Fit&quot; upon checkout or chat with us on WhatsApp for tailoring assistance.
         </div>
       </div>
-    </div>
+    </div></Portal>
   );
 }
 

@@ -224,7 +224,7 @@ test("shop category navigation updates products without remounting the page", ()
   const state = [];
   let cursor = 0;
   const filters = compile("helpers/store/shop-filters.ts", {});
-  const hooks = { ...React, useMemo: callback => callback(), useEffect() {},
+  const hooks = { ...React, useMemo: callback => callback(), useEffect() {}, useRef: () => ({ current: null }),
     useState: initial => {
       const index = cursor++;
       if (!(index in state)) state[index] = typeof initial === "function" ? initial() : initial;
@@ -241,6 +241,7 @@ test("shop category navigation updates products without remounting the page", ()
     "@/helpers/store/shop-filters": filters, "@/data/products": { formatINR: value => `Rs ${value}` },
     "./ShopProductCard": { ShopProductCard: ({ product }) => React.createElement("span", { "data-product": product.slug }, product.name) },
     "./QuickViewModal": { QuickViewModal: () => null },
+    "@/components/ui/useModalBehavior": { useModalBehavior() {} },
   }, { window: { get location() { return url; }, history: { pushState: (_state, _title, href) => { url = new URL(href, url); } }, scrollTo() {} } });
   function render() { cursor = 0; return ShopPageContent({ products }); }
   function find(node, predicate) {

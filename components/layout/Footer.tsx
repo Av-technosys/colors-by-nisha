@@ -1,5 +1,8 @@
 "use client";
 
+import { Form } from "@/components/ui/Form";
+
+
 import { Icon } from "@/components/ui/Icon";
 import { Photo } from "@/components/ui/Photo";
 import Link from "next/link";
@@ -91,7 +94,7 @@ export function Footer() {
             Subscribe to Our Newsletter
           </h3>
           <p className="mb-5">Subscribe for store updates and discounts.</p>
-          <form
+          <Form
             className="flex border-b border-white/50"
             onSubmit={(event) => {
               event.preventDefault();
@@ -111,7 +114,7 @@ export function Footer() {
             <button className="p-2.5 text-2xl" aria-label="Subscribe">
               →
             </button>
-          </form>
+          </Form>
           <p className="mt-2.5 text-[11px]" role="status">
             {subscribed
               ? "Thank you! This preview does not send subscriptions."
