@@ -266,6 +266,13 @@ export const contactUs = pgTable("contact_us", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+// Newsletter signups from the storefront footer. Emails are stored lowercase.
+export const subscriptions = pgTable("subscriptions", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  email: varchar("email", { length: 320 }).notNull().unique(),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+});
+
 export type ContactUs = typeof contactUs.$inferSelect;
 export type NewContactUs = typeof contactUs.$inferInsert;
 export type Order = typeof orders.$inferSelect;
