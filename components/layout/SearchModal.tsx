@@ -41,38 +41,13 @@ export function SearchModal() {
     setSelectedProduct(null);
   }, [setSearchOpen]);
 
-  // Close search overlay on browser back/forward navigation
+  // Browser navigation
   useEffect(() => {
-    const handlePopState = () => handleClose();
-    window.addEventListener("popstate", handlePopState);
-    return () => window.removeEventListener("popstate", handlePopState);
+    window.addEventListener("popstate", handleClose);
+    return () => window.removeEventListener("popstate", handleClose);
   }, [handleClose]);
 
-  useEffect(() => {
-    if (searchOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [searchOpen]);
-
-  // Handle escape key
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && searchOpen) {
-        if (selectedProduct) {
-          setSelectedProduct(null);
-        } else {
-          handleClose();
-        }
-      }
-    };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [searchOpen, selectedProduct, handleClose]);
+  useModalBehavior(dialogRef, searchOpen, handleClose);
 
   if (!searchOpen) return null;
 
