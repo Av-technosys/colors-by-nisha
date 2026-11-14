@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { type BlogPost, getAllBlogPosts, getAdjacentPosts } from "@/data/blogs";
+import BlogContentFrame from "@/components/admin/blogs/BlogContentFrame";
 
 interface BlogPostDetailContentProps {
   post: BlogPost;
@@ -121,24 +122,7 @@ export function BlogPostDetailContent({
 
           {/* Dynamic Rich HTML Content (from Admin Database) */}
           {post.contentHtml ? (
-            <div
-              className="blog-rich-content min-w-0 break-words text-sm md:text-[15px] text-neutral-600 leading-relaxed font-sans space-y-4
-                [&_h2]:font-display [&_h2]:text-xl md:[&_h2]:text-2xl [&_h2]:font-bold [&_h2]:text-ink [&_h2]:mt-7 [&_h2]:mb-2.5 [&_h2]:leading-snug
-                [&_h3]:font-display [&_h3]:text-lg md:[&_h3]:text-xl [&_h3]:font-bold [&_h3]:text-ink [&_h3]:mt-6 [&_h3]:mb-2 [&_h3]:leading-snug
-                [&_h4]:font-display [&_h4]:text-base md:[&_h4]:text-lg [&_h4]:font-bold [&_h4]:text-ink [&_h4]:mt-5 [&_h4]:mb-2 [&_h4]:leading-snug
-                [&_p]:mb-4 [&_p]:leading-relaxed
-                [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:space-y-1.5 [&_ul]:mb-5
-                [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:space-y-1.5 [&_ol]:mb-5
-                [&_li]:leading-relaxed
-                [&_a]:text-[#d0473e] [&_a]:underline [&_a]:underline-offset-2 [&_a:hover]:text-ink
-                [&_strong]:font-semibold [&_strong]:text-ink
-                [&_blockquote]:border-l-2 [&_blockquote]:border-neutral-300 [&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:text-neutral-500 [&_blockquote]:my-5
-                [&_table]:block [&_table]:max-w-full [&_table]:overflow-x-auto [&_table]:w-full [&_table]:border-collapse [&_table]:my-6 [&_table]:text-xs
-                [&_th]:border [&_th]:border-neutral-200 [&_th]:bg-neutral-50 [&_th]:p-2.5 [&_th]:font-semibold [&_th]:text-ink
-                [&_td]:border [&_td]:border-neutral-200 [&_td]:p-2.5
-                [&_pre]:max-w-full [&_pre]:overflow-x-auto [&_img]:h-auto [&_img]:rounded-md [&_img]:my-6 [&_img]:max-w-full"
-              dangerouslySetInnerHTML={{ __html: post.contentHtml }}
-            />
+            <BlogContentFrame html={post.contentHtml} className="font-sans" />
           ) : (
             /* Subsections: 1. Wedding Functions, 2. Festivals, etc. (fallback) */
             <div className="space-y-6">

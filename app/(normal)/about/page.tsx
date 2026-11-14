@@ -50,7 +50,8 @@ const featureCards = [
 
 export default function AboutUsPage() {
   return (
-    <main className="min-h-screen bg-white">
+    <main id="about-main" className="min-h-screen bg-white">
+      <h1 className="sr-only">About Colors by Nisha Vijay</h1>
       {/* 1. Hero Banner Image */}
       <section className="w-full relative overflow-hidden" aria-label="About Hero Banner">
         <div className="w-full">
@@ -91,7 +92,7 @@ export default function AboutUsPage() {
                 className="object-cover"
               />
               <div className="absolute bottom-5 inset-x-0 flex justify-center z-10 pointer-events-none">
-                  <span className="inline-flex items-center px-6 py-2.5 bg-white text-[#111111] font-sans text-xs md:text-sm font-semibold rounded-md shadow-md whitespace-nowrap">
+                  <span className="inline-flex max-w-[calc(100%-1.5rem)] items-center justify-center rounded-md bg-white/95 px-3 py-2 text-center font-sans text-[11px] font-semibold leading-tight text-[#111111] shadow-md sm:px-4 sm:text-xs md:px-5 md:py-2.5 md:text-sm">
                     Where Craft Becomes Couture
                   </span>
                 </div>
@@ -108,7 +109,7 @@ export default function AboutUsPage() {
                   className="object-cover"
                 />
                 <div className="absolute bottom-5 inset-x-0 flex justify-center z-10 pointer-events-none">
-                  <span className="inline-flex items-center px-6 py-2.5 bg-white text-[#111111] font-sans text-xs md:text-sm font-semibold rounded-md shadow-md whitespace-nowrap">
+                  <span className="inline-flex max-w-[calc(100%-1.5rem)] items-center justify-center rounded-md bg-white/95 px-3 py-2 text-center font-sans text-[11px] font-semibold leading-tight text-[#111111] shadow-md sm:px-4 sm:text-xs md:px-5 md:py-2.5 md:text-sm">
                     The Making Of An Heirloom
                   </span>
                 </div>
@@ -123,7 +124,7 @@ export default function AboutUsPage() {
                   className="object-cover"
                 />
                 <div className="absolute bottom-5 inset-x-0 flex justify-center z-10 pointer-events-none">
-                  <span className="inline-flex items-center px-6 py-2.5 bg-white text-[#111111] font-sans text-xs md:text-sm font-semibold rounded-md shadow-md whitespace-nowrap">
+                  <span className="inline-flex max-w-[calc(100%-1.5rem)] items-center justify-center rounded-md bg-white/95 px-3 py-2 text-center font-sans text-[11px] font-semibold leading-tight text-[#111111] shadow-md sm:px-4 sm:text-xs md:px-5 md:py-2.5 md:text-sm">
                     An Artistry Of Many Hands
                   </span>
                 </div>
@@ -140,7 +141,7 @@ export default function AboutUsPage() {
                 className="object-cover"
               />
               <div className="absolute bottom-5 inset-x-0 flex justify-center z-10 pointer-events-none">
-                  <span className="inline-flex items-center px-6 py-2.5 bg-white text-[#111111] font-sans text-xs md:text-sm font-semibold rounded-md shadow-md whitespace-nowrap">
+                  <span className="inline-flex max-w-[calc(100%-1.5rem)] items-center justify-center rounded-md bg-white/95 px-3 py-2 text-center font-sans text-[11px] font-semibold leading-tight text-[#111111] shadow-md sm:px-4 sm:text-xs md:px-5 md:py-2.5 md:text-sm">
                     From Skilled Hands To Timeless Pieces
                   </span>
                 </div>

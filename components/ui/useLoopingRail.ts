@@ -1,10 +1,29 @@
 "use client";
 
-import { useCallback, useLayoutEffect, useRef } from "react";
+import { useCallback, useLayoutEffect, useRef, useState } from "react";
+import { useReducedMotion } from "framer-motion";
 
 export function useLoopingRail(count: number, enabled = true) {
   const rail = useRef<HTMLDivElement>(null);
   const lastInteraction = useRef(0);
+  const autoplayPausedRef = useRef(false);
+  const motionOptInRef = useRef(false);
+  const [autoplayPaused, setAutoplayPaused] = useState(false);
+  const [motionOptIn, setMotionOptIn] = useState(false);
+  const reducedMotionPreference = useReducedMotion();
+  const isPaused = autoplayPaused || (reducedMotionPreference === true && !motionOptIn);
+  const toggleAutoplay = useCallback(() => {
+    if (autoplayPaused) {
+      autoplayPausedRef.current = false;
+      setAutoplayPaused(false);
+    } else if (reducedMotionPreference && !motionOptIn) {
+      motionOptInRef.current = true;
+      setMotionOptIn(true);
+    } else {
+      autoplayPausedRef.current = true;
+      setAutoplayPaused(true);
+    }
+  }, [autoplayPaused, motionOptIn, reducedMotionPreference]);
 
   const scroll = useCallback((direction: number) => {
     const element = rail.current;
@@ -42,7 +61,7 @@ export function useLoopingRail(count: number, enabled = true) {
     element.addEventListener("pointerdown", interact);
     element.addEventListener("wheel", interact, { passive: true });
     const timer = window.setInterval(() => {
-      if (!visible || document.hidden || reducedMotion.matches || element.matches(":hover") || element.parentElement?.contains(document.activeElement) || Date.now() - lastInteraction.current < 6000) return;
+      if (autoplayPausedRef.current || (reducedMotion.matches && !motionOptInRef.current) || !visible || document.hidden || element.matches(":hover") || element.parentElement?.contains(document.activeElement) || Date.now() - lastInteraction.current < 6000) return;
       scroll(1);
     }, 3500);
     return () => {
@@ -56,5 +75,5 @@ export function useLoopingRail(count: number, enabled = true) {
     };
   }, [count, enabled, scroll]);
 
-  return { rail, scroll };
+  return { rail, scroll, autoplayPaused: isPaused, toggleAutoplay };
 }

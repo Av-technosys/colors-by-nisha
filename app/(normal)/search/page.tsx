@@ -1,5 +1,8 @@
 "use client";
 
+import { Form } from "@/components/ui/Form";
+
+
 import { Skeleton } from "@/components/ui/Skeleton";
 import { CollectionSkeleton } from "@/components/ui/PageSkeletons";
 
@@ -48,7 +51,12 @@ function SearchPageContent() {
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!query.trim()) return;
+    if (!query.trim()) {
+      const input = e.currentTarget.querySelector("input");
+      input?.setCustomValidity("Please enter a search term.");
+      input?.reportValidity();
+      return;
+    }
     router.push(`/shop?search=${encodeURIComponent(query.trim())}`);
   };
 
@@ -56,22 +64,21 @@ function SearchPageContent() {
     <main className="min-h-screen bg-white">
       <div className="mx-auto w-[calc(100%-2rem)] max-w-[1328px] sm:w-[calc(100%-3rem)] lg:w-[calc(100%-4rem)] py-10 md:py-14 relative min-h-[70vh] flex flex-col">
         {/* Title (Shown on Empty Search matching Image 1) */}
-        {!normalizedQuery && (
-          <h1 className="font-display text-3xl font-normal leading-tight tracking-normal md:text-4xl text-center text-[#111111] mb-6 md:mb-8">
-            Search Our Site
-          </h1>
-        )}
+        <h1 className={`font-display text-3xl font-normal leading-tight tracking-normal md:text-4xl text-center text-[#111111] mb-6 md:mb-8 ${normalizedQuery ? "sr-only" : ""}`}>
+          Search Our Site
+        </h1>
 
         {/* Search Input Bar (Pill Shape matching Screenshot) */}
         <div className="w-full max-w-[620px] mx-auto mb-8 md:mb-12 pt-2">
-          <form onSubmit={handleSearchSubmit} className="relative flex items-center rounded-md border border-neutral-300 focus-within:border-black bg-white px-5 py-3 md:py-3.5 shadow-xs transition-colors">
+          <Form onInput={event => (event.target as HTMLInputElement).setCustomValidity("")} onSubmit={handleSearchSubmit} className="relative flex items-center rounded-md border border-neutral-300 focus-within:border-black bg-white px-5 py-3 md:py-3.5 shadow-xs transition-colors">
             <input
               autoFocus
+              aria-label="Search products"
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="I'm looking for..."
-              className="w-full bg-transparent font-sans text-sm md:text-base outline-none pr-16 text-ink placeholder:text-neutral-400"
+              className="w-full bg-transparent font-sans text-sm md:text-base outline-none pr-16 text-ink placeholder:text-neutral-500"
             />
 
             <div className="absolute right-4 flex items-center gap-2">
@@ -93,7 +100,7 @@ function SearchPageContent() {
                 <IoSearchOutline size={20} />
               </button>
             </div>
-          </form>
+          </Form>
         </div>
 
         {/* Search Results Area (Matching Image 2) */}
@@ -111,31 +118,32 @@ function SearchPageContent() {
                 {/* 5-Column Grid Matching Image 2 */}
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-5">
                   {results.map((product) => (
-                    <article
+                    <button
+                      type="button"
                       key={product.id || product.slug}
-                      className="group flex flex-col text-center cursor-pointer"
+                      className="group flex w-full appearance-none flex-col border-0 bg-transparent p-0 text-center focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#a66c40]"
                       onClick={() => setSelectedProduct(product)}
                     >
-                      <div className="relative aspect-2/3 w-full overflow-hidden rounded-md bg-neutral-100 shadow-xs">
+                      <span className="relative block aspect-2/3 w-full overflow-hidden rounded-md bg-neutral-100 shadow-xs">
                         <Image
                           src={
                             product.images[0] ||
                             "/product-placeholder.svg"
                           }
-                          alt={product.name}
+                          alt=""
                           fill
                           unoptimized
                           sizes="(min-width: 1024px) 20vw, (min-width: 768px) 25vw, 50vw"
                           className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
                         />
-                      </div>
-                      <h3 className="mt-3 font-display text-[14px] md:text-[15px] font-medium text-ink uppercase tracking-wide group-hover:text-purple transition-colors">
+                      </span>
+                      <span className="mt-3 block font-display text-[14px] md:text-[15px] font-medium text-ink uppercase tracking-wide group-hover:text-purple transition-colors">
                         {product.name}
-                      </h3>
-                      <p className="mt-1 font-sans text-sm md:text-[15px] text-neutral-600">
+                      </span>
+                      <span className="mt-1 block font-sans text-sm md:text-[15px] text-neutral-600">
                         {money(product.price)}
-                      </p>
-                    </article>
+                      </span>
+                    </button>
                   ))}
                 </div>
 

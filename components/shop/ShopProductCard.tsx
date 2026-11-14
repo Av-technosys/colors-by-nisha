@@ -162,7 +162,7 @@ export function ShopProductCard({ product, onQuickView }: ShopProductCardProps) 
             {formatINR(product.price)}
           </span>
           {product.originalPrice && (
-            <span className="text-xs text-neutral-400 line-through">
+            <span className="text-xs text-neutral-600 line-through">
               {formatINR(product.originalPrice)}
             </span>
           )}

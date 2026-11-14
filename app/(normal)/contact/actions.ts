@@ -1,5 +1,7 @@
 "use server";
 
+import { enquiryEmail } from "@/helpers/mail-templates";
+import { queueMail, notificationEmail } from "@/helpers/mail";
 import { headers } from "next/headers";
 import { clientKey, rateLimit, RequestError } from "@/helpers/security/requests";
 import { db } from "@/lib/db";
@@ -36,11 +38,14 @@ export async function submitContactAction(formData: {
 
   try {
     rateLimit(`contact:${clientKey(await headers())}`, 5, 5 * 60_000);
-    await db.insert(contactUs).values({
+    const [enquiry] = await db.insert(contactUs).values({
       name,
       email,
       phone: phone || null,
       message,
+    }).returning({ id: contactUs.id });
+    queueMail(`contact/${enquiry.id}`, {
+      to: notificationEmail(), reply_to: email, ...enquiryEmail({ name, email, phone, message }),
     });
 
     return {

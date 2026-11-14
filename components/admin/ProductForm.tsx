@@ -1,5 +1,8 @@
 "use client";
 
+import { Form } from "@/components/ui/Form";
+
+
 import Link from "next/link";
 import { useRef, useState, useTransition, type FormEvent } from "react";
 import { ArrowLeft, Plus, Trash2 } from "lucide-react";
@@ -125,7 +128,7 @@ export function ProductForm({ product, categoryOptions }: ProductFormProps) {
     <>
       <Link href="/admin/products" className="mb-5 inline-flex items-center gap-2 text-xs text-purple"><ArrowLeft size={15} aria-hidden="true" />Back to products</Link>
       <PageHeading eyebrow="Products" title={product ? "Edit product" : "Add product"} description="Add the main product, its variants, and the details customers need." />
-      <form ref={formRef} onSubmit={handleSubmit} className="min-w-0 [&_label]:min-w-0 [&_input]:min-w-0 [&_select]:min-w-0 [&_textarea]:min-w-0">
+      <Form ref={formRef} onSubmit={handleSubmit} className="min-w-0 [&_label]:min-w-0 [&_input]:min-w-0 [&_select]:min-w-0 [&_textarea]:min-w-0">
         <input type="hidden" name="id" value={product?.id ?? ""} />
         <fieldset disabled={pending} className="min-w-0 space-y-6 disabled:opacity-60">
           <section className="rounded-md border border-[#e8e5df] bg-white p-5 sm:p-7">
@@ -213,7 +216,7 @@ export function ProductForm({ product, categoryOptions }: ProductFormProps) {
             <button type="submit" disabled={busy} className="min-h-11 rounded-md bg-purple px-5 font-display text-sm text-white disabled:opacity-50">{pending ? "Saving…" : readingCount ? "Uploading images…" : "Save product"}</button>
           </div>
         </fieldset>
-      </form>
+      </Form>
     </>
   );
 }

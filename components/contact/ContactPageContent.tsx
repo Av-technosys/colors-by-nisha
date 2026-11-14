@@ -1,5 +1,8 @@
 "use client";
 
+import { Form } from "@/components/ui/Form";
+
+
 import React, { useState } from "react";
 import Link from "next/link";
 import { submitContactAction } from "@/app/(normal)/contact/actions";
@@ -17,6 +20,7 @@ export function ContactPageContent() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (status === "submitting") return;
     if (!formData.name.trim()) {
       setStatus("error");
       setErrorMessage("Please enter your name.");
@@ -272,48 +276,56 @@ export function ContactPageContent() {
                   </div>
                 </div>
               ) : (
-                <form onSubmit={handleSubmit} className="space-y-4 font-sans">
+                <Form onSubmit={handleSubmit} className="space-y-4 font-sans">
                   {/* Form inputs: Your name & Your Email & Phone */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                     <div>
+                      <label htmlFor="contact-name" className="sr-only">Your name</label>
                       <input
+                        id="contact-name"
                         type="text"
                         placeholder="Your name *"
                         value={formData.name}
                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                        className="w-full rounded-md border border-neutral-200/90 bg-white px-5 py-3.5 text-sm text-ink placeholder:text-neutral-400 focus:border-[#2d254d] focus:ring-1 focus:ring-[#2d254d] outline-none transition shadow-2xs font-sans"
+                        className="w-full rounded-md border border-neutral-200/90 bg-white px-5 py-3.5 text-sm text-ink placeholder:text-neutral-500 focus:border-[#2d254d] focus:ring-1 focus:ring-[#2d254d] outline-none transition shadow-2xs font-sans"
                         required
                       />
                     </div>
                     <div>
+                      <label htmlFor="contact-email" className="sr-only">Your email</label>
                       <input
+                        id="contact-email"
                         type="email"
                         placeholder="Your Email *"
                         value={formData.email}
                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                        className="w-full rounded-md border border-neutral-200/90 bg-white px-5 py-3.5 text-sm text-ink placeholder:text-neutral-400 focus:border-[#2d254d] focus:ring-1 focus:ring-[#2d254d] outline-none transition shadow-2xs font-sans"
+                        className="w-full rounded-md border border-neutral-200/90 bg-white px-5 py-3.5 text-sm text-ink placeholder:text-neutral-500 focus:border-[#2d254d] focus:ring-1 focus:ring-[#2d254d] outline-none transition shadow-2xs font-sans"
                         required
                       />
                     </div>
                     <div className="sm:col-span-2 md:col-span-1">
+                      <label htmlFor="contact-phone" className="sr-only">Phone number</label>
                       <input
+                        id="contact-phone"
                         type="tel"
                         placeholder="Phone Number"
                         value={formData.phone}
                         onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                        className="w-full rounded-md border border-neutral-200/90 bg-white px-5 py-3.5 text-sm text-ink placeholder:text-neutral-400 focus:border-[#2d254d] focus:ring-1 focus:ring-[#2d254d] outline-none transition shadow-2xs font-sans"
+                        className="w-full rounded-md border border-neutral-200/90 bg-white px-5 py-3.5 text-sm text-ink placeholder:text-neutral-500 focus:border-[#2d254d] focus:ring-1 focus:ring-[#2d254d] outline-none transition shadow-2xs font-sans"
                       />
                     </div>
                   </div>
 
                   {/* Textarea: Enter please your message */}
                   <div>
+                    <label htmlFor="contact-message" className="sr-only">Your message</label>
                     <textarea
+                      id="contact-message"
                       placeholder="Enter please your message"
                       rows={6}
                       value={formData.message}
                       onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                      className="w-full rounded-md border border-neutral-200/90 bg-white px-5 py-4 text-sm text-ink placeholder:text-neutral-400 focus:border-[#2d254d] focus:ring-1 focus:ring-[#2d254d] outline-none transition shadow-2xs resize-none font-sans"
+                      className="w-full rounded-md border border-neutral-200/90 bg-white px-5 py-4 text-sm text-ink placeholder:text-neutral-500 focus:border-[#2d254d] focus:ring-1 focus:ring-[#2d254d] outline-none transition shadow-2xs resize-none font-sans"
                     />
                   </div>
 
@@ -341,7 +353,7 @@ export function ContactPageContent() {
 
                   {/* Error Message */}
                   {status === "error" && errorMessage && (
-                    <p className="text-xs font-medium text-red-600 animate-in fade-in font-sans">
+                    <p role="alert" className="text-xs font-medium text-red-600 animate-in fade-in font-sans">
                       {errorMessage}
                     </p>
                   )}
@@ -356,7 +368,7 @@ export function ContactPageContent() {
                       {status === "submitting" ? "SENDING..." : "SEND"}
                     </button>
                   </div>
-                </form>
+                </Form>
               )}
             </div>
           </div>

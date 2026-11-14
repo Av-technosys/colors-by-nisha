@@ -1,5 +1,8 @@
 "use client";
 
+import { Form } from "@/components/ui/Form";
+
+
 import { UserFacingError, friendlyError } from "@/helpers/errors";
 
 import { useRef, useState, useTransition } from "react";
@@ -52,7 +55,7 @@ export function OrderControls({ order }: { order: {
     finally { setBusy(false); submitting.current = false; }
   }
 
-  return <form onSubmit={save} className="min-w-0 rounded-md border border-[#e8e3da] bg-white p-5 md:p-6">
+  return <Form onSubmit={save} className="min-w-0 rounded-md border border-[#e8e3da] bg-white p-5 md:p-6">
     <div className="flex flex-wrap items-center justify-between gap-3"><h2 className="font-display text-xl">Manage order</h2><StatusBadge status={order.status} /></div>
     <p className="mt-2 text-xs leading-relaxed text-neutral-500">Updates appear in the customer’s order details.</p>
     <div className="my-5 flex items-center gap-2 rounded-md bg-[#faf9f6] px-3 py-3 text-xs"><CreditCard size={15} className="shrink-0 text-neutral-400" /><span className={order.paidAt ? "text-[#517254]" : "text-[#94764d]"}>{order.paidAt ? "Payment confirmed" : "Awaiting payment"}</span></div>
@@ -67,5 +70,5 @@ export function OrderControls({ order }: { order: {
       {canDeliver && status !== "delivered" && status !== "cancelled" && <button type="submit" data-status="delivered" className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-md border border-[#c4a36a] bg-[#faf9f6] px-4 text-sm text-purple transition hover:bg-[#f2eff6]"><CheckCheck size={17} />Mark as delivered</button>}
     </fieldset>}
     {notice && <p role={notice.error ? "alert" : "status"} className={`mt-4 text-sm ${notice.error ? "text-[#9e5144]" : "text-[#517254]"}`}>{notice.text}</p>}
-  </form>;
+  </Form>;
 }

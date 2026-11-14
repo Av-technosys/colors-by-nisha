@@ -1,5 +1,8 @@
 "use client";
 
+import { Form } from "@/components/ui/Form";
+
+
 import { useCallback, useState, type FormEvent } from "react";
 import { createPortal } from "react-dom";
 import type { Editor } from "@tiptap/react";
@@ -47,7 +50,7 @@ export default function BlogEditorLink({ editor, active, disabled }: { editor: E
       <Modal title={active ? "Edit link" : "Add link"} onClose={close} className="w-full max-w-md p-6">
         <h2 className="font-display text-xl text-purple">{active ? "Edit link" : "Add link"}</h2>
         <p className="mt-2 text-sm text-neutral-500">Link selected text to a website or another page.</p>
-        <form onSubmit={submit} className="mt-5 space-y-4">
+        <Form onSubmit={submit} className="mt-5 space-y-4">
           <label className="block text-xs text-neutral-500">Link URL<input value={href} onChange={event => { setHref(event.target.value); setError(""); }} placeholder="https://example.com or /contact" autoComplete="off" aria-invalid={Boolean(error)} className="mt-2 min-h-11 w-full rounded-md border border-[#e5e1da] px-3 text-sm" /></label>
           {error && <p role="alert" className="text-xs text-[#a16b60]">{error}</p>}
           <label className="inline-flex items-center gap-2 text-sm"><input type="checkbox" checked={newTab} onChange={event => setNewTab(event.target.checked)} className="size-4 accent-purple" />Open in a new tab</label>
@@ -56,7 +59,7 @@ export default function BlogEditorLink({ editor, active, disabled }: { editor: E
             <button type="button" onClick={close} className="rounded-md border border-[#e5e1da] px-4 py-2.5 text-sm">Cancel</button>
             <button type="submit" className="rounded-md bg-purple px-4 py-2.5 text-sm text-white">Apply link</button>
           </div>
-        </form>
+        </Form>
       </Modal>, document.body,
     )}
   </>;

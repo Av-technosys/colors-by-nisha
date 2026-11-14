@@ -1,5 +1,7 @@
 import "server-only";
 
+import { orderEmail } from "@/helpers/mail-templates";
+import { queueMail, notificationEmail } from "@/helpers/mail";
 import { revalidatePath } from "next/cache";
 
 import { and, asc, desc, eq, ilike, inArray, isNull, or, sql } from "drizzle-orm";
@@ -135,15 +137,20 @@ export async function confirmOrderPayment(input: { orderId: string; paymentId: s
     const [attempt] = await tx.select().from(payment).where(and(eq(payment.orderId, order.id), eq(payment.paymentOrderId, input.paymentOrderId))).orderBy(desc(payment.createdAt)).limit(1);
     if (!attempt || attempt.paymentAmount !== input.amountMinor) throw new OrderInputError("Payment attempt does not match this order.");
     await tx.update(payment).set({ paymentId: input.paymentId, paymentStatus: "captured", paymentMethod: input.paymentMethod?.slice(0, 50) || "online" }).where(eq(payment.id, attempt.id));
-    if (order.paidAt && (order.stockDeductedAt || order.status === "cancelled")) return { order, requiresAttention: order.status === "cancelled", issue: order.status === "cancelled" ? "Review the cancelled order for a payment refund." : null };
+    if (order.paidAt && (order.stockDeductedAt || order.status === "cancelled")) return { notify: false, order, requiresAttention: order.status === "cancelled", issue: order.status === "cancelled" ? "Review the cancelled order for a payment refund." : null };
     const issue = order.status === "cancelled" ? "Payment received after cancellation. Review and refund through the payment provider." : await changeOrderStock(tx, order.id, false);
     const now = new Date();
     const [updated] = await tx.update(orders).set({
       paymentId: input.paymentId, paidAt: order.paidAt ?? now,
       stockDeductedAt: issue ? null : now, status: issue ? order.status : "processing",
     }).where(eq(orders.id, order.id)).returning();
-    return { order: updated, requiresAttention: Boolean(issue), issue };
+    return { notify: !order.paidAt, order: updated, requiresAttention: Boolean(issue), issue };
   });
+  if (result.notify) {
+    const customer = result.order.userId ? await db.query.users.findFirst({ where: eq(users.id, result.order.userId) }).catch(() => undefined) : undefined;
+    if (customer?.email) queueMail(`payment/${input.paymentId}/customer`, { to: customer.email, ...orderEmail(result.order, "payment", result.issue) });
+    queueMail(`payment/${input.paymentId}/admin`, { to: notificationEmail(), ...orderEmail(result.order, "admin", result.issue) });
+  }
   revalidatePath("/admin");
   revalidatePath("/dashboard");
   revalidatePath("/admin/payments");
@@ -158,7 +165,7 @@ export async function confirmOrderPayment(input: { orderId: string; paymentId: s
 
 export async function updateOrder(id: string, values: ReturnType<typeof parseDelivery>, expectedUpdatedAt: string) {
   if (!isUuid(id)) throw new OrderInputError("Invalid order reference.");
-  return db.transaction(async tx => {
+  const result = await db.transaction(async tx => {
     const [order] = await tx.select().from(orders).where(eq(orders.id, id)).for("update");
     if (!order) throw new OrderInputError("Order not found.");
     if (order.updatedAt.toISOString() !== expectedUpdatedAt) throw new OrderInputError("This order was updated elsewhere. Refresh before saving.");
@@ -180,8 +187,15 @@ export async function updateOrder(id: string, values: ReturnType<typeof parseDel
       ...values, stockDeductedAt, shippedAt: order.shippedAt ?? (["shipped", "out_for_delivery", "delivered"].includes(values.status) ? now : null),
       deliveredAt: order.deliveredAt ?? (values.status === "delivered" ? now : null),
     }).where(eq(orders.id, order.id)).returning();
-    return updated;
+    return { updated, notify: order.status !== updated.status };
   });
+  if (result.notify) {
+    const customer = result.updated.userId ? await db.query.users.findFirst({ where: eq(users.id, result.updated.userId) }).catch(() => undefined) : undefined;
+    if (customer?.email) queueMail(`order/${id}/${result.updated.status}`, {
+      to: customer.email, ...orderEmail(result.updated, "status"),
+    });
+  }
+  return result.updated;
 }
 
 export function orderReference(id: string) { return `CBN-${id.slice(0, 8).toUpperCase()}`; }

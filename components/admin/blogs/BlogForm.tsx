@@ -1,5 +1,8 @@
 "use client";
 
+import { Form } from "@/components/ui/Form";
+
+
 import { UserFacingError, friendlyError } from "@/helpers/errors";
 
 import Image from "next/image";
@@ -200,7 +203,7 @@ export default function BlogForm({ initialBlog, categories }: { initialBlog?: Ad
     <button type="button" onClick={cancel} disabled={saving} className="mb-6 inline-flex items-center gap-2 text-sm font-semibold text-purple"><ArrowLeft size={16} aria-hidden="true" />Back to blogs</button>
     <h1 className="text-2xl font-display tracking-tight text-purple sm:text-3xl">{blogId ? "Edit blog" : "Add blog"}</h1>
     <p className="mt-3 text-sm leading-6 text-neutral-500">{blogId ? "Update the article details below." : "Fill in the details for your new article."} Fields marked * are required.</p>
-    <form ref={form} autoComplete="off" noValidate onSubmit={submit} className="mt-6 min-w-0">
+    <Form ref={form} autoComplete="off" noValidate onSubmit={submit} className="mt-6 min-w-0">
       <fieldset disabled={saving} className="min-w-0 space-y-5 sm:space-y-7">
       <legend className="sr-only">Blog form</legend>
       <section aria-labelledby="blog-details-heading" className="space-y-6 rounded-md border border-[#e5e1da] bg-white p-4 sm:p-6 lg:p-8">
@@ -246,6 +249,6 @@ export default function BlogForm({ initialBlog, categories }: { initialBlog?: Ad
       {submitError && <p data-save-error tabIndex={-1} role="alert" className="rounded-md bg-red-50 p-4 text-sm leading-6 text-red-700 outline-none">{submitError}</p>}
       <div className="flex flex-col-reverse gap-3 pb-6 sm:flex-row sm:items-center sm:justify-end"><button type="button" onClick={cancel} className="min-h-11 rounded-md border border-[#e5e1da] bg-white px-5 text-sm font-semibold hover:bg-[#f9f8f5]">Cancel</button><button type="submit" disabled={readingImage || saving} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-md bg-purple px-5 text-sm font-semibold text-white hover:bg-purple/90 disabled:cursor-wait disabled:opacity-60">{saving || readingImage ? <LoaderCircle size={17} aria-hidden="true" className="animate-spin motion-reduce:animate-none" /> : <Save size={17} aria-hidden="true" />}{saving ? "Saving…" : readingImage ? "Uploading image…" : "Save blog"}</button></div>
       </fieldset>
-    </form>
+    </Form>
   </>;
 }

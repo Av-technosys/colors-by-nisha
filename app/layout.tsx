@@ -8,13 +8,15 @@ import { CartDrawer } from "@/components/store/CartDrawer";
 import { SearchModal } from "@/components/layout/SearchModal";
 
 const montserrat = localFont({
-  src: "../public/fonts/montserrat-regular.woff2",
+  src: "../public/fonts/montserrat-variable.woff2",
+  weight: "100 900",
   variable: "--font-montserrat",
   display: "swap",
 });
 
 const outfit = localFont({
-  src: "../public/fonts/outfit-regular.woff2",
+  src: "../public/fonts/outfit-variable.woff2",
+  weight: "100 900",
   variable: "--font-outfit",
   display: "swap",
 });

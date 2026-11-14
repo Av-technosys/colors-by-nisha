@@ -20,8 +20,10 @@ export function HeroBanner({ onShop, paused = false }: { onShop: () => void; pau
   const [hovered, setHovered] = useState(false);
   const [focused, setFocused] = useState(false);
   const [hidden, setHidden] = useState(false);
+  const [userPaused, setUserPaused] = useState(false);
+  const [motionOptIn, setMotionOptIn] = useState(false);
   const reducedMotion = useReducedMotion();
-  const autoplay = !hovered && !focused && !hidden && !paused && !reducedMotion;
+  const autoplay = !hovered && !focused && !hidden && !paused && !userPaused && (!reducedMotion || motionOptIn);
 
   useEffect(() => {
     const visibility = () => setHidden(document.hidden);
@@ -112,9 +114,16 @@ export function HeroBanner({ onShop, paused = false }: { onShop: () => void; pau
         </button>
         <div className="absolute bottom-6 left-1/2 z-10 flex -translate-x-1/2 gap-3 md:bottom-6">
           {slides.map((item, index) => (
-            <button className="size-1.5 rounded-md bg-white/45 transition-colors aria-current:bg-white aria-current:outline aria-current:outline-1 aria-current:outline-offset-8 aria-current:outline-white" key={item.image} onClick={() => changeSlide(index)} aria-label={`Show ${item.title}`} aria-current={slide === index} />
+            <button className="grid size-6 place-items-center rounded-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white" key={item.image} onClick={() => changeSlide(index)} aria-label={`Show ${item.title}`} aria-current={slide === index}><span className={`size-1.5 rounded-md transition-colors ${slide === index ? "bg-white outline outline-1 outline-offset-2 outline-white" : "bg-white/45"}`} /></button>
           ))}
         </div>
+        <button type="button" onClick={() => {
+          if (userPaused) setUserPaused(false);
+          else if (reducedMotion && !motionOptIn) setMotionOptIn(true);
+          else setUserPaused(true);
+        }} className="absolute bottom-[4.5rem] right-4 z-10 rounded-md border border-white/45 bg-black/25 px-3 py-2 text-xs font-medium text-white backdrop-blur-sm transition hover:bg-black/45 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white md:bottom-5 md:right-6" aria-pressed={userPaused || (reducedMotion === true && !motionOptIn)}>
+          {userPaused || (reducedMotion && !motionOptIn) ? "Play slides" : "Pause slides"}
+        </button>
       </section>
     </>
   );

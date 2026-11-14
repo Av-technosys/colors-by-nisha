@@ -1,5 +1,8 @@
 "use client";
 
+import { Form } from "@/components/ui/Form";
+
+
 import { friendlyError, UserFacingError } from "@/helpers/errors";
 
 import { useClerk, useSignIn, useSignUp } from "@clerk/nextjs";
@@ -436,7 +439,7 @@ export default function AuthPage({ mode }: AuthPageProps) {
           {/* OTP VERIFICATION VIEW */}
           {isOtpView ? (
             <div className="space-y-3">
-              <form onSubmit={handleOtpSubmit} className="space-y-3.5">
+              <Form onSubmit={handleOtpSubmit} className="space-y-3.5">
                   {/* Target Email Notification */}
                   <div className="rounded-md bg-neutral-50 border border-neutral-200/90 p-3 text-center space-y-1">
                     <div className="inline-flex items-center gap-1.5 text-[#2d254d] text-xs font-medium">
@@ -452,13 +455,13 @@ export default function AuthPage({ mode }: AuthPageProps) {
                   </div>
 
                   {resendNotice && (
-                    <div className="rounded-md bg-emerald-50 border border-emerald-200 px-3.5 py-1.5 text-xs text-emerald-700 font-sans text-center">
+                    <div role="status" className="rounded-md bg-emerald-50 border border-emerald-200 px-3.5 py-1.5 text-xs text-emerald-700 font-sans text-center">
                       {resendNotice}
                     </div>
                   )}
 
                   {error && (
-                    <div className="rounded-md bg-red-50 border border-red-200 px-3.5 py-1.5 text-xs text-red-600 font-sans text-center">
+                    <div role="alert" className="rounded-md bg-red-50 border border-red-200 px-3.5 py-1.5 text-xs text-red-600 font-sans text-center">
                       {error}
                     </div>
                   )}
@@ -529,14 +532,14 @@ export default function AuthPage({ mode }: AuthPageProps) {
                       <span>{otpFlow === "signup" ? "Back to Sign Up" : "Back to Sign In"}</span>
                     </Link>
                   </div>
-                </form>
+                </Form>
             </div>
           ) : isForgot ? (
             /*  FORGOT PASSWORD VIEW  */
             <div className="space-y-3">
-              <form onSubmit={handleForgotSubmit} className="space-y-3">
+              <Form onSubmit={handleForgotSubmit} className="space-y-3">
                 {error && (
-                  <div className="rounded-md bg-red-50 border border-red-200 px-3.5 py-2 text-xs text-red-600 font-sans">
+                  <div role="alert" className="rounded-md bg-red-50 border border-red-200 px-3.5 py-2 text-xs text-red-600 font-sans">
                     {error}
                   </div>
                 )}
@@ -586,7 +589,7 @@ export default function AuthPage({ mode }: AuthPageProps) {
                     <span>Back to Sign In</span>
                   </Link>
                 </div>
-              </form>
+              </Form>
             </div>
           ) : (
             /*  REGULAR AUTH VIEW (SIGNUP / LOGIN) */
@@ -627,9 +630,9 @@ export default function AuthPage({ mode }: AuthPageProps) {
 
               {isLogin ? (
                 /* LOGIN FORM ONLY */
-                <form onSubmit={handleSubmit} className="space-y-2.5 sm:space-y-3">
+                <Form onSubmit={handleSubmit} className="space-y-2.5 sm:space-y-3">
                   {error && (
-                    <div className="rounded-md bg-red-50 border border-red-200 px-3.5 py-1.5 text-xs text-red-600 font-sans">
+                    <div role="alert" className="rounded-md bg-red-50 border border-red-200 px-3.5 py-1.5 text-xs text-red-600 font-sans">
                       {error}
                     </div>
                   )}
@@ -695,13 +698,13 @@ export default function AuthPage({ mode }: AuthPageProps) {
                   >
                     {isSubmitting ? "SIGNING IN..." : "SIGN IN"}
                   </button>
-                </form>
+                </Form>
               ) : (
                 /* ================= SIGNUP FORM ONLY ================= */
-                <form onSubmit={handleSubmit} className="space-y-2.5">
+                <Form onSubmit={handleSubmit} className="space-y-2.5">
                   <div id="clerk-captcha" />
                   {error && (
-                    <div className="rounded-md bg-red-50 border border-red-200 px-3 py-1 text-xs text-red-600 font-sans">
+                    <div role="alert" className="rounded-md bg-red-50 border border-red-200 px-3 py-1 text-xs text-red-600 font-sans">
                       {error}
                     </div>
                   )}
@@ -886,7 +889,7 @@ export default function AuthPage({ mode }: AuthPageProps) {
                   >
                     {isSubmitting ? "PROCESSING..." : "CREATE ACCOUNT"}
                   </button>
-                </form>
+                </Form>
               )}
             </>
           )}
