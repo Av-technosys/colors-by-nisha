@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Suspense, useCallback, useLayoutEffect, useState, type ReactNode } from "react";
-import { CreditCard, DoorOpen, FileText, LayoutDashboard, Mail, Menu, Package, ShoppingBag, Tags, Users } from "lucide-react";
+import { CreditCard, DoorOpen, FileText, LayoutDashboard, Mail, MailCheck, Menu, Package, ShoppingBag, Tags, Users } from "lucide-react";
 import { Toaster } from "sonner";
 import { Modal } from "@/components/ui/Modal";
 
@@ -13,6 +13,7 @@ const navigation = [
   { label: "Products", href: "/admin/products", icon: Package },
   { label: "Categories", href: "/admin/categories", icon: Tags },
   { label: "Users", href: "/admin/users", icon: Users },
+  { label: "Subscriptions", href: "/admin/subscriptions", icon: MailCheck },
   { label: "Orders", href: "/admin/orders", icon: ShoppingBag },
   { label: "Payments", href: "/admin/payments", icon: CreditCard },
   { label: "Contact", href: "/admin/contact", icon: Mail },

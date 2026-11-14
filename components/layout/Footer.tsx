@@ -3,7 +3,7 @@
 import { Icon } from "@/components/ui/Icon";
 import { Photo } from "@/components/ui/Photo";
 import Link from "next/link";
-import { useState } from "react";
+import { useRef, useState, type FormEvent } from "react";
 import { Container } from "./Container";
 
 export interface FooterProps {
@@ -12,7 +12,35 @@ export interface FooterProps {
 }
 
 export function Footer() {
-  const [subscribed, setSubscribed] = useState(false);
+  const [pending, setPending] = useState(false);
+  const [message, setMessage] = useState("");
+  const submitting = useRef(false);
+
+  async function subscribe(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (submitting.current) return;
+    const form = event.currentTarget;
+    const email = new FormData(form).get("email");
+    submitting.current = true;
+    setPending(true);
+    setMessage("");
+    try {
+      const response = await fetch("/api/subscriptions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || "Unable to subscribe. Please try again.");
+      setMessage(result.message);
+      form.reset();
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "Unable to subscribe. Please try again.");
+    } finally {
+      submitting.current = false;
+      setPending(false);
+    }
+  }
 
   return (
     <footer id="footer" className="bg-purple text-[13px] text-white">
@@ -93,10 +121,7 @@ export function Footer() {
           <p className="mb-5">Subscribe for store updates and discounts.</p>
           <form
             className="flex border-b border-white/50"
-            onSubmit={(event) => {
-              event.preventDefault();
-              setSubscribed(true);
-            }}
+            onSubmit={subscribe}
           >
             <label className="sr-only" htmlFor="newsletter-email">
               Email address
@@ -104,18 +129,20 @@ export function Footer() {
             <input
               className="min-w-0 flex-1 bg-transparent py-3 placeholder:text-white/65"
               id="newsletter-email"
+              name="email"
               type="email"
+              autoComplete="email"
+              maxLength={320}
+              disabled={pending}
               placeholder="Enter your email..."
               required
             />
-            <button className="p-2.5 text-2xl" aria-label="Subscribe">
-              →
+            <button type="submit" disabled={pending} className="p-2.5 text-2xl disabled:opacity-50" aria-label={pending ? "Subscribing" : "Subscribe"}>
+              {pending ? "…" : "→"}
             </button>
           </form>
           <p className="mt-2.5 text-[11px]" role="status">
-            {subscribed
-              ? "Thank you! This preview does not send subscriptions."
-              : ""}
+            {message}
           </p>
         </div>
       </Container>
