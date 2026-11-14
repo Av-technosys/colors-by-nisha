@@ -141,7 +141,11 @@ export function Footer() {
               required
             />
             <button type="submit" disabled={pending} className="p-2.5 text-2xl disabled:opacity-50" aria-label={pending ? "Subscribing" : "Subscribe"}>
-              {pending ? "…" : "→"}
+              {pending ? "…" : (
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M8 12h10m-5-5 5 5-5 5" />
+                </svg>
+              )}
             </button>
           </Form>
           <p className="mt-2.5 text-[11px]" role="status">
