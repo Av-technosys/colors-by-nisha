@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Image from "next/image";
+import Image, { getImageProps } from "next/image";
 import Link from "next/link";
 import { IoStar, IoHeart } from "react-icons/io5";
 
@@ -49,22 +49,30 @@ const featureCards = [
 ];
 
 export default function AboutUsPage() {
+  const heroAlt = "About Us: Our Journey in Ethnic Wear, Colors by Nisha Vijay";
+  const { props: { srcSet: desktopHeroSrcSet } } = getImageProps({
+    src: "/About-us/Our Journey in Ethnic Wear (1).png",
+    alt: heroAlt,
+    width: 1864,
+    height: 843,
+    sizes: "100vw",
+  });
+  const { props: mobileHeroProps } = getImageProps({
+    src: "/About-us/Our Journey in Ethnic Wear.png",
+    alt: heroAlt,
+    width: 1086,
+    height: 1448,
+    sizes: "100vw",
+  });
   return (
     <main id="about-main" className="min-h-screen bg-white">
       <h1 className="sr-only">About Colors by Nisha Vijay</h1>
       {/* 1. Hero Banner Image */}
       <section className="w-full relative overflow-hidden" aria-label="About Hero Banner">
-        <div className="w-full">
-          <Image
-            src="/About-us/hero.png"
-            alt="Colors by Nisha Vijay - Festive Edit, Modern Heirlooms"
-            width={1500}
-            height={750}
-            priority
-            className="w-full h-auto object-cover"
-            sizes="100vw"
-          />
-        </div>
+        <picture className="block w-full aspect-[3/4] md:aspect-[1864/843]">
+          <source media="(min-width: 768px)" srcSet={desktopHeroSrcSet} />
+          <img {...mobileHeroProps} alt={heroAlt} loading="eager" fetchPriority="high" className="h-full w-full object-cover" />
+        </picture>
       </section>
 
       {/* 2. The Artistry Behind Every Heirloom */}
@@ -181,7 +189,7 @@ export default function AboutUsPage() {
                 Every outfit reflects the artistry of skilled craftsmen, premium fabrics, and intricate embroidery, bringing timeless tradition and modern elegance together.
               </p>
               <Link
-                href="/shop"
+                href="/shop?category=shree-nath-ji"
                 className="inline-flex items-center justify-center bg-[#2d254d] text-[#FCF1D8] hover:bg-[#d4af37] hover:text-[#2d254d] font-display text-[14px] font-normal uppercase tracking-[1.5px] leading-normal px-8 py-3.5 rounded-md transition-all duration-300 shadow-sm cursor-pointer"
               >
                 EXPLORE COLLECTION

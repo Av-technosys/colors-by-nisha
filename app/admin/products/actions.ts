@@ -11,7 +11,7 @@ import { and, asc, eq, inArray } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
-import { categories, products, productMedia, productVariants, orderItems, orders } from "@/lib/db/schema";
+import { categories, products, productCategories, productMedia, productVariants, orderItems, orders } from "@/lib/db/schema";
 import { confirmImageUpload, deleteImages } from "@/helpers/storage/s3";
 import { readUploadReceipt } from "@/helpers/storage/upload-receipt";
 import { parseProduct, stockForUpdate } from "@/helpers/admin/product-input";
@@ -39,6 +39,10 @@ export async function saveProduct(_state: ActionState, form: FormData): Promise<
     }
 
     await db.transaction(async tx => {
+      if (input.categoryIds.length) {
+        const validCategories = await tx.select({ id: categories.id }).from(categories).where(inArray(categories.id, input.categoryIds));
+        if (validCategories.length !== input.categoryIds.length) throw new UserFacingError("A selected category no longer exists. Reload and try again.");
+      }
       let productId = input.id;
       if (productId) {
         const existing = await tx.select({ id: products.id }).from(products).where(eq(products.id, productId)).for("update");
@@ -47,6 +51,11 @@ export async function saveProduct(_state: ActionState, form: FormData): Promise<
       } else {
         const [created] = await tx.insert(products).values(input.values).returning({ id: products.id });
         productId = created.id;
+      }
+
+      await tx.delete(productCategories).where(eq(productCategories.productId, productId));
+      if (input.categoryIds.length) {
+        await tx.insert(productCategories).values(input.categoryIds.map(categoryId => ({ productId, categoryId })));
       }
 
       const existingVariants = await tx.select({ id: productVariants.id, stock: productVariants.stock }).from(productVariants).where(eq(productVariants.productId, productId)).orderBy(asc(productVariants.id)).for("update");
@@ -703,6 +712,10 @@ export async function uploadProductsCsv(formData: FormData): Promise<{ count?: n
             metaDescription: group.shortDescription || group.description || null,
           }).returning({ id: products.id });
           productId = created.id;
+        }
+
+        if (productId) {
+          await tx.insert(productCategories).values({ productId, categoryId }).onConflictDoNothing();
         }
 
         // Manage Images in product_media

@@ -50,6 +50,9 @@ export function ProductForm({ product, categoryOptions }: ProductFormProps) {
     }));
   }
   const [error, setError] = useState("");
+  const [categoryIds, setCategoryIds] = useState<string[]>(() => product?.productCategories.length ? product.productCategories.map(row => row.categoryId) : product?.categoryId ? [product.categoryId] : []);
+  const [primaryCategoryId, setPrimaryCategoryId] = useState(product?.categoryId ?? "");
+  const [categorySearch, setCategorySearch] = useState("");
   const [pending, startTransition] = useTransition();
   const [readingCount, setReadingCount] = useState(0);
   const [variants, setVariants] = useState<VariantInput[]>(() => product?.variants.map(row => ({
@@ -105,6 +108,8 @@ export function ProductForm({ product, categoryOptions }: ProductFormProps) {
       return;
     }
     const form = new FormData(event.currentTarget);
+    form.set("categoryIds", JSON.stringify(categoryIds));
+    form.set("categoryId", primaryCategoryId);
     form.set("variants", JSON.stringify(variants));
     const media: MediaInput[] = [];
     for (const variantRef of ["", ...variants.map(variant => variant.clientId)]) {
@@ -130,6 +135,7 @@ export function ProductForm({ product, categoryOptions }: ProductFormProps) {
       <PageHeading eyebrow="Products" title={product ? "Edit product" : "Add product"} description="Add the main product, its variants, and the details customers need." />
       <Form ref={formRef} onSubmit={handleSubmit} className="min-w-0 [&_label]:min-w-0 [&_input]:min-w-0 [&_select]:min-w-0 [&_textarea]:min-w-0">
         <input type="hidden" name="id" value={product?.id ?? ""} />
+        <input type="hidden" name="categoryId" value={primaryCategoryId} />
         <fieldset disabled={pending} className="min-w-0 space-y-6 disabled:opacity-60">
           <section className="rounded-md border border-[#e8e5df] bg-white p-5 sm:p-7">
             <h2 className="mb-6 font-display text-xl">Main product</h2>
@@ -151,10 +157,35 @@ export function ProductForm({ product, categoryOptions }: ProductFormProps) {
                   Price (₹)
                   <input name="price" type="number" min="0" max="99999999.99" step="0.01" required defaultValue={product?.price} className="mt-2 min-h-11 w-full rounded-md border border-[#e5e1da] px-3 text-sm" />
                 </label>
-                <label className="text-xs text-neutral-500">
-                  Category
-                  <select name="categoryId" defaultValue={product?.categoryId ?? ""} className="mt-2 min-h-11 w-full rounded-md border border-[#e5e1da] bg-white px-3 text-sm"><option value="">Uncategorised</option>{categoryOptions.map(category => <option key={category.id} value={category.id}>{category.name}</option>)}</select>
-                </label>
+                <div className="text-xs text-neutral-500">
+                  <span>Categories</span>
+                  <details className="relative mt-2 rounded-md border border-[#e5e1da] bg-white">
+                    <summary className="flex min-h-11 cursor-pointer items-center px-3 text-sm text-ink">{categoryIds.length ? `${categoryIds.length} ${categoryIds.length === 1 ? "category" : "categories"} selected` : "Select categories"}</summary>
+                    <div className="absolute z-20 max-h-64 w-full overflow-y-auto rounded-md border border-[#e5e1da] bg-white p-3 shadow-lg">
+                      <p className="mb-2 text-xs text-neutral-500">Tick every category this product should appear in.</p>
+                      <input type="search" value={categorySearch} onChange={event => setCategorySearch(event.target.value)} placeholder="Search categories" aria-label="Search categories" className="mb-2 min-h-10 w-full rounded-md border border-[#e5e1da] px-3 text-sm" />
+                      {categoryOptions.filter(category => category.name.toLowerCase().includes(categorySearch.toLowerCase())).map(category => (
+                        <label key={category.id} className="flex min-h-10 cursor-pointer items-center gap-2 text-sm text-ink">
+                          <input type="checkbox" checked={categoryIds.includes(category.id)} onChange={event => {
+                            const next = event.target.checked ? [...categoryIds, category.id] : categoryIds.filter(id => id !== category.id);
+                            setCategoryIds(next);
+                            if (!next.includes(primaryCategoryId)) setPrimaryCategoryId(next[0] ?? "");
+                          }} />{category.name}
+                        </label>
+                      ))}
+                      {!categoryOptions.length && <p>No categories available.</p>}
+                    </div>
+                  </details>
+                  <p className="mt-2 text-xs text-neutral-500">Open the dropdown and tick multiple categories.</p>
+                  {!!categoryIds.length && <div className="mt-2 flex flex-wrap gap-1.5" aria-label="Selected categories">
+                    {categoryOptions.filter(category => categoryIds.includes(category.id)).map(category => <span key={category.id} className="rounded-full bg-[#f2eff6] px-2.5 py-1 text-xs text-purple">{category.name}</span>)}
+                  </div>}
+                  {categoryIds.length > 1 && <label className="mt-2 block">Primary category for display
+                    <select value={primaryCategoryId} onChange={event => setPrimaryCategoryId(event.target.value)} className="mt-1 min-h-10 w-full rounded-md border border-[#e5e1da] bg-white px-3 text-sm">
+                      {categoryOptions.filter(category => categoryIds.includes(category.id)).map(category => <option key={category.id} value={category.id}>{category.name}</option>)}
+                    </select>
+                  </label>}
+                </div>
                 <label className="text-xs text-neutral-500">
                   Status
                   <select name="status" defaultValue={product?.status ?? "draft"} className="mt-2 min-h-11 w-full rounded-md border border-[#e5e1da] bg-white px-3 text-sm">{productStatuses.map(status => <option key={status} value={status}>{status === "out_of_stock" ? "Out of stock" : status.charAt(0).toUpperCase() + status.slice(1)}</option>)}</select>

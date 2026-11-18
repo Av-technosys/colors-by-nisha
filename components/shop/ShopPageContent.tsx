@@ -33,7 +33,7 @@ export function ShopPageContent({ products: allProducts }: ShopPageContentProps)
   const setSortBy = (value: string) => updateFilters({ sort: value === "featured" ? null : value, page: null });
   const setCurrentPage = (value: number) => updateFilters({ page: value > 1 ? String(value) : null });
   const categoryOptions = [{ key: "all", label: "All Products", count: allProducts.length },
-    ...Array.from(new Map(allProducts.filter(product => product.categorySlug).map(product => [product.categorySlug!, product.category])).entries()).map(([key, label]) => ({ key, label, count: allProducts.filter(product => product.categorySlug === key).length }))];
+    ...Array.from(new Map(allProducts.flatMap(product => product.categories?.length ? product.categories.map(category => [category.slug, category.name] as const) : product.categorySlug ? [[product.categorySlug, product.category] as const] : [])).entries()).map(([key, label]) => ({ key, label, count: allProducts.filter(product => product.categories?.some(category => category.slug === key) || product.categorySlug === key).length }))];
 
   // Filter States
   const [columnCount, setColumnCount] = useState<2 | 3 | 4>(3);
@@ -84,13 +84,13 @@ export function ShopPageContent({ products: allProducts }: ShopPageContentProps)
           const q = searchQuery.trim().toLowerCase();
           const match =
             p.name.toLowerCase().includes(q) ||
-            p.category.toLowerCase().includes(q) ||
+            p.category.toLowerCase().includes(q) || p.categories?.some(category => category.name.toLowerCase().includes(q)) ||
             (p.collection && p.collection.toLowerCase().includes(q)) ||
             (p.description && p.description.toLowerCase().includes(q));
           if (!match) return false;
         }
         // Category
-        if (selectedCategory !== "all" && p.categorySlug !== selectedCategory && p.category.toLowerCase() !== selectedCategory.toLowerCase()) {
+        if (selectedCategory !== "all" && p.categorySlug !== selectedCategory && p.category.toLowerCase() !== selectedCategory.toLowerCase() && !p.categories?.some(category => category.slug === selectedCategory || category.name.toLowerCase() === selectedCategory.toLowerCase())) {
           return false;
         }
         // Availability
