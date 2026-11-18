@@ -14,6 +14,7 @@ export interface ProductItem {
   originalPrice?: number;
   category: string;
   categorySlug?: string;
+  categories?: { id: string; name: string; slug: string }[];
   shortDescription?: string;
   createdAt?: string;
   metaTitle?: string;

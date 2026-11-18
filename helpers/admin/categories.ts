@@ -1,8 +1,8 @@
 import "server-only";
 
-import { asc, countDistinct, eq } from "drizzle-orm";
+import { asc, eq, sql } from "drizzle-orm";
 import { db } from "@/lib/db";
-import { categories, products } from "@/lib/db/schema";
+import { categories, productCategories, products } from "@/lib/db/schema";
 import { validateId } from "./validation";
 
 export async function getCategories() {
@@ -14,11 +14,9 @@ export async function getCategoryList() {
     id: categories.id,
     name: categories.name,
     slug: categories.slug,
-    productCount: countDistinct(products.id),
+    productCount: sql<number>`(select count(*)::int from ${products} where ${products.categoryId} = ${categories.id} or exists (select 1 from ${productCategories} where ${productCategories.productId} = ${products.id} and ${productCategories.categoryId} = ${categories.id}))`,
   })
     .from(categories)
-    .leftJoin(products, eq(products.categoryId, categories.id))
-    .groupBy(categories.id)
     .orderBy(asc(categories.name));
 }
 

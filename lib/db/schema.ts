@@ -1,6 +1,7 @@
 import { relations, sql } from "drizzle-orm";
 import {
   pgTable,
+  primaryKey,
   uuid,
   varchar,
   text,
@@ -42,6 +43,14 @@ export const products = pgTable("products", {
     .$onUpdate(() => new Date())
     .notNull(),
 });
+
+export const productCategories = pgTable("product_categories", {
+  productId: uuid("product_id").notNull().references(() => products.id, { onDelete: "cascade" }),
+  categoryId: uuid("category_id").notNull().references(() => categories.id, { onDelete: "restrict" }),
+}, table => [
+  primaryKey({ columns: [table.productId, table.categoryId] }),
+  index("product_categories_category_id_idx").on(table.categoryId),
+]);
 
 
 // -----------------Product Variants table-----------------
@@ -219,6 +228,7 @@ export const addressesRelations = relations(addresses, ({ one }) => ({
 
 export const categoriesRelations = relations(categories, ({ many }) => ({
   products: many(products),
+  productCategories: many(productCategories),
 }));
 
 export const blogCategoriesRelations = relations(blogCategories, ({ many }) => ({
@@ -237,6 +247,12 @@ export const productsRelations = relations(products, ({ one, many }) => ({
   variants: many(productVariants), 
   media: many(productMedia),
   orderItems: many(orderItems),
+  productCategories: many(productCategories),
+}));
+
+export const productCategoriesRelations = relations(productCategories, ({ one }) => ({
+  product: one(products, { fields: [productCategories.productId], references: [products.id] }),
+  category: one(categories, { fields: [productCategories.categoryId], references: [categories.id] }),
 }));
 
 export const productVariantsRelations = relations(productVariants, ({ one, many }) => ({

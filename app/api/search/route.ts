@@ -18,6 +18,7 @@ export async function GET(request: Request) {
       return (
         p.name.toLowerCase().includes(q) ||
         p.category.toLowerCase().includes(q) ||
+        p.categories?.some(category => category.name.toLowerCase().includes(q)) ||
         (p.collection && p.collection.toLowerCase().includes(q)) ||
         (p.description && p.description.toLowerCase().includes(q))
       );

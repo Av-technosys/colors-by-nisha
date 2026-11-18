@@ -4,13 +4,14 @@ import { cache } from "react";
 import { and, asc, desc, eq, inArray, ne, or, sql } from "drizzle-orm";
 import { io } from "next/cache";
 import { db } from "@/lib/db";
-import { categories, products, productMedia, productVariants } from "@/lib/db/schema";
+import { products, productMedia, productVariants } from "@/lib/db/schema";
 import { imageUrl } from "@/helpers/storage/s3";
 import { productsData, type ProductItem } from "@/data/products";
 
 const published = inArray(products.status, ["active", "out_of_stock"]);
 const productRelations = {
   category: true as const,
+  productCategories: { with: { category: true as const } },
   variants: { orderBy: [asc(productVariants.name)] },
   media: { orderBy: [asc(productMedia.position), asc(productMedia.id)] },
 };
@@ -28,13 +29,16 @@ async function toProduct(row: ProductRecord): Promise<ProductItem> {
   const media = await Promise.all(row.media.map(async image => ({ ...image, url: await imageUrl(image.key) })));
   const mainImages = media.filter(image => !image.variantId).map(image => image.url);
   const images = mainImages.length ? mainImages : media.map(image => image.url);
+  const attachedCategories = row.productCategories.map(link => link.category);
+  const primaryCategory = attachedCategories.find(category => category.id === row.categoryId) ?? row.category;
   return {
     id: row.id,
     slug: row.slug,
     name: row.name,
     price: Number(row.price),
-    category: row.category?.name ?? "",
-    categorySlug: row.category?.slug,
+    category: primaryCategory?.name ?? "",
+    categorySlug: primaryCategory?.slug,
+    categories: attachedCategories,
     description: row.description ?? "",
     shortDescription: row.shortDescription ?? "",
     metaTitle: row.metaTitle ?? undefined,
@@ -89,7 +93,7 @@ export async function getRelatedStoreProducts(product: ProductItem) {
       where: and(published, ne(products.id, product.id)),
       with: productRelations,
       orderBy: [
-        sql`case when ${products.categoryId} in (select ${categories.id} from ${categories} where ${categories.slug} = ${product.categorySlug ?? ""}) then 0 else 1 end`,
+        sql`case when exists (select 1 from product_categories related_category where related_category.product_id = ${products.id} and related_category.category_id in (select category_id from product_categories current_category where current_category.product_id = ${product.id})) then 0 else 1 end`,
         desc(products.createdAt), asc(products.id),
       ],
       limit: 4,

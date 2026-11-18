@@ -41,8 +41,17 @@ export function stockForUpdate(current: number | null, requested: number | null,
 export function parseProduct(form: FormData) {
   const id = String(form.get("id") ?? "");
   if (id) validateId(id);
+  let categoryIds: string[];
+  try { categoryIds = JSON.parse(String(form.get("categoryIds") ?? "[]")); }
+  catch { throw new UserFacingError("Invalid categories data."); }
+  if (!Array.isArray(categoryIds) || categoryIds.length > 100 || categoryIds.some(id => typeof id !== "string") || new Set(categoryIds).size !== categoryIds.length) {
+    throw new UserFacingError("Choose valid, non-duplicate categories.");
+  }
+  categoryIds.forEach(validateId);
   const categoryId = optionalText(form, "categoryId");
   if (categoryId) validateId(categoryId);
+  if (categoryId && !categoryIds.includes(categoryId)) throw new UserFacingError("Primary category must be selected.");
+  if (categoryIds.length && !categoryId) throw new UserFacingError("Choose a primary category.");
   let status = requiredText(form, "status", "Status", 20);
   if (!productStatuses.includes(status)) throw new UserFacingError("Choose a valid product status.");
 
@@ -103,5 +112,6 @@ export function parseProduct(form: FormData) {
     },
     variants,
     media,
+    categoryIds,
   };
 }

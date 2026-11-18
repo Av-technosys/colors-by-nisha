@@ -57,6 +57,7 @@ export function SearchModal() {
         return (
           product.name.toLowerCase().includes(normalizedQuery) ||
           product.category.toLowerCase().includes(normalizedQuery) ||
+          product.categories?.some(category => category.name.toLowerCase().includes(normalizedQuery)) ||
           (product.collection &&
             product.collection.toLowerCase().includes(normalizedQuery)) ||
           (product.description &&
