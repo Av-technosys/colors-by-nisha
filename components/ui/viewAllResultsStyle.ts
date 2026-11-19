@@ -1,0 +1,1 @@
+export const viewAllResultsStyle = "inline-flex min-h-11 items-center justify-center rounded-md bg-purple px-8 py-3.5 font-display text-[14px] font-normal uppercase tracking-[1.5px] text-ink shadow-sm transition-colors duration-200 hover:bg-[#e7b6c4] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink md:text-[15px]";

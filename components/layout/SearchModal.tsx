@@ -1,6 +1,7 @@
 "use client";
 
 import { Form } from "@/components/ui/Form";
+import { viewAllResultsStyle } from "@/components/ui/viewAllResultsStyle";
 
 
 import { useStore } from "@/components/store/StoreContext";
@@ -205,7 +206,7 @@ export function SearchModal() {
                     <Link
                       href={`/shop?search=${encodeURIComponent(query)}`}
                       onClick={handleClose}
-                      className="inline-flex items-center justify-center bg-[#F9D8E0] hover:bg-[#d4af37] text-[#FCF1D8] hover:text-[#F9D8E0] font-display text-[14px] md:text-[15px] font-semibold uppercase tracking-[1.5px] px-8 py-3.5 rounded-md transition-all duration-300 shadow-sm cursor-pointer"
+                      className={viewAllResultsStyle}
                     >
                       VIEW ALL RESULTS
                     </Link>
