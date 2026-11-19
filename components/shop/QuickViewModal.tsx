@@ -105,7 +105,7 @@ export function QuickViewModal({ product: originalProduct, onClose }: QuickViewM
             <>
               <button
                 onClick={handlePrev}
-                className="absolute left-3 top-1/2 -translate-y-1/2 z-10 grid size-8 md:size-9 place-items-center rounded-full bg-white/90 text-ink shadow-md transition hover:bg-white hover:scale-105 cursor-pointer"
+                className="absolute left-3 top-1/2 -translate-y-1/2 z-10 grid size-8 md:size-9 place-items-center rounded-md bg-white/90 text-ink shadow-md transition hover:bg-white hover:scale-105 cursor-pointer"
                 aria-label="Previous image"
               >
                 <svg width="8" height="12" viewBox="0 0 8 12" fill="none" stroke="currentColor" strokeWidth="2">
@@ -115,7 +115,7 @@ export function QuickViewModal({ product: originalProduct, onClose }: QuickViewM
 
               <button
                 onClick={handleNext}
-                className="absolute right-3 top-1/2 -translate-y-1/2 z-10 grid size-8 md:size-9 place-items-center rounded-full bg-white/90 text-ink shadow-md transition hover:bg-white hover:scale-105 cursor-pointer"
+                className="absolute right-3 top-1/2 -translate-y-1/2 z-10 grid size-8 md:size-9 place-items-center rounded-md bg-white/90 text-ink shadow-md transition hover:bg-white hover:scale-105 cursor-pointer"
                 aria-label="Next image"
               >
                 <svg width="8" height="12" viewBox="0 0 8 12" fill="none" stroke="currentColor" strokeWidth="2">
@@ -201,7 +201,7 @@ export function QuickViewModal({ product: originalProduct, onClose }: QuickViewM
               {/* Circular Wishlist Button */}
               <button
                 onClick={() => toggleWishlist(product.slug)}
-                className={`size-11 shrink-0 rounded-full border border-neutral-300 flex items-center justify-center transition-colors cursor-pointer ${
+                className={`size-11 shrink-0 rounded-md border border-neutral-300 flex items-center justify-center transition-colors cursor-pointer ${
                   wishlisted
                     ? "border-red-400 bg-red-50 text-red-600"
                     : "bg-white text-neutral-600 hover:border-ink hover:text-ink"

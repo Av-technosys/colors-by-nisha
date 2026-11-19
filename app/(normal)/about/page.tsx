@@ -190,7 +190,7 @@ export default function AboutUsPage() {
               </p>
               <Link
                 href="/shop?category=shree-nath-ji"
-                className="inline-flex items-center justify-center bg-[#E8DDF9] text-ink hover:bg-lavender-hover hover:text-ink font-display text-[14px] font-normal uppercase tracking-[1.5px] leading-normal px-8 py-3.5 rounded-full transition-all duration-300 shadow-sm cursor-pointer"
+                className="inline-flex items-center justify-center bg-[#FEDECD] text-ink hover:bg-orange-hover hover:text-ink font-display text-[14px] font-normal uppercase tracking-[1.5px] leading-normal px-8 py-3.5 rounded-md transition-all duration-300 shadow-sm cursor-pointer"
               >
                 EXPLORE COLLECTION
               </Link>
@@ -220,7 +220,7 @@ export default function AboutUsPage() {
               </p>
               <Link
                 href="/products/raasleela"
-                className="inline-flex items-center justify-center bg-[#E8DDF9] text-ink hover:bg-lavender-hover hover:text-ink font-display text-[14px] font-normal uppercase tracking-[1.5px] leading-normal px-10 py-3.5 rounded-full transition-all duration-300 shadow-sm cursor-pointer"
+                className="inline-flex items-center justify-center bg-[#FEDECD] text-ink hover:bg-orange-hover hover:text-ink font-display text-[14px] font-normal uppercase tracking-[1.5px] leading-normal px-10 py-3.5 rounded-md transition-all duration-300 shadow-sm cursor-pointer"
               >
                 SHOP NOW
               </Link>
@@ -241,7 +241,7 @@ export default function AboutUsPage() {
       </section>
 
       {/* 5. Section 5: Our Story*/}
-      <section className="w-full bg-[#E8DDF9] text-ink py-10 md:py-14" aria-label="Our Story">
+      <section className="w-full bg-[#FEDECD] text-ink py-10 md:py-14" aria-label="Our Story">
         <div className="mx-auto w-full max-w-[880px] px-4 md:px-6 text-center">
           <p className="font-sans text-[13px] md:text-[14px] font-normal tracking-normal text-ink mb-2">
             Colors by Nisha Vijay was born from a love for these moments.

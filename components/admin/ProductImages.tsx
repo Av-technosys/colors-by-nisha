@@ -152,8 +152,8 @@ export function ProductImages({ images, onChange, onBusyChange, disabled }: Prod
 
   return (
     <div className="space-y-4">
-      <label htmlFor={inputId} className="flex cursor-pointer flex-col items-center gap-3 rounded-md border border-dashed border-[#d9d2e2] bg-[#faf9fc] px-5 py-7 text-center">
-        <span className="grid size-11 place-items-center rounded-md bg-[#eee8f4] text-ink"><ImagePlus size={21} aria-hidden="true" /></span>
+      <label htmlFor={inputId} className="flex cursor-pointer flex-col items-center gap-3 rounded-md border border-dashed border-[#EBCDBD] bg-[#FEF6F0] px-5 py-7 text-center">
+        <span className="grid size-11 place-items-center rounded-md bg-[#FEF6F0] text-ink"><ImagePlus size={21} aria-hidden="true" /></span>
         <span className="font-display text-sm text-ink">{reading ? "Uploading images…" : "Choose images"}</span>
         <span className="text-[11px] text-neutral-400">JPG, PNG, WebP, or GIF · up to 5 MB each</span>
         <input id={inputId} type="file" accept={IMAGE_TYPES.join(",")} multiple disabled={disabled || reading} onChange={event => { const files = Array.from(event.target.files ?? []); event.target.value = ""; void selectFiles(files); }} className="sr-only" />

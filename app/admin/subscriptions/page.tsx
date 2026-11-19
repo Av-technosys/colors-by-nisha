@@ -28,7 +28,7 @@ async function SubscriptionList({ searchParams }: { searchParams: Promise<Search
     <PageHeading eyebrow="Your community" title="Subscriptions" description="Newsletter signups collected through the store footer." />
     <div className="overflow-hidden rounded-md border border-[#e8e5df] bg-white">
       <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#eeeae4] p-5">
-        <h2 className="font-display text-lg">All subscribers <span className="ml-2 rounded-md bg-[#f2eff6] px-2 py-1 text-xs text-ink">{totals.value}</span></h2>
+        <h2 className="font-display text-lg">All subscribers <span className="ml-2 rounded-md bg-[#FEF6F0] px-2 py-1 text-xs text-ink">{totals.value}</span></h2>
         <form className="flex w-full flex-wrap gap-2 sm:w-auto">
           <label className="min-w-0 flex-1"><span className="sr-only">Search subscribers</span><input name="q" defaultValue={query} placeholder="Search email…" className="min-h-11 w-full rounded-md border border-[#e5e1da] px-3 text-xs outline-none focus:border-purple sm:w-64" /></label>
           <button className="min-h-11 rounded-full bg-purple px-4 text-xs text-ink">Search</button>

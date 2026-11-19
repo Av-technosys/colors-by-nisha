@@ -21,7 +21,7 @@ export function Dashboard({ data }: { data: AdminDashboardData }) {
         title="A beautiful day to create."
         description="Your latest payments, orders, and collection updates."
         action={(
-          <Link href="/admin/products/new" className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-purple px-4 font-display text-sm text-ink transition-colors hover:bg-lavender-hover">
+          <Link href="/admin/products/new" className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-purple px-4 font-display text-sm text-ink transition-colors hover:bg-orange-hover">
             <Plus size={17} aria-hidden="true" />Add to your collection
           </Link>
         )}
@@ -33,7 +33,7 @@ export function Dashboard({ data }: { data: AdminDashboardData }) {
           <div key={stat.label} className="overflow-hidden rounded-md border border-[#e8e5df] bg-white p-5">
             <div className="mb-4 flex items-center justify-between">
               <p className="text-xs text-neutral-500">{stat.label}</p>
-              <span className="rounded-md bg-[#f5f2f8] p-2 text-[#8e7ba7]"><stat.icon size={17} aria-hidden="true" /></span>
+              <span className="rounded-md bg-[#FEF6F0] p-2 text-[#9B684F]"><stat.icon size={17} aria-hidden="true" /></span>
             </div>
             <p className="font-display text-[30px] leading-none text-ink">{stat.value}</p>
             <p className="mt-3 text-[10px] text-neutral-400">{stat.note}</p>
@@ -51,7 +51,7 @@ export function Dashboard({ data }: { data: AdminDashboardData }) {
           <p className="mb-6 mt-1 text-[11px] text-neutral-400">Options with five or fewer pieces available.</p>
           <div className="space-y-5">
             {lowStock?.map(product => <Link key={product.id} href={`/admin/products/${product.productId}/edit`} className="group flex min-w-0 items-center gap-3">
-              <span className="grid size-11 shrink-0 place-items-center rounded-md bg-[#f5f2f8] text-[#8e7ba7]"><Package size={18} aria-hidden="true" /></span>
+              <span className="grid size-11 shrink-0 place-items-center rounded-md bg-[#FEF6F0] text-[#9B684F]"><Package size={18} aria-hidden="true" /></span>
               <span className="min-w-0 flex-1"><span className="block truncate font-display text-sm group-hover:text-ink">{product.name}</span><span className="mt-1 block truncate text-[10px] text-neutral-400">{product.option}</span></span>
               <span className={`shrink-0 text-xs ${product.stock === 0 ? "text-[#9e5144]" : "text-[#94764d]"}`}>{product.stock === 0 ? "Out of stock" : `${product.stock} left`}</span>
             </Link>)}
@@ -102,7 +102,7 @@ export function Dashboard({ data }: { data: AdminDashboardData }) {
 
       <div className="grid gap-4 md:grid-cols-2">
         <Link href="/admin/blogs" className="group flex items-center gap-4 overflow-hidden rounded-md border border-[#e8e5df] bg-white p-5">
-          <span className="rounded-md bg-[#f2edf6] p-3 text-[#8c779d]"><FileText size={20} aria-hidden="true" /></span>
+          <span className="rounded-md bg-[#FEF6F0] p-3 text-[#9B684F]"><FileText size={20} aria-hidden="true" /></span>
           <span className="flex-1">
             <span className="block font-display text-base">Tell your next story</span>
             <span className="text-[11px] text-neutral-400">{metrics ? `${metrics.drafts} saved journal ${metrics.drafts === 1 ? "draft" : "drafts"}.` : "View and manage your journal."}</span>

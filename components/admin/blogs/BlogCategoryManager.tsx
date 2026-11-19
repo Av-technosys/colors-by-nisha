@@ -93,7 +93,7 @@ export function BlogCategoryManager({ onChange }: { onChange: () => void }) {
                 <button type="button" disabled={pending} onClick={() => remove(category.id)} className="min-h-10 text-[#a16b60] underline underline-offset-4">Delete</button>
                 <button type="button" disabled={pending} onClick={() => setDeleting("")} className="min-h-10 text-neutral-500">Cancel</button>
               </div> : <div className="flex items-center gap-1">
-                <button type="button" disabled={pending} onClick={() => { setForm({ id: category.id, name: category.name, slug: category.slug }); setDeleting(""); setError(""); setNotice(""); }} aria-label={`Edit ${category.name}`} className="grid size-10 place-items-center rounded-full text-ink hover:bg-[#f1edf5]"><Pencil size={15} /></button>
+                <button type="button" disabled={pending} onClick={() => { setForm({ id: category.id, name: category.name, slug: category.slug }); setDeleting(""); setError(""); setNotice(""); }} aria-label={`Edit ${category.name}`} className="grid size-10 place-items-center rounded-full text-ink hover:bg-[#FEF6F0]"><Pencil size={15} /></button>
                 <button type="button" disabled={pending || category.blogCount > 0} onClick={() => { setDeleting(category.id); setError(""); }} aria-label={`Delete ${category.name}`} title={category.blogCount ? "Reassign this category’s blogs before deleting it" : "Delete category"} className="grid size-10 place-items-center rounded-full text-[#a16b60] hover:bg-[#f7eeec] disabled:cursor-not-allowed disabled:opacity-30"><Trash2 size={15} /></button>
               </div>}
             </li>)}

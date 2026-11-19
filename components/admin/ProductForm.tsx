@@ -178,7 +178,7 @@ export function ProductForm({ product, categoryOptions }: ProductFormProps) {
                   </details>
                   <p className="mt-2 text-xs text-neutral-500">Open the dropdown and tick multiple categories.</p>
                   {!!categoryIds.length && <div className="mt-2 flex flex-wrap gap-1.5" aria-label="Selected categories">
-                    {categoryOptions.filter(category => categoryIds.includes(category.id)).map(category => <span key={category.id} className="rounded-full bg-[#f2eff6] px-2.5 py-1 text-xs text-ink">{category.name}</span>)}
+                    {categoryOptions.filter(category => categoryIds.includes(category.id)).map(category => <span key={category.id} className="rounded-full bg-[#FEF6F0] px-2.5 py-1 text-xs text-ink">{category.name}</span>)}
                   </div>}
                   {categoryIds.length > 1 && <label className="mt-2 block">Primary category for display
                     <select value={primaryCategoryId} onChange={event => setPrimaryCategoryId(event.target.value)} className="mt-1 min-h-10 w-full rounded-md border border-[#e5e1da] bg-white px-3 text-sm">

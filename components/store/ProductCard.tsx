@@ -226,7 +226,7 @@ export function ProductCard({
         <div className="absolute inset-x-3 bottom-3 md:inset-x-4 md:bottom-4 z-20">
           <button
             tabIndex={duplicate ? -1 : undefined}
-            className="w-full rounded-md bg-white py-2.5 md:py-3 px-4 text-center font-display text-[13px] md:text-[15px] font-medium text-[#111111] shadow-[0_4px_12px_rgba(0,0,0,0.12)] hover:bg-lavender-hover hover:text-ink transition-all duration-300 cursor-pointer active:scale-95"
+            className="w-full rounded-md bg-white py-2.5 md:py-3 px-4 text-center font-display text-[13px] md:text-[15px] font-medium text-[#111111] shadow-[0_4px_12px_rgba(0,0,0,0.12)] hover:bg-orange-hover hover:text-ink transition-all duration-300 cursor-pointer active:scale-95"
             onClick={handleCartClick}
           >
             Add To Cart

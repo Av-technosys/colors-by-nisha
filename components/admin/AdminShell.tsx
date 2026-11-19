@@ -61,7 +61,7 @@ function Sidebar({ onNavigate, pathname = "" }: { onNavigate?: () => void; pathn
 
       <div className="mt-auto pt-8">
         <div className="flex items-center gap-3 border-t border-ink/15 px-2 pt-5">
-          <span className="grid size-10 shrink-0 place-items-center rounded-md bg-[#eeeaf5] font-display text-sm text-ink">NV</span>
+          <span className="grid size-10 shrink-0 place-items-center rounded-md bg-[#FEF6F0] font-display text-sm text-ink">NV</span>
           <div className="min-w-0 flex-1">
             <p className="font-display text-sm">Nisha Vijay</p>
             <p className="text-[10px] text-ink/60">Store administrator</p>

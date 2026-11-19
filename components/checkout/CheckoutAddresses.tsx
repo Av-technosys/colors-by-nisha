@@ -46,7 +46,7 @@ export function CheckoutAddresses({ account, selectedId, onSelect, onAccountChan
       {account.addresses.length > 0 && <button type="button" onClick={() => { setError(""); setView("manage"); }} className="min-h-9 text-xs text-ink underline underline-offset-4">Manage addresses</button>}
     </div>
     {addresses.length ? <div className="space-y-3" role="radiogroup" aria-label="Delivery address">
-      {addresses.map(item => <label key={item.id} className={`flex cursor-pointer gap-3 rounded-md border p-4 transition ${selectedId === item.id ? "border-purple bg-[#f7f5fa]" : "border-[#e8e3da] hover:border-[#c4a36a]"}`}>
+      {addresses.map(item => <label key={item.id} className={`flex cursor-pointer gap-3 rounded-md border p-4 transition ${selectedId === item.id ? "border-purple bg-[#FEF6F0]" : "border-[#e8e3da] hover:border-[#c4a36a]"}`}>
         <input type="radio" name="saved-address" value={item.id} checked={selectedId === item.id} onChange={() => onSelect(item)} className="mt-1 size-4 shrink-0 accent-purple" />
         <span className="min-w-0 text-sm">
           <span className="flex flex-wrap items-center gap-2 font-medium">{item.fullName}{item.isDefault && <span className="rounded-sm bg-purple/5 px-2 py-1 text-[10px] font-normal text-ink">Default</span>}</span>

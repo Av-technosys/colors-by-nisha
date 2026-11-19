@@ -78,7 +78,7 @@ export function RecordsPage({ data }: { data: AdminPageData }) {
         title={data.title}
         description={data.description}
         action={data.canEdit && (
-          <button onClick={addRecord} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-purple px-4 font-display text-sm text-ink transition-colors hover:bg-lavender-hover">
+          <button onClick={addRecord} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-purple px-4 font-display text-sm text-ink transition-colors hover:bg-orange-hover">
             <Plus size={17} aria-hidden="true" />
             Add {data.singular}
           </button>
@@ -96,7 +96,7 @@ export function RecordsPage({ data }: { data: AdminPageData }) {
         <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#eeeae4] p-5">
           <div className="flex items-center gap-2.5">
             <h2 className="font-display text-lg">All {data.title.toLowerCase()}</h2>
-            <span className="rounded-md bg-[#f2eff6] px-2 py-0.5 text-[10px] text-ink">{records.length}</span>
+            <span className="rounded-md bg-[#FEF6F0] px-2 py-0.5 text-[10px] text-ink">{records.length}</span>
           </div>
           <div className="flex w-full flex-wrap gap-2 sm:w-auto">
             <label className="relative min-w-0 flex-1 sm:w-60">
@@ -143,7 +143,7 @@ export function RecordsPage({ data }: { data: AdminPageData }) {
                           <Photo id={record.image} alt={record.title} />
                         </span>
                       ) : (
-                        <span className="grid size-10 shrink-0 place-items-center rounded-md bg-[#f1edf5] font-display text-sm text-[#8d7a9e]">
+                        <span className="grid size-10 shrink-0 place-items-center rounded-md bg-[#FEF6F0] font-display text-sm text-[#9B684F]">
                           {record.title.replace(/^#/, "").split(" ").slice(0, 2).map(word => word[0]).join("")}
                         </span>
                       )}
@@ -156,7 +156,7 @@ export function RecordsPage({ data }: { data: AdminPageData }) {
                   {columns.map(column => <td key={column} className="px-5 py-4 text-neutral-500">{record.fields[column]}</td>)}
                   <td className="px-5 py-4"><StatusBadge status={record.status} /></td>
                   <td className="px-5 py-4 text-right">
-                    <button onClick={() => viewRecord(record)} aria-label={`View ${record.title}`} className="inline-flex min-h-9 items-center gap-2 rounded-full px-2 text-[11px] text-ink hover:bg-[#f1edf5]">
+                    <button onClick={() => viewRecord(record)} aria-label={`View ${record.title}`} className="inline-flex min-h-9 items-center gap-2 rounded-full px-2 text-[11px] text-ink hover:bg-[#FEF6F0]">
                       View<ChevronRight size={13} aria-hidden="true" />
                     </button>
                   </td>

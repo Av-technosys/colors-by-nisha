@@ -201,7 +201,7 @@ export default function WishlistPage() {
             </p>
             <Link
               href="/shop"
-              className="inline-flex items-center justify-center bg-[#E8DDF9] text-ink hover:bg-lavender-hover hover:text-ink font-display text-[16px] font-[500] uppercase tracking-[1.5px] leading-normal px-8 py-3.5 rounded-full transition-all duration-300 shadow-sm cursor-pointer"
+              className="inline-flex items-center justify-center bg-[#FEDECD] text-ink hover:bg-orange-hover hover:text-ink font-display text-[16px] font-[500] uppercase tracking-[1.5px] leading-normal px-8 py-3.5 rounded-full transition-all duration-300 shadow-sm cursor-pointer"
             >
               BACK TO SHOPPING
             </Link>

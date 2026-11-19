@@ -55,7 +55,7 @@ export function AddressDialog({ account, address, onClose, onSaved, indiaOnly = 
         <label className="flex items-center gap-2.5 text-sm text-neutral-600 sm:col-span-2"><input type="checkbox" checked={form.isDefault} onChange={event => setForm(current => ({ ...current, isDefault: event.target.checked }))} className="size-4 rounded-md accent-purple" />Use as my default address</label>
       </fieldset>
       {error && <p role="alert" className="rounded-md bg-[#f8efec] p-3 text-sm text-[#a54d42]">{error}</p>}
-      <div className="flex justify-end gap-3 border-t border-neutral-100 pt-5"><button type="button" disabled={saving} onClick={onClose} className="rounded-full px-4 py-2.5 text-sm text-neutral-500">Cancel</button><button disabled={saving} className="min-h-11 rounded-full bg-purple px-5 py-2.5 text-sm font-medium text-ink transition hover:bg-lavender-hover disabled:opacity-50">{saving ? "Saving…" : "Save address"}</button></div>
+      <div className="flex justify-end gap-3 border-t border-neutral-100 pt-5"><button type="button" disabled={saving} onClick={onClose} className="rounded-full px-4 py-2.5 text-sm text-neutral-500">Cancel</button><button disabled={saving} className="min-h-11 rounded-full bg-purple px-5 py-2.5 text-sm font-medium text-ink transition hover:bg-orange-hover disabled:opacity-50">{saving ? "Saving…" : "Save address"}</button></div>
     </Form>
   </Modal>;
 }

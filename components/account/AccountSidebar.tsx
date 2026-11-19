@@ -20,7 +20,7 @@ function AccountLinks({ pathname = "" }: { pathname?: string }) {
     { href: "/orders", label: "My orders", icon: ShoppingBag, active: pathname === "/orders" || pathname.startsWith("/orders/") },
   ];
   return <nav aria-label="Dashboard navigation" className="grid grid-cols-2 gap-1 lg:block lg:space-y-1">
-    {links.map(({ href, label, icon: Icon, active }) => <Link key={href} href={href} aria-current={active ? "page" : undefined} className={`flex min-h-12 min-w-0 items-center gap-2 rounded-full px-2 text-xs transition lg:gap-3 lg:px-3 lg:text-sm ${active ? "bg-[#f2eff6] text-ink" : "text-neutral-600 hover:bg-[#f7f5f1] hover:text-ink"}`}><Icon size={16} className="shrink-0" aria-hidden="true" /><span className="min-w-0 flex-1">{label}</span><ChevronRight size={14} className="hidden lg:block" aria-hidden="true" /></Link>)}
+    {links.map(({ href, label, icon: Icon, active }) => <Link key={href} href={href} aria-current={active ? "page" : undefined} className={`flex min-h-12 min-w-0 items-center gap-2 rounded-full px-2 text-xs transition lg:gap-3 lg:px-3 lg:text-sm ${active ? "bg-[#FEF6F0] text-ink" : "text-neutral-600 hover:bg-[#f7f5f1] hover:text-ink"}`}><Icon size={16} className="shrink-0" aria-hidden="true" /><span className="min-w-0 flex-1">{label}</span><ChevronRight size={14} className="hidden lg:block" aria-hidden="true" /></Link>)}
   </nav>;
 }
 

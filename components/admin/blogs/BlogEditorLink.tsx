@@ -45,7 +45,7 @@ export default function BlogEditorLink({ editor, active, disabled }: { editor: E
   }
 
   return <>
-    <button type="button" disabled={disabled} aria-label="Insert or edit link" title="Insert or edit link" aria-pressed={active} aria-haspopup="dialog" aria-expanded={open} onMouseDown={event => event.preventDefault()} onClick={showDialog} className={`flex size-9 shrink-0 items-center justify-center rounded-full disabled:opacity-35 ${active ? "bg-purple text-ink" : "text-neutral-500 hover:bg-[#eee8f4] hover:text-ink"}`}><Link2 size={17} aria-hidden="true" /></button>
+    <button type="button" disabled={disabled} aria-label="Insert or edit link" title="Insert or edit link" aria-pressed={active} aria-haspopup="dialog" aria-expanded={open} onMouseDown={event => event.preventDefault()} onClick={showDialog} className={`flex size-9 shrink-0 items-center justify-center rounded-full disabled:opacity-35 ${active ? "bg-purple text-ink" : "text-neutral-500 hover:bg-[#FEF6F0] hover:text-ink"}`}><Link2 size={17} aria-hidden="true" /></button>
     {open && createPortal(
       <Modal title={active ? "Edit link" : "Add link"} onClose={close} className="w-full max-w-md p-6">
         <h2 className="font-display text-xl text-ink">{active ? "Edit link" : "Add link"}</h2>

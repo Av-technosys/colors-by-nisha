@@ -28,7 +28,7 @@ export function RevenueChart({ points }: { points: RevenuePoint[] | null }) {
         <div className={`relative flex min-w-0 flex-1 border-b border-[#ece8e1] ${period === 7 ? "gap-2 sm:gap-4" : "gap-1"}`}>
           <div aria-hidden="true" className="pointer-events-none absolute inset-0 bottom-7 flex flex-col justify-between">{ticks.map((_, index) => <span key={index} className="border-t border-dashed border-[#eeeae4]" />)}</div>
           {revenue.map((point, index) => <div key={point.date} className="relative flex min-w-0 flex-1 flex-col justify-end">
-            <div className="flex min-h-0 flex-1 items-end justify-center"><div title={`${dateLabel(point.date)}: ${formatINR(point.value)}`} className={`relative w-full max-w-11 rounded-t-sm ${index === revenue.length - 1 ? "bg-purple" : "bg-[#d6cce3]"}`} style={{ height: `${point.value / ceiling * 100}%` }}><span className="sr-only">{dateLabel(point.date)}: {formatINR(point.value)}</span></div></div>
+            <div className="flex min-h-0 flex-1 items-end justify-center"><div title={`${dateLabel(point.date)}: ${formatINR(point.value)}`} className={`relative w-full max-w-11 rounded-t-sm ${index === revenue.length - 1 ? "bg-purple" : "bg-[#EBCDBD]"}`} style={{ height: `${point.value / ceiling * 100}%` }}><span className="sr-only">{dateLabel(point.date)}: {formatINR(point.value)}</span></div></div>
             <span aria-hidden="true" className="relative h-7">{(period === 7 || index % 5 === 0 || index === revenue.length - 1) && <span className="absolute bottom-0 left-1/2 -translate-x-1/2 whitespace-nowrap text-[8px] text-neutral-400 sm:text-[9px]">{dateLabel(point.date)}</span>}</span>
           </div>)}
         </div>

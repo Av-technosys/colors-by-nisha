@@ -227,7 +227,7 @@ export function CartDrawer() {
               <Link
                 href="/cart"
                 onClick={() => setCartOpen(false)}
-                className="inline-flex min-h-10 w-full items-center justify-center rounded-full border border-purple bg-white px-5 py-2 font-display text-xs uppercase tracking-[0.12em] text-ink transition hover:bg-lavender-hover hover:text-ink md:min-h-12 md:px-8 md:py-3 md:text-sm"
+                className="inline-flex min-h-10 w-full items-center justify-center rounded-full border border-purple bg-white px-5 py-2 font-display text-xs uppercase tracking-[0.12em] text-ink transition hover:bg-orange-hover hover:text-ink md:min-h-12 md:px-8 md:py-3 md:text-sm"
               >
                 VIEW CART
               </Link>

@@ -97,7 +97,7 @@ export function RecordForm({ data, record, onSave, onClose }: RecordFormProps) {
 
         <div className="flex justify-end gap-3 border-t border-neutral-100 pt-5">
           <button type="button" onClick={onClose} className="rounded-full px-4 text-xs text-neutral-500">Cancel</button>
-          <button type="submit" className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-purple px-4 font-display text-sm text-ink transition-colors hover:bg-lavender-hover">
+          <button type="submit" className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-purple px-4 font-display text-sm text-ink transition-colors hover:bg-orange-hover">
             Save {data.singular}
           </button>
         </div>

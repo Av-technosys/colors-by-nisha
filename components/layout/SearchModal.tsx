@@ -205,7 +205,7 @@ export function SearchModal() {
                     <Link
                       href={`/shop?search=${encodeURIComponent(query)}`}
                       onClick={handleClose}
-                      className="inline-flex items-center justify-center bg-[#E8DDF9] hover:bg-lavender-hover text-ink font-display text-[14px] md:text-[15px] font-semibold uppercase tracking-[1.5px] px-8 py-3.5 rounded-full transition-all duration-300 shadow-sm cursor-pointer"
+                      className="inline-flex items-center justify-center bg-[#FEDECD] hover:bg-orange-hover text-ink font-display text-[14px] md:text-[15px] font-semibold uppercase tracking-[1.5px] px-8 py-3.5 rounded-full transition-all duration-300 shadow-sm cursor-pointer"
                     >
                       VIEW ALL RESULTS
                     </Link>

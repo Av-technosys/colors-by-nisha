@@ -46,7 +46,7 @@ export function Footer() {
   }
 
   return (
-    <footer id="footer" className="bg-purple text-[13px] text-ink">
+    <footer id="footer" className="bg-[#F0C1A8] text-[13px] text-ink">
       <Container className="grid grid-cols-2 gap-x-5 gap-y-8 py-10 md:grid-cols-[2fr_1fr_1fr] md:gap-8 md:py-14 lg:grid-cols-[2fr_1fr_1fr_1.25fr_2fr]">
         <div className="col-span-2 min-w-0 md:col-span-1">
           <div className="relative h-[150px] w-[110px] before:pointer-events-none before:absolute before:inset-x-2 before:inset-y-3 before:rounded-full before:bg-white/85 before:blur-lg">
