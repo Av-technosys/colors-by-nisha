@@ -49,7 +49,7 @@ export function SizeGuideModal({ isOpen, onClose }: SizeGuideModalProps) {
           </div>
           <button
             onClick={onClose}
-            className="grid size-8 shrink-0 place-items-center rounded-md text-neutral-500 hover:bg-neutral-100"
+            className="grid size-8 shrink-0 place-items-center rounded-full text-neutral-500 hover:bg-neutral-100"
             aria-label="Close size guide"
           >
             ✕
@@ -61,7 +61,7 @@ export function SizeGuideModal({ isOpen, onClose }: SizeGuideModalProps) {
           <span className="text-neutral-500">Unit:</span>
           <button
             onClick={() => setUnit("inches")}
-            className={`rounded-md px-2.5 py-1 font-semibold transition ${
+            className={`rounded-full px-2.5 py-1 font-semibold transition ${
               unit === "inches" ? "bg-ink text-white" : "bg-neutral-100 text-neutral-700"
             }`}
           >
@@ -69,7 +69,7 @@ export function SizeGuideModal({ isOpen, onClose }: SizeGuideModalProps) {
           </button>
           <button
             onClick={() => setUnit("cm")}
-            className={`rounded-md px-2.5 py-1 font-semibold transition ${
+            className={`rounded-full px-2.5 py-1 font-semibold transition ${
               unit === "cm" ? "bg-ink text-white" : "bg-neutral-100 text-neutral-700"
             }`}
           >

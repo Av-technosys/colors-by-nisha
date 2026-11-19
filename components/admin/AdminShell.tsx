@@ -49,7 +49,7 @@ function Sidebar({ onNavigate, pathname = "" }: { onNavigate?: () => void; pathn
               scroll={false}
               onNavigate={navigate}
               aria-current={active ? "page" : undefined}
-              className={`flex min-h-12 items-center gap-3 rounded-md px-3 text-[13px] transition-colors ${active ? "bg-white text-ink shadow-sm" : "text-ink/80 hover:bg-white/60 hover:text-ink"}`}
+              className={`flex min-h-12 items-center gap-3 rounded-full px-3 text-[13px] transition-colors ${active ? "bg-white text-ink shadow-sm" : "text-ink/80 hover:bg-white/60 hover:text-ink"}`}
             >
               <item.icon size={19} aria-hidden="true" />
               {item.label}
@@ -105,7 +105,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
           aria-label="Open navigation"
           aria-expanded={menuOpen}
           onClick={() => setMenuOpen(true)}
-          className="fixed bottom-[max(1.25rem,env(safe-area-inset-bottom))] right-5 z-40 grid size-12 place-items-center rounded-md bg-purple text-ink shadow-lg lg:hidden"
+          className="fixed bottom-[max(1.25rem,env(safe-area-inset-bottom))] right-5 z-40 grid size-12 place-items-center rounded-full bg-purple text-ink shadow-lg lg:hidden"
         >
           <Menu size={20} aria-hidden="true" />
         </button>

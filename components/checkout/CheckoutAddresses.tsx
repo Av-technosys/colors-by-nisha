@@ -55,7 +55,7 @@ export function CheckoutAddresses({ account, selectedId, onSelect, onAccountChan
         </span>
       </label>)}
     </div> : <p className="mb-4 text-sm leading-relaxed text-neutral-500">{account.addresses.length ? "Add an Indian delivery address to continue." : "Add a delivery address to continue. It will be saved for your next order."}</p>}
-    <button type="button" disabled={!canAdd} onClick={() => setView("new")} className="mt-4 inline-flex min-h-11 items-center gap-2 rounded-md border border-[#c4a36a] px-4 text-xs text-ink transition hover:bg-[#faf9f6] disabled:cursor-not-allowed disabled:opacity-50"><Plus size={15} />Add new address</button>
+    <button type="button" disabled={!canAdd} onClick={() => setView("new")} className="mt-4 inline-flex min-h-11 items-center gap-2 rounded-full border border-[#c4a36a] px-4 text-xs text-ink transition hover:bg-[#faf9f6] disabled:cursor-not-allowed disabled:opacity-50"><Plus size={15} />Add new address</button>
     {!canAdd && <p className="mt-2 text-xs text-neutral-500">Your address book is full. Remove an address to add another.</p>}
     {view && createPortal(view === "manage" ? <Modal title="Manage addresses" onClose={() => { if (!busy) setView(null); }} className="w-full max-w-xl p-6 md:p-8">
       <h2 className="pr-8 font-display text-2xl">Your address book</h2>

@@ -37,7 +37,7 @@ async function CustomerList({ searchParams }: { searchParams: Promise<Search> })
         <Form className="flex w-full flex-wrap gap-2 sm:w-auto">
           <label className="min-w-0 flex-1"><span className="sr-only">Search customers</span><input name="q" defaultValue={query} placeholder="Search name, email or mobile…" className="min-h-11 w-full rounded-md border border-[#e5e1da] px-3 text-xs outline-none focus:border-purple sm:w-64" /></label>
           <label><span className="sr-only">Account status</span><select name="status" defaultValue={status} className="min-h-11 rounded-md border border-[#e5e1da] bg-white px-3 text-xs"><option value="active">Active accounts</option><option value="deleted">Deleted accounts</option><option value="all">All accounts</option></select></label>
-          <button className="min-h-11 rounded-md bg-purple px-4 text-xs text-ink">Search</button>
+          <button className="min-h-11 rounded-full bg-purple px-4 text-xs text-ink">Search</button>
         </Form>
       </div>
       <div className="overflow-x-auto">
@@ -58,7 +58,7 @@ async function CustomerList({ searchParams }: { searchParams: Promise<Search> })
       </div>
       <div className="flex flex-wrap items-center justify-between gap-3 border-t border-[#eeeae4] px-5 py-4 text-xs text-neutral-500">
         <span>{totals.value ? `${(page - 1) * pageSize + 1}–${Math.min(page * pageSize, totals.value)} of ${totals.value}` : "0 customers"}</span>
-        <div className="flex items-center gap-3">{page > 1 && <Link href={pageUrl(page - 1)} className="rounded-md border border-[#e5e1da] px-3 py-2 text-ink">Previous</Link>}<span>Page {page} of {pageCount}</span>{page < pageCount && <Link href={pageUrl(page + 1)} className="rounded-md border border-[#e5e1da] px-3 py-2 text-ink">Next</Link>}</div>
+        <div className="flex items-center gap-3">{page > 1 && <Link href={pageUrl(page - 1)} className="rounded-full border border-[#e5e1da] px-3 py-2 text-ink">Previous</Link>}<span>Page {page} of {pageCount}</span>{page < pageCount && <Link href={pageUrl(page + 1)} className="rounded-full border border-[#e5e1da] px-3 py-2 text-ink">Next</Link>}</div>
       </div>
     </div>
   </>;

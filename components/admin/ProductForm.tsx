@@ -210,13 +210,13 @@ export function ProductForm({ product, categoryOptions }: ProductFormProps) {
           <section className="rounded-md border border-[#e8e5df] bg-white p-5 sm:p-7">
             <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
               <div><h2 className="font-display text-xl">Variants</h2><p className="mt-1 text-xs text-neutral-400">Add sizes or other options, each with its own images.</p></div>
-              <button type="button" disabled={busy} onClick={addVariant} className="inline-flex min-h-10 items-center gap-2 rounded-md border border-[#e5e1da] px-3 text-xs text-ink"><Plus size={15} />Add variant</button>
+              <button type="button" disabled={busy} onClick={addVariant} className="inline-flex min-h-10 items-center gap-2 rounded-full border border-[#e5e1da] px-3 text-xs text-ink"><Plus size={15} />Add variant</button>
             </div>
             {!variants.length && <p className="rounded-md bg-[#f9f8f5] p-5 text-xs text-neutral-400">No variants added.</p>}
             <div className="space-y-5">
               {variants.map((variant, index) => (
                 <div key={variant.clientId} className="rounded-md border border-[#e5e1da] p-4 sm:p-5">
-                  <div className="mb-5 flex items-center justify-between"><h3 className="font-display text-base">Variant {index + 1}</h3><button type="button" disabled={busy} onClick={() => removeVariant(variant.clientId)} aria-label={`Remove variant ${index + 1}`} className="inline-flex min-h-9 items-center gap-2 rounded-md px-2 text-xs text-[#a16b60] hover:bg-[#f7eeec]"><Trash2 size={15} />Remove</button></div>
+                  <div className="mb-5 flex items-center justify-between"><h3 className="font-display text-base">Variant {index + 1}</h3><button type="button" disabled={busy} onClick={() => removeVariant(variant.clientId)} aria-label={`Remove variant ${index + 1}`} className="inline-flex min-h-9 items-center gap-2 rounded-full px-2 text-xs text-[#a16b60] hover:bg-[#f7eeec]"><Trash2 size={15} />Remove</button></div>
                   <div className="grid gap-5 sm:grid-cols-2">
                     <label className="text-xs text-neutral-500">Variant name<input required maxLength={255} value={variant.name} onChange={event => updateVariant(variant.clientId, "name", event.target.value)} placeholder="e.g. Small / Ivory" className="mt-2 min-h-11 w-full rounded-md border border-[#e5e1da] px-3 text-sm" /></label>
                     <label className="text-xs text-neutral-500">SKU<input maxLength={100} value={variant.sku} onChange={event => updateVariant(variant.clientId, "sku", event.target.value)} className="mt-2 min-h-11 w-full rounded-md border border-[#e5e1da] px-3 text-sm" /></label>
@@ -244,7 +244,7 @@ export function ProductForm({ product, categoryOptions }: ProductFormProps) {
           <div className="flex flex-wrap items-center justify-end gap-3 pb-4">
             {pending && <p role="status" className="mr-auto text-xs text-neutral-500">Saving product…</p>}
             <Link href="/admin/products" className="inline-flex min-h-11 items-center px-4 text-sm text-neutral-500">Cancel</Link>
-            <button type="submit" disabled={busy} className="min-h-11 rounded-md bg-purple px-5 font-display text-sm text-ink disabled:opacity-50">{pending ? "Saving…" : readingCount ? "Uploading images…" : "Save product"}</button>
+            <button type="submit" disabled={busy} className="min-h-11 rounded-full bg-purple px-5 font-display text-sm text-ink disabled:opacity-50">{pending ? "Saving…" : readingCount ? "Uploading images…" : "Save product"}</button>
           </div>
         </fieldset>
       </Form>

@@ -78,7 +78,7 @@ export function RecordsPage({ data }: { data: AdminPageData }) {
         title={data.title}
         description={data.description}
         action={data.canEdit && (
-          <button onClick={addRecord} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-md bg-purple px-4 font-display text-sm text-ink transition-colors hover:bg-ice">
+          <button onClick={addRecord} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-purple px-4 font-display text-sm text-ink transition-colors hover:bg-lavender-hover">
             <Plus size={17} aria-hidden="true" />
             Add {data.singular}
           </button>
@@ -156,7 +156,7 @@ export function RecordsPage({ data }: { data: AdminPageData }) {
                   {columns.map(column => <td key={column} className="px-5 py-4 text-neutral-500">{record.fields[column]}</td>)}
                   <td className="px-5 py-4"><StatusBadge status={record.status} /></td>
                   <td className="px-5 py-4 text-right">
-                    <button onClick={() => viewRecord(record)} aria-label={`View ${record.title}`} className="inline-flex min-h-9 items-center gap-2 rounded-md px-2 text-[11px] text-ink hover:bg-[#f1edf5]">
+                    <button onClick={() => viewRecord(record)} aria-label={`View ${record.title}`} className="inline-flex min-h-9 items-center gap-2 rounded-full px-2 text-[11px] text-ink hover:bg-[#f1edf5]">
                       View<ChevronRight size={13} aria-hidden="true" />
                     </button>
                   </td>
@@ -177,11 +177,11 @@ export function RecordsPage({ data }: { data: AdminPageData }) {
         <div className="flex flex-wrap items-center justify-between gap-3 border-t border-[#eeeae4] px-5 py-4 text-[10px] text-neutral-400">
           <p>Showing {filteredRecords.length ? start + 1 : 0}–{Math.min(start + pageSize, filteredRecords.length)} of {filteredRecords.length} {data.title.toLowerCase()}</p>
           <div className="flex items-center gap-2">
-            <button aria-label="Previous page" disabled={currentPage === 1} onClick={() => setPage(currentPage - 1)} className="grid size-8 rotate-180 place-items-center rounded-md border border-[#e8e5df] text-ink disabled:opacity-30">
+            <button aria-label="Previous page" disabled={currentPage === 1} onClick={() => setPage(currentPage - 1)} className="grid size-8 rotate-180 place-items-center rounded-full border border-[#e8e5df] text-ink disabled:opacity-30">
               <ChevronRight size={13} aria-hidden="true" />
             </button>
             <span className="px-2">{currentPage} / {pageCount}</span>
-            <button aria-label="Next page" disabled={currentPage === pageCount} onClick={() => setPage(currentPage + 1)} className="grid size-8 place-items-center rounded-md border border-[#e8e5df] text-ink disabled:opacity-30">
+            <button aria-label="Next page" disabled={currentPage === pageCount} onClick={() => setPage(currentPage + 1)} className="grid size-8 place-items-center rounded-full border border-[#e8e5df] text-ink disabled:opacity-30">
               <ChevronRight size={13} aria-hidden="true" />
             </button>
           </div>

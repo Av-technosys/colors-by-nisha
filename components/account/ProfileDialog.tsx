@@ -87,7 +87,7 @@ export function ProfileDialog({ account, incomplete, onClose, onSaved }: { accou
       </fieldset>
       {notice && <p role="status" className="text-sm text-neutral-600">{notice}</p>}
       {error && <p role="alert" className="rounded-md bg-[#f8efec] p-3 text-sm text-[#a54d42]">{error}</p>}
-      <div className="flex justify-end gap-3 border-t border-neutral-100 pt-5"><button type="button" disabled={saving} onClick={onClose} className="rounded-md px-4 py-2.5 text-sm text-neutral-500">{incomplete ? "Later" : "Cancel"}</button><button disabled={saving || !user} className="min-h-11 rounded-md bg-purple px-5 py-2.5 text-sm font-medium text-ink transition hover:bg-ice disabled:opacity-50">{saving ? "Saving…" : pendingEmail ? "Verify & save" : incomplete ? "Complete profile" : "Save changes"}</button></div>
+      <div className="flex justify-end gap-3 border-t border-neutral-100 pt-5"><button type="button" disabled={saving} onClick={onClose} className="rounded-full px-4 py-2.5 text-sm text-neutral-500">{incomplete ? "Later" : "Cancel"}</button><button disabled={saving || !user} className="min-h-11 rounded-full bg-purple px-5 py-2.5 text-sm font-medium text-ink transition hover:bg-lavender-hover disabled:opacity-50">{saving ? "Saving…" : pendingEmail ? "Verify & save" : incomplete ? "Complete profile" : "Save changes"}</button></div>
     </Form>
   </Modal>;
 }

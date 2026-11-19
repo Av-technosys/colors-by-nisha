@@ -338,7 +338,7 @@ export default function AuthPage({ mode }: AuthPageProps) {
       {toast && (
         <aside
           aria-label="Notification"
-          className="fixed top-4 right-4 left-4 sm:left-auto sm:right-6 sm:top-6 z-50 flex items-start gap-3 rounded-md bg-[#F9D8E0] text-ink px-4 py-3.5 shadow-2xl border border-[#d4af37]/40 sm:max-w-md animate-in slide-in-from-top-3 fade-in duration-300"
+          className="fixed top-4 right-4 left-4 sm:left-auto sm:right-6 sm:top-6 z-50 flex items-start gap-3 rounded-md bg-[#E8DDF9] text-ink px-4 py-3.5 shadow-2xl border border-[#d4af37]/40 sm:max-w-md animate-in slide-in-from-top-3 fade-in duration-300"
         >
           <div className="shrink-0 mt-0.5">
             {toast.type === "success" && (
@@ -388,7 +388,7 @@ export default function AuthPage({ mode }: AuthPageProps) {
         />
         {/* Cinematic Gradient Overlays */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-black/15" />
-        <div className="absolute inset-0 bg-[#F9D8E0]/20 mix-blend-multiply" />
+        <div className="absolute inset-0 bg-[#E8DDF9]/20 mix-blend-multiply" />
 
         {/* Bottom Content on Dress Showcase */}
         <div className="absolute bottom-5 inset-x-5 sm:bottom-8 sm:inset-x-8 z-20 text-white">
@@ -487,7 +487,7 @@ export default function AuthPage({ mode }: AuthPageProps) {
                           value={digit}
                           onChange={(e) => handleOtpChange(idx, e.target.value)}
                           onKeyDown={(e) => handleOtpKeyDown(idx, e)}
-                          className="h-11 min-w-0 w-[calc((100%-2.5rem)/6)] max-w-10 sm:h-12 sm:w-11 sm:max-w-none rounded-md border border-neutral-300 bg-white text-center font-display text-lg font-bold text-ink outline-none focus:border-[#F9D8E0] focus:ring-2 focus:ring-[#F9D8E0]/20 transition shadow-2xs"
+                          className="h-11 min-w-0 w-[calc((100%-2.5rem)/6)] max-w-10 sm:h-12 sm:w-11 sm:max-w-none rounded-md border border-neutral-300 bg-white text-center font-display text-lg font-bold text-ink outline-none focus:border-[#E8DDF9] focus:ring-2 focus:ring-[#E8DDF9]/20 transition shadow-2xs"
                         />
                       ))}
                     </div>
@@ -517,7 +517,7 @@ export default function AuthPage({ mode }: AuthPageProps) {
                   <button
                     type="submit"
                     disabled={isSubmitting || !clerk.loaded}
-                    className="w-full rounded-md bg-[#F9D8E0] hover:bg-[#d4af37] text-ink hover:text-ink py-3 px-4 font-display text-xs sm:text-sm font-semibold uppercase tracking-[1.5px] transition-all duration-300 cursor-pointer shadow-sm active:scale-[0.99] disabled:opacity-70"
+                    className="w-full rounded-full bg-[#E8DDF9] hover:bg-lavender-hover text-ink hover:text-ink py-3 px-4 font-display text-xs sm:text-sm font-semibold uppercase tracking-[1.5px] transition-all duration-300 cursor-pointer shadow-sm active:scale-[0.99] disabled:opacity-70"
                   >
                     {isSubmitting ? "VERIFYING..." : "VERIFY & PROCEED"}
                   </button>
@@ -549,7 +549,7 @@ export default function AuthPage({ mode }: AuthPageProps) {
                   {[{ label: "New password", value: password, change: setPassword }, { label: "Confirm password", value: confirmPassword, change: setConfirmPassword }].map(field => (
                     <label key={field.label} className="block space-y-1 font-sans text-xs font-medium text-neutral-700">
                       <span>{field.label}</span>
-                      <input type="password" autoComplete="new-password" required minLength={8} value={field.value} onChange={event => field.change(event.target.value)} className="w-full rounded-md border border-neutral-300 bg-white px-3.5 py-2.5 text-sm text-ink outline-none focus:border-[#F9D8E0] focus:ring-2 focus:ring-[#F9D8E0]/15" />
+                      <input type="password" autoComplete="new-password" required minLength={8} value={field.value} onChange={event => field.change(event.target.value)} className="w-full rounded-md border border-neutral-300 bg-white px-3.5 py-2.5 text-sm text-ink outline-none focus:border-[#E8DDF9] focus:ring-2 focus:ring-[#E8DDF9]/15" />
                     </label>
                   ))}
                   <p className="text-xs text-neutral-500">Use 8+ characters, uppercase, lowercase, a number, and a special character.</p>
@@ -559,7 +559,7 @@ export default function AuthPage({ mode }: AuthPageProps) {
                   <label className="block font-sans text-xs font-medium text-neutral-700">
                     Email Address <span className="text-red-500">*</span>
                   </label>
-                  <div className="relative flex items-center rounded-md border border-neutral-300 bg-white px-3.5 py-2.5 shadow-2xs focus-within:border-[#F9D8E0] focus-within:ring-2 focus-within:ring-[#F9D8E0]/15 transition">
+                  <div className="relative flex items-center rounded-md border border-neutral-300 bg-white px-3.5 py-2.5 shadow-2xs focus-within:border-[#E8DDF9] focus-within:ring-2 focus-within:ring-[#E8DDF9]/15 transition">
                     <IoMailOutline className="text-neutral-400 mr-2.5 size-4 shrink-0" />
                     <input
                       type="email"
@@ -575,7 +575,7 @@ export default function AuthPage({ mode }: AuthPageProps) {
                 <button
                   type="submit"
                   disabled={isSubmitting || !clerk.loaded}
-                  className="w-full rounded-md bg-[#F9D8E0] hover:bg-[#d4af37] text-ink hover:text-ink py-3 px-4 font-display text-xs sm:text-sm font-semibold uppercase tracking-[1.5px] transition-all duration-300 cursor-pointer shadow-sm active:scale-[0.99] disabled:opacity-70 mt-1"
+                  className="w-full rounded-full bg-[#E8DDF9] hover:bg-lavender-hover text-ink hover:text-ink py-3 px-4 font-display text-xs sm:text-sm font-semibold uppercase tracking-[1.5px] transition-all duration-300 cursor-pointer shadow-sm active:scale-[0.99] disabled:opacity-70 mt-1"
                 >
                   {isSubmitting ? "SENDING..." : isResetPassword ? "RESET PASSWORD" : "SEND RESET CODE"}
                 </button>
@@ -599,7 +599,7 @@ export default function AuthPage({ mode }: AuthPageProps) {
                 <Link
                   href="/signup"
                   scroll={false}
-                  className={`w-1/2 py-1.5 sm:py-2 text-center font-display text-xs sm:text-sm font-semibold rounded-md transition-all duration-200 ${
+                  className={`w-1/2 py-1.5 sm:py-2 text-center font-display text-xs sm:text-sm font-semibold rounded-full transition-all duration-200 ${
                     !isLogin
                       ? "bg-white text-[#111111] shadow-xs"
                       : "text-neutral-500 hover:text-[#111111]"
@@ -610,7 +610,7 @@ export default function AuthPage({ mode }: AuthPageProps) {
                 <Link
                   href="/login"
                   scroll={false}
-                  className={`w-1/2 py-1.5 sm:py-2 text-center font-display text-xs sm:text-sm font-semibold rounded-md transition-all duration-200 ${
+                  className={`w-1/2 py-1.5 sm:py-2 text-center font-display text-xs sm:text-sm font-semibold rounded-full transition-all duration-200 ${
                     isLogin
                       ? "bg-white text-[#111111] shadow-xs"
                       : "text-neutral-500 hover:text-[#111111]"
@@ -621,7 +621,7 @@ export default function AuthPage({ mode }: AuthPageProps) {
               </div>
 
               {!isSocialCompletion && <div className="space-y-3 pb-3">
-                <button type="button" onClick={handleGoogleSignIn} disabled={isSubmitting || !clerk.loaded} className="flex min-h-11 w-full items-center justify-center gap-3 rounded-md border border-neutral-300 bg-white px-4 py-2.5 font-sans text-sm font-medium text-ink shadow-2xs transition-colors hover:bg-neutral-50 disabled:cursor-wait disabled:opacity-60">
+                <button type="button" onClick={handleGoogleSignIn} disabled={isSubmitting || !clerk.loaded} className="flex min-h-11 w-full items-center justify-center gap-3 rounded-full border border-neutral-300 bg-white px-4 py-2.5 font-sans text-sm font-medium text-ink shadow-2xs transition-colors hover:bg-neutral-50 disabled:cursor-wait disabled:opacity-60">
                   <FcGoogle size={20} aria-hidden="true" />
                   Continue with Google
                 </button>
@@ -642,7 +642,7 @@ export default function AuthPage({ mode }: AuthPageProps) {
                     <label className="block font-sans text-xs font-medium text-neutral-700">
                       Email Address <span className="text-red-500">*</span>
                     </label>
-                    <div className="relative flex items-center rounded-md border border-neutral-300 bg-white px-3.5 py-2 sm:py-2.5 shadow-2xs focus-within:border-[#F9D8E0] focus-within:ring-2 focus-within:ring-[#F9D8E0]/15 transition">
+                    <div className="relative flex items-center rounded-md border border-neutral-300 bg-white px-3.5 py-2 sm:py-2.5 shadow-2xs focus-within:border-[#E8DDF9] focus-within:ring-2 focus-within:ring-[#E8DDF9]/15 transition">
                       <IoMailOutline className="text-neutral-400 mr-2.5 size-4 shrink-0" />
                       <input
                         type="email"
@@ -667,7 +667,7 @@ export default function AuthPage({ mode }: AuthPageProps) {
                         Forgot password?
                       </Link>
                     </div>
-                    <div className="relative flex items-center rounded-md border border-neutral-300 bg-white px-3.5 py-2 sm:py-2.5 shadow-2xs focus-within:border-[#F9D8E0] focus-within:ring-2 focus-within:ring-[#F9D8E0]/15 transition">
+                    <div className="relative flex items-center rounded-md border border-neutral-300 bg-white px-3.5 py-2 sm:py-2.5 shadow-2xs focus-within:border-[#E8DDF9] focus-within:ring-2 focus-within:ring-[#E8DDF9]/15 transition">
                       <IoLockClosedOutline className="text-neutral-400 mr-2.5 size-4 shrink-0" />
                       <input
                         type={showPassword ? "text" : "password"}
@@ -694,7 +694,7 @@ export default function AuthPage({ mode }: AuthPageProps) {
                   <button
                     type="submit"
                     disabled={isSubmitting || !clerk.loaded}
-                    className="w-full rounded-md bg-[#F9D8E0] hover:bg-[#d4af37] text-ink hover:text-ink py-3 px-4 font-display text-xs sm:text-sm font-semibold uppercase tracking-[1.5px] transition-all duration-300 cursor-pointer shadow-sm active:scale-[0.99] disabled:opacity-70 mt-1"
+                    className="w-full rounded-full bg-[#E8DDF9] hover:bg-lavender-hover text-ink hover:text-ink py-3 px-4 font-display text-xs sm:text-sm font-semibold uppercase tracking-[1.5px] transition-all duration-300 cursor-pointer shadow-sm active:scale-[0.99] disabled:opacity-70 mt-1"
                   >
                     {isSubmitting ? "SIGNING IN..." : "SIGN IN"}
                   </button>
@@ -715,7 +715,7 @@ export default function AuthPage({ mode }: AuthPageProps) {
                       <label className="block font-sans text-xs font-medium text-neutral-700">
                         Full Name <span className="text-red-500">*</span>
                       </label>
-                      <div className="relative flex items-center rounded-md border border-neutral-300 bg-white px-3 py-2 shadow-2xs focus-within:border-[#F9D8E0] focus-within:ring-2 focus-within:ring-[#F9D8E0]/15 transition">
+                      <div className="relative flex items-center rounded-md border border-neutral-300 bg-white px-3 py-2 shadow-2xs focus-within:border-[#E8DDF9] focus-within:ring-2 focus-within:ring-[#E8DDF9]/15 transition">
                         <IoPersonOutline className="text-neutral-400 mr-2 size-4 shrink-0" />
                         <input
                           type="text"
@@ -731,7 +731,7 @@ export default function AuthPage({ mode }: AuthPageProps) {
                       <label className="block font-sans text-xs font-medium text-neutral-700">
                         Mobile Number <span className="text-red-500">*</span>
                       </label>
-                      <div className="relative flex items-center rounded-md border border-neutral-300 bg-white px-3 py-2 shadow-2xs focus-within:border-[#F9D8E0] focus-within:ring-2 focus-within:ring-[#F9D8E0]/15 transition">
+                      <div className="relative flex items-center rounded-md border border-neutral-300 bg-white px-3 py-2 shadow-2xs focus-within:border-[#E8DDF9] focus-within:ring-2 focus-within:ring-[#E8DDF9]/15 transition">
                         <IoCallOutline className="text-neutral-400 mr-1.5 size-4 shrink-0" />
                         <span className="font-sans text-xs font-medium text-neutral-500 mr-1.5 border-r border-neutral-200 pr-1.5">
                           +91
@@ -752,7 +752,7 @@ export default function AuthPage({ mode }: AuthPageProps) {
                     <label className="block font-sans text-xs font-medium text-neutral-700">
                       Email Address <span className="text-red-500">*</span>
                     </label>
-                    <div className="relative flex items-center rounded-md border border-neutral-300 bg-white px-3 py-2 shadow-2xs focus-within:border-[#F9D8E0] focus-within:ring-2 focus-within:ring-[#F9D8E0]/15 transition">
+                    <div className="relative flex items-center rounded-md border border-neutral-300 bg-white px-3 py-2 shadow-2xs focus-within:border-[#E8DDF9] focus-within:ring-2 focus-within:ring-[#E8DDF9]/15 transition">
                       <IoMailOutline className="text-neutral-400 mr-2 size-4 shrink-0" />
                       <input
                         type="email"
@@ -772,7 +772,7 @@ export default function AuthPage({ mode }: AuthPageProps) {
                         <label className="block font-sans text-xs font-medium text-neutral-700">
                           Password <span className="text-red-500">*</span>
                         </label>
-                        <div className="relative flex items-center rounded-md border border-neutral-300 bg-white px-2.5 py-2 shadow-2xs focus-within:border-[#F9D8E0] focus-within:ring-2 focus-within:ring-[#F9D8E0]/15 transition">
+                        <div className="relative flex items-center rounded-md border border-neutral-300 bg-white px-2.5 py-2 shadow-2xs focus-within:border-[#E8DDF9] focus-within:ring-2 focus-within:ring-[#E8DDF9]/15 transition">
                           <IoLockClosedOutline className="text-neutral-400 mr-1.5 size-4 shrink-0" />
                           <input
                             type={showPassword ? "text" : "password"}
@@ -796,7 +796,7 @@ export default function AuthPage({ mode }: AuthPageProps) {
                         <label className="block font-sans text-xs font-medium text-neutral-700">
                           Confirm Password <span className="text-red-500">*</span>
                         </label>
-                        <div className="relative flex items-center rounded-md border border-neutral-300 bg-white px-2.5 py-2 shadow-2xs focus-within:border-[#F9D8E0] focus-within:ring-2 focus-within:ring-[#F9D8E0]/15 transition">
+                        <div className="relative flex items-center rounded-md border border-neutral-300 bg-white px-2.5 py-2 shadow-2xs focus-within:border-[#E8DDF9] focus-within:ring-2 focus-within:ring-[#E8DDF9]/15 transition">
                           <IoLockClosedOutline className="text-neutral-400 mr-1.5 size-4 shrink-0" />
                           <input
                             type={showConfirmPassword ? "text" : "password"}
@@ -855,7 +855,7 @@ export default function AuthPage({ mode }: AuthPageProps) {
                       id="signup-terms"
                       checked={agreedTerms}
                       onChange={(e) => setAgreedTerms(e.target.checked)}
-                      className="size-3.5 mt-0.5 rounded-md border-neutral-300 accent-[#F9D8E0] cursor-pointer"
+                      className="size-3.5 mt-0.5 rounded-md border-neutral-300 accent-[#E8DDF9] cursor-pointer"
                     />
                     <label
                       htmlFor="signup-terms"
@@ -885,7 +885,7 @@ export default function AuthPage({ mode }: AuthPageProps) {
                   <button
                     type="submit"
                     disabled={isSubmitting || !clerk.loaded}
-                    className="w-full rounded-md bg-[#F9D8E0] hover:bg-[#d4af37] text-ink hover:text-ink py-3 px-4 font-display text-xs sm:text-sm font-semibold uppercase tracking-[1.5px] transition-all duration-300 cursor-pointer shadow-sm active:scale-[0.99] disabled:opacity-70 mt-1"
+                    className="w-full rounded-full bg-[#E8DDF9] hover:bg-lavender-hover text-ink hover:text-ink py-3 px-4 font-display text-xs sm:text-sm font-semibold uppercase tracking-[1.5px] transition-all duration-300 cursor-pointer shadow-sm active:scale-[0.99] disabled:opacity-70 mt-1"
                   >
                     {isSubmitting ? "PROCESSING..." : "CREATE ACCOUNT"}
                   </button>

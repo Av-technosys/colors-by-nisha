@@ -95,7 +95,7 @@ export function CatalogTable({ title, singular, description, basePath, columns, 
             {basePath === "/admin/products" && <ProductCsvUpload onImportSuccess={reload} />}
             <Link
               href={`${basePath}/new`}
-              className="inline-flex min-h-11 items-center gap-2 rounded-md bg-purple px-4 font-display text-sm text-ink"
+              className="inline-flex min-h-11 items-center gap-2 rounded-full bg-purple px-4 font-display text-sm text-ink"
             >
               <Plus size={17} />
               Add {singular}
@@ -135,7 +135,7 @@ export function CatalogTable({ title, singular, description, basePath, columns, 
               )) : data.error ? (
                 <tr><td colSpan={columnCount} className="px-5 py-12 text-center">
                   <p role="alert" className="whitespace-normal text-sm text-neutral-500">{data.error}</p>
-                  <button onClick={reload} className="mt-4 min-h-10 rounded-md border border-[#e5e1da] px-4 text-xs text-ink">Try again</button>
+                  <button onClick={reload} className="mt-4 min-h-10 rounded-full border border-[#e5e1da] px-4 text-xs text-ink">Try again</button>
                 </td></tr>
               ) : !filtered.length ? (
                 <tr><td colSpan={columnCount} className="px-5 py-12 text-center">
@@ -147,16 +147,16 @@ export function CatalogTable({ title, singular, description, basePath, columns, 
                 <td className="px-5 py-5"><Link href={`${basePath}/${record.id}/edit`} className="block font-display text-sm text-ink hover:underline">{record.name}</Link><span className="mt-1 block max-w-64 truncate text-[10px] text-neutral-400">/{record.slug}</span></td>
                 {columns.map(column => <td key={column} className="px-5 py-5 text-neutral-500">{record.fields[column]}</td>)}
                 {!!statuses.length && <td className="px-5 py-5"><StatusBadge status={record.status ? record.status.charAt(0).toUpperCase() + record.status.slice(1) : "Draft"} /></td>}
-                <td className="px-5 py-5"><div className="flex items-center gap-2"><Link href={`${basePath}/${record.id}/edit`} aria-label={`Edit ${record.name}`} className="grid size-9 place-items-center rounded-md text-ink hover:bg-[#f1edf5]"><Pencil size={16} /></Link><button onClick={() => { setDeleting(record); setError(""); }} aria-label={`Delete ${record.name}`} className="grid size-9 place-items-center rounded-md text-[#a16b60] hover:bg-[#f7eeec]"><Trash2 size={16} /></button></div></td>
+                <td className="px-5 py-5"><div className="flex items-center gap-2"><Link href={`${basePath}/${record.id}/edit`} aria-label={`Edit ${record.name}`} className="grid size-9 place-items-center rounded-md text-ink hover:bg-[#f1edf5]"><Pencil size={16} /></Link><button onClick={() => { setDeleting(record); setError(""); }} aria-label={`Delete ${record.name}`} className="grid size-9 place-items-center rounded-full text-[#a16b60] hover:bg-[#f7eeec]"><Trash2 size={16} /></button></div></td>
               </tr>
             ))}
             </tbody>
           </table>
 
         </div>
-        <div className="flex flex-wrap items-center justify-between gap-4 border-t border-[#eeeae4] px-5 py-4 text-[10px] text-neutral-400"><p>Showing {filtered.length ? start + 1 : 0}–{Math.min(start + 10, filtered.length)} of {filtered.length}</p><div className="flex items-center gap-3"><button disabled={loading || !!data.error || currentPage === 1} onClick={() => setPage(currentPage - 1)} aria-label="Previous page" className="grid size-8 place-items-center rounded-md border border-[#e8e5df] disabled:opacity-30"><ChevronLeft size={14} /></button>{currentPage} / {pageCount}<button disabled={loading || !!data.error || currentPage === pageCount} onClick={() => setPage(currentPage + 1)} aria-label="Next page" className="grid size-8 place-items-center rounded-md border border-[#e8e5df] disabled:opacity-30"><ChevronRight size={14} /></button></div></div>
+        <div className="flex flex-wrap items-center justify-between gap-4 border-t border-[#eeeae4] px-5 py-4 text-[10px] text-neutral-400"><p>Showing {filtered.length ? start + 1 : 0}–{Math.min(start + 10, filtered.length)} of {filtered.length}</p><div className="flex items-center gap-3"><button disabled={loading || !!data.error || currentPage === 1} onClick={() => setPage(currentPage - 1)} aria-label="Previous page" className="grid size-8 place-items-center rounded-full border border-[#e8e5df] disabled:opacity-30"><ChevronLeft size={14} /></button>{currentPage} / {pageCount}<button disabled={loading || !!data.error || currentPage === pageCount} onClick={() => setPage(currentPage + 1)} aria-label="Next page" className="grid size-8 place-items-center rounded-full border border-[#e8e5df] disabled:opacity-30"><ChevronRight size={14} /></button></div></div>
       </div>
-      {deleting && <Modal title={`Delete ${singular}`} onClose={closeDelete} className="w-full max-w-md p-6 sm:p-8"><h2 className="pr-6 font-display text-2xl">Delete {singular}?</h2><p className="mt-3 text-sm text-neutral-500">“{deleting.name}” will be permanently deleted.{singular === "product" && " Its variants and media records will also be removed."}</p>{error && <p role="alert" className="mt-4 rounded-md bg-[#f7eeec] p-3 text-xs text-[#a16b60]">{error}</p>}<div className="mt-6 flex justify-end gap-3"><button disabled={pending} onClick={closeDelete} className="min-h-11 px-4 text-sm text-neutral-500">Cancel</button><button disabled={pending} onClick={confirmDelete} className="min-h-11 rounded-md bg-[#9c554c] px-4 text-sm text-white disabled:opacity-50">{pending ? "Deleting…" : `Delete ${singular}`}</button></div></Modal>}
+      {deleting && <Modal title={`Delete ${singular}`} onClose={closeDelete} className="w-full max-w-md p-6 sm:p-8"><h2 className="pr-6 font-display text-2xl">Delete {singular}?</h2><p className="mt-3 text-sm text-neutral-500">“{deleting.name}” will be permanently deleted.{singular === "product" && " Its variants and media records will also be removed."}</p>{error && <p role="alert" className="mt-4 rounded-md bg-[#f7eeec] p-3 text-xs text-[#a16b60]">{error}</p>}<div className="mt-6 flex justify-end gap-3"><button disabled={pending} onClick={closeDelete} className="min-h-11 px-4 text-sm text-neutral-500">Cancel</button><button disabled={pending} onClick={confirmDelete} className="min-h-11 rounded-full bg-[#9c554c] px-4 text-sm text-white disabled:opacity-50">{pending ? "Deleting…" : `Delete ${singular}`}</button></div></Modal>}
     </>
   );
 }

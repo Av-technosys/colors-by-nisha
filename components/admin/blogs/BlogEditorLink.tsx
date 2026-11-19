@@ -45,7 +45,7 @@ export default function BlogEditorLink({ editor, active, disabled }: { editor: E
   }
 
   return <>
-    <button type="button" disabled={disabled} aria-label="Insert or edit link" title="Insert or edit link" aria-pressed={active} aria-haspopup="dialog" aria-expanded={open} onMouseDown={event => event.preventDefault()} onClick={showDialog} className={`flex size-9 shrink-0 items-center justify-center rounded-md disabled:opacity-35 ${active ? "bg-purple text-ink" : "text-neutral-500 hover:bg-[#eee8f4] hover:text-ink"}`}><Link2 size={17} aria-hidden="true" /></button>
+    <button type="button" disabled={disabled} aria-label="Insert or edit link" title="Insert or edit link" aria-pressed={active} aria-haspopup="dialog" aria-expanded={open} onMouseDown={event => event.preventDefault()} onClick={showDialog} className={`flex size-9 shrink-0 items-center justify-center rounded-full disabled:opacity-35 ${active ? "bg-purple text-ink" : "text-neutral-500 hover:bg-[#eee8f4] hover:text-ink"}`}><Link2 size={17} aria-hidden="true" /></button>
     {open && createPortal(
       <Modal title={active ? "Edit link" : "Add link"} onClose={close} className="w-full max-w-md p-6">
         <h2 className="font-display text-xl text-ink">{active ? "Edit link" : "Add link"}</h2>
@@ -56,8 +56,8 @@ export default function BlogEditorLink({ editor, active, disabled }: { editor: E
           <label className="inline-flex items-center gap-2 text-sm"><input type="checkbox" checked={newTab} onChange={event => setNewTab(event.target.checked)} className="size-4 accent-purple" />Open in a new tab</label>
           <div className="flex flex-wrap justify-end gap-3 pt-2">
             {active && <button type="button" onClick={() => { editor.chain().focus().extendMarkRange("link").unsetLink().run(); close(); }} className="mr-auto text-xs text-[#a16b60]">Remove link</button>}
-            <button type="button" onClick={close} className="rounded-md border border-[#e5e1da] px-4 py-2.5 text-sm">Cancel</button>
-            <button type="submit" className="rounded-md bg-purple px-4 py-2.5 text-sm text-ink">Apply link</button>
+            <button type="button" onClick={close} className="rounded-full border border-[#e5e1da] px-4 py-2.5 text-sm">Cancel</button>
+            <button type="submit" className="rounded-full bg-purple px-4 py-2.5 text-sm text-ink">Apply link</button>
           </div>
         </Form>
       </Modal>, document.body,

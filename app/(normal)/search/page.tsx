@@ -152,7 +152,7 @@ function SearchPageContent() {
                 <div className="mt-10 mb-12 flex justify-center">
                   <Link
                     href={`/shop?search=${encodeURIComponent(query)}`}
-                    className="inline-flex items-center justify-center bg-[#F9D8E0] hover:bg-[#d4af37] text-[#FCF1D8] hover:text-[#F9D8E0] font-display text-[14px] md:text-[15px] font-semibold uppercase tracking-[1.5px] px-8 py-3.5 rounded-md transition-all duration-300 shadow-sm cursor-pointer"
+                    className="inline-flex items-center justify-center bg-[#E8DDF9] hover:bg-lavender-hover text-ink font-display text-[14px] md:text-[15px] font-semibold uppercase tracking-[1.5px] px-8 py-3.5 rounded-full transition-all duration-300 shadow-sm cursor-pointer"
                   >
                     VIEW ALL RESULTS
                   </Link>

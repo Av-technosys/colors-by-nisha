@@ -21,7 +21,7 @@ export function Dashboard({ data }: { data: AdminDashboardData }) {
         title="A beautiful day to create."
         description="Your latest payments, orders, and collection updates."
         action={(
-          <Link href="/admin/products/new" className="inline-flex min-h-11 items-center justify-center gap-2 rounded-md bg-purple px-4 font-display text-sm text-ink transition-colors hover:bg-ice">
+          <Link href="/admin/products/new" className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-purple px-4 font-display text-sm text-ink transition-colors hover:bg-lavender-hover">
             <Plus size={17} aria-hidden="true" />Add to your collection
           </Link>
         )}

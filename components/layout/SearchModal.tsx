@@ -97,7 +97,7 @@ export function SearchModal() {
           {/* Desktop Top-Right Close Button (Matches Desktop Screenshot) */}
           <button
             onClick={handleClose}
-            className="hidden md:grid absolute right-8 top-8 z-30 size-10 place-items-center rounded-md text-neutral-600 hover:text-black hover:bg-neutral-100 transition cursor-pointer"
+            className="hidden md:grid absolute right-8 top-8 z-30 size-10 place-items-center rounded-full text-neutral-600 hover:text-black hover:bg-neutral-100 transition cursor-pointer"
             aria-label="Close search"
           >
             <IoCloseOutline size={28} />
@@ -148,7 +148,7 @@ export function SearchModal() {
               <button
                 type="button"
                 onClick={handleClose}
-                className="md:hidden size-10 shrink-0 grid place-items-center rounded-md text-neutral-600 hover:text-black hover:bg-neutral-100 transition cursor-pointer"
+                className="md:hidden size-10 shrink-0 grid place-items-center rounded-full text-neutral-600 hover:text-black hover:bg-neutral-100 transition cursor-pointer"
                 aria-label="Close search"
               >
                 <IoCloseOutline size={26} />
@@ -205,7 +205,7 @@ export function SearchModal() {
                     <Link
                       href={`/shop?search=${encodeURIComponent(query)}`}
                       onClick={handleClose}
-                      className="inline-flex items-center justify-center bg-[#F9D8E0] hover:bg-[#d4af37] text-[#FCF1D8] hover:text-[#F9D8E0] font-display text-[14px] md:text-[15px] font-semibold uppercase tracking-[1.5px] px-8 py-3.5 rounded-md transition-all duration-300 shadow-sm cursor-pointer"
+                      className="inline-flex items-center justify-center bg-[#E8DDF9] hover:bg-lavender-hover text-ink font-display text-[14px] md:text-[15px] font-semibold uppercase tracking-[1.5px] px-8 py-3.5 rounded-full transition-all duration-300 shadow-sm cursor-pointer"
                     >
                       VIEW ALL RESULTS
                     </Link>

@@ -52,7 +52,7 @@ export function MobileMenuDrawer() {
           </Link>
           <button
             onClick={() => setMenuOpen(false)}
-            className="grid size-9 place-items-center rounded-md text-neutral-500 hover:bg-neutral-100 hover:text-ink transition"
+            className="grid size-9 place-items-center rounded-full text-neutral-500 hover:bg-neutral-100 hover:text-ink transition"
             aria-label="Close menu"
           >
             ✕
@@ -80,10 +80,10 @@ export function MobileMenuDrawer() {
             <Link
               href="/shop"
               onClick={() => setMenuOpen(false)}
-              className="flex items-center justify-between py-2.5 text-base font-bold text-ink bg-neutral-50 px-3 rounded-md hover:bg-neutral-100 transition"
+              className="flex items-center justify-between py-2.5 text-base font-bold text-ink bg-neutral-50 px-3 rounded-full hover:bg-neutral-100 transition"
             >
               <span className="uppercase tracking-wide text-ink">Shop All Products</span>
-              <span className="text-xs rounded-md bg-[#F9D8E0] text-ink px-2 py-0.5">Explore</span>
+              <span className="text-xs rounded-md bg-[#E8DDF9] text-ink px-2 py-0.5">Explore</span>
             </Link>
           </div>
 
@@ -164,7 +164,7 @@ export function MobileMenuDrawer() {
             href="https://wa.me/919799330455?text=Hello%20Colors%20by%20Nisha!%20I%20need%20assistance."
             target="_blank"
             rel="noreferrer"
-            className="flex items-center justify-center gap-2 rounded-md bg-[#25D366] py-2.5 px-4 text-xs font-semibold uppercase text-white shadow-xs"
+            className="flex items-center justify-center gap-2 rounded-full bg-[#25D366] py-2.5 px-4 text-xs font-semibold uppercase text-white shadow-xs"
           >
             WhatsApp Stylist Support
           </a>

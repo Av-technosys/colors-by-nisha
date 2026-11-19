@@ -52,7 +52,7 @@ export function ProductCsvUpload({ onImportSuccess }: { onImportSuccess?: () => 
         type="button"
         disabled={loading}
         onClick={() => fileInputRef.current?.click()}
-        className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-[#e5e1da] bg-white px-4 font-display text-sm text-ink hover:bg-[#fbfaf8] disabled:opacity-50 transition-colors shadow-sm"
+        className="inline-flex min-h-11 items-center gap-2 rounded-full border border-[#e5e1da] bg-white px-4 font-display text-sm text-ink hover:bg-[#fbfaf8] disabled:opacity-50 transition-colors shadow-sm"
       >
         {loading ? <Loader2 size={16} className="animate-spin" /> : <Upload size={16} />}
         <span>{loading ? "Uploading CSV…" : "Upload CSV"}</span>

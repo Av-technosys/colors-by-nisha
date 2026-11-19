@@ -7,7 +7,7 @@ import { formatSelectedBlock, setBlockSpacing } from "./editor-commands";
 import BlogEditorLink from "./BlogEditorLink";
 
 function Tool({ label, active, disabled, onClick, children }: { label: string; active?: boolean; disabled?: boolean; onClick: () => void; children: ReactNode }) {
-  return <button type="button" title={label} aria-label={label} aria-pressed={active} disabled={disabled} onMouseDown={event => event.preventDefault()} onClick={onClick} className={`flex size-9 shrink-0 items-center justify-center rounded-md transition-colors focus-visible:outline-2 focus-visible:outline-purple disabled:cursor-default disabled:opacity-35 ${active ? "bg-purple text-ink" : "text-neutral-500 hover:bg-[#eee8f4] hover:text-ink"}`}>{children}</button>;
+  return <button type="button" title={label} aria-label={label} aria-pressed={active} disabled={disabled} onMouseDown={event => event.preventDefault()} onClick={onClick} className={`flex size-9 shrink-0 items-center justify-center rounded-full transition-colors focus-visible:outline-2 focus-visible:outline-purple disabled:cursor-default disabled:opacity-35 ${active ? "bg-purple text-ink" : "text-neutral-500 hover:bg-[#eee8f4] hover:text-ink"}`}>{children}</button>;
 }
 
 export default function BlogEditorToolbar({ editor, disabled }: { editor: Editor; disabled: boolean }) {
