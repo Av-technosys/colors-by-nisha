@@ -138,7 +138,7 @@ export function ProductGallery({ images, productName, productSlug }: ProductGall
                 e.stopPropagation();
                 toggleWishlist(productSlug);
               }}
-              className={`absolute right-3.5 top-3.5 z-10 grid size-10 place-items-center rounded-md bg-white shadow-md transition-all hover:scale-105 cursor-pointer ${
+              className={`absolute right-3.5 top-3.5 z-10 grid size-10 place-items-center rounded-full bg-white shadow-md transition-all hover:scale-105 cursor-pointer ${
                 wishlisted ? "text-[#d0473e]" : "text-neutral-700 hover:text-ink"
               }`}
               aria-label={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
@@ -170,7 +170,7 @@ export function ProductGallery({ images, productName, productSlug }: ProductGall
                     e.stopPropagation();
                     handlePrev();
                   }}
-                  className="hidden md:grid absolute left-3 top-1/2 -translate-y-1/2 size-10 place-items-center rounded-md bg-white/80 backdrop-blur-xs text-ink shadow-md opacity-0 group-hover:opacity-100 transition hover:bg-white cursor-pointer"
+                  className="hidden md:grid absolute left-3 top-1/2 -translate-y-1/2 size-10 place-items-center rounded-full bg-white/80 backdrop-blur-xs text-ink shadow-md opacity-0 group-hover:opacity-100 transition hover:bg-white cursor-pointer"
                   aria-label="Previous image"
                 >
                   ‹
@@ -180,7 +180,7 @@ export function ProductGallery({ images, productName, productSlug }: ProductGall
                     e.stopPropagation();
                     handleNext();
                   }}
-                  className="hidden md:grid absolute right-3 top-1/2 -translate-y-1/2 size-10 place-items-center rounded-md bg-white/80 backdrop-blur-xs text-ink shadow-md opacity-0 group-hover:opacity-100 transition hover:bg-white cursor-pointer"
+                  className="hidden md:grid absolute right-3 top-1/2 -translate-y-1/2 size-10 place-items-center rounded-full bg-white/80 backdrop-blur-xs text-ink shadow-md opacity-0 group-hover:opacity-100 transition hover:bg-white cursor-pointer"
                   aria-label="Next image"
                 >
                   ›
@@ -225,7 +225,7 @@ export function ProductGallery({ images, productName, productSlug }: ProductGall
             <h2 id="product-lightbox-title" className="sr-only">Product images for {productName}</h2>
             <button
               onClick={() => setLightboxOpen(false)}
-              className="absolute right-5 top-5 z-20 grid size-10 place-items-center rounded-md bg-white/20 text-white hover:bg-white/40 transition text-xl cursor-pointer"
+              className="absolute right-5 top-5 z-20 grid size-10 place-items-center rounded-full bg-white/20 text-white hover:bg-white/40 transition text-xl cursor-pointer"
               aria-label="Close lightbox"
             >
               ✕
@@ -242,14 +242,14 @@ export function ProductGallery({ images, productName, productSlug }: ProductGall
               <>
                 <button
                   onClick={handlePrev}
-                  className="absolute left-2 top-1/2 -translate-y-1/2 grid size-12 place-items-center rounded-md bg-black/40 text-white hover:bg-black/60 transition text-2xl cursor-pointer"
+                  className="absolute left-2 top-1/2 -translate-y-1/2 grid size-12 place-items-center rounded-full bg-black/40 text-white hover:bg-black/60 transition text-2xl cursor-pointer"
                   aria-label="Previous"
                 >
                   ‹
                 </button>
                 <button
                   onClick={handleNext}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 grid size-12 place-items-center rounded-md bg-black/40 text-white hover:bg-black/60 transition text-2xl cursor-pointer"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 grid size-12 place-items-center rounded-full bg-black/40 text-white hover:bg-black/60 transition text-2xl cursor-pointer"
                   aria-label="Next"
                 >
                   ›

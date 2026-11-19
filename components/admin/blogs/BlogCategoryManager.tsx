@@ -70,7 +70,7 @@ export function BlogCategoryManager({ onChange }: { onChange: () => void }) {
   }
 
   return <>
-    <button type="button" disabled={loading} onClick={showCategories} className="inline-flex min-h-11 items-center gap-2 rounded-md border border-[#ddd5c8] bg-white px-4 text-sm text-purple disabled:opacity-50">
+    <button type="button" disabled={loading} onClick={showCategories} className="inline-flex min-h-11 items-center gap-2 rounded-full border border-[#ddd5c8] bg-white px-4 text-sm text-ink disabled:opacity-50">
       <Tags size={16} aria-hidden="true" />Manage categories
     </button>
     {open && <Modal title="Manage blog categories" onClose={close} className="w-full max-w-2xl p-5 sm:p-7">
@@ -93,8 +93,8 @@ export function BlogCategoryManager({ onChange }: { onChange: () => void }) {
                 <button type="button" disabled={pending} onClick={() => remove(category.id)} className="min-h-10 text-[#a16b60] underline underline-offset-4">Delete</button>
                 <button type="button" disabled={pending} onClick={() => setDeleting("")} className="min-h-10 text-neutral-500">Cancel</button>
               </div> : <div className="flex items-center gap-1">
-                <button type="button" disabled={pending} onClick={() => { setForm({ id: category.id, name: category.name, slug: category.slug }); setDeleting(""); setError(""); setNotice(""); }} aria-label={`Edit ${category.name}`} className="grid size-10 place-items-center rounded-md text-purple hover:bg-[#f1edf5]"><Pencil size={15} /></button>
-                <button type="button" disabled={pending || category.blogCount > 0} onClick={() => { setDeleting(category.id); setError(""); }} aria-label={`Delete ${category.name}`} title={category.blogCount ? "Reassign this category’s blogs before deleting it" : "Delete category"} className="grid size-10 place-items-center rounded-md text-[#a16b60] hover:bg-[#f7eeec] disabled:cursor-not-allowed disabled:opacity-30"><Trash2 size={15} /></button>
+                <button type="button" disabled={pending} onClick={() => { setForm({ id: category.id, name: category.name, slug: category.slug }); setDeleting(""); setError(""); setNotice(""); }} aria-label={`Edit ${category.name}`} className="grid size-10 place-items-center rounded-full text-ink hover:bg-[#f1edf5]"><Pencil size={15} /></button>
+                <button type="button" disabled={pending || category.blogCount > 0} onClick={() => { setDeleting(category.id); setError(""); }} aria-label={`Delete ${category.name}`} title={category.blogCount ? "Reassign this category’s blogs before deleting it" : "Delete category"} className="grid size-10 place-items-center rounded-full text-[#a16b60] hover:bg-[#f7eeec] disabled:cursor-not-allowed disabled:opacity-30"><Trash2 size={15} /></button>
               </div>}
             </li>)}
           </ul>
@@ -114,7 +114,7 @@ export function BlogCategoryManager({ onChange }: { onChange: () => void }) {
             </label>
             <div className="flex flex-wrap justify-end gap-3 border-t border-[#eeeae4] pt-4 sm:col-span-2">
               {form.id && <button type="button" onClick={() => setForm(empty)} className="min-h-11 px-3 text-sm text-neutral-500">Cancel edit</button>}
-              <button type="submit" className="min-h-11 rounded-md bg-purple px-5 text-sm text-white">{pending ? "Saving…" : form.id ? "Save changes" : "Add category"}</button>
+              <button type="submit" className="min-h-11 rounded-full bg-purple px-5 text-sm text-ink">{pending ? "Saving…" : form.id ? "Save changes" : "Add category"}</button>
             </div>
           </fieldset>
         </Form>

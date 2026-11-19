@@ -46,11 +46,11 @@ export function Footer() {
   }
 
   return (
-    <footer id="footer" className="bg-purple text-[13px] text-white">
+    <footer id="footer" className="bg-purple text-[13px] text-ink">
       <Container className="grid grid-cols-2 gap-x-5 gap-y-8 py-10 md:grid-cols-[2fr_1fr_1fr] md:gap-8 md:py-14 lg:grid-cols-[2fr_1fr_1fr_1.25fr_2fr]">
         <div className="col-span-2 min-w-0 md:col-span-1">
-          <div className="relative h-[125px] w-[100px]">
-            <Photo id={2} alt="Colors by Nisha Vijay" contain />
+          <div className="relative h-[150px] w-[110px] before:pointer-events-none before:absolute before:inset-x-2 before:inset-y-3 before:rounded-full before:bg-white/85 before:blur-lg">
+            <Photo id={1} alt="Colors by Nisha Vijay" contain className="z-10" />
           </div>
           <p className="my-4 max-w-[500px]">
             We only carry designs we believe in ethically and aesthetically –
@@ -123,14 +123,14 @@ export function Footer() {
           </h3>
           <p className="mb-5">Subscribe for store updates and discounts.</p>
           <Form
-            className="flex border-b border-white/50"
+            className="flex border-b border-ink/30"
             onSubmit={subscribe}
           >
             <label className="sr-only" htmlFor="newsletter-email">
               Email address
             </label>
             <input
-              className="min-w-0 flex-1 bg-transparent py-3 placeholder:text-white/65"
+              className="min-w-0 flex-1 bg-transparent py-3 placeholder:text-ink/60"
               id="newsletter-email"
               name="email"
               type="email"
@@ -153,7 +153,7 @@ export function Footer() {
           </p>
         </div>
       </Container>
-      <Container className="flex flex-col justify-between gap-1.5 border-t border-white/15 pt-3.5 pb-4 text-center text-xs md:flex-row md:pb-3.5 md:text-sm">
+      <Container className="flex flex-col justify-between gap-1.5 border-t border-ink/15 pt-3.5 pb-4 text-center text-xs md:flex-row md:pb-3.5 md:text-sm">
         <span>© 2026 Colors by Nisha Vijay. All rights reserved.</span>
         <span>
           Developed by{" "}

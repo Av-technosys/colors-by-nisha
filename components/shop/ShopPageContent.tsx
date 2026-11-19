@@ -172,7 +172,7 @@ export function ShopPageContent({ products: allProducts }: ShopPageContentProps)
                             setSelectedCategory(cat.key);
                             setCurrentPage(1);
                           }}
-                          className={`flex w-full items-center justify-between rounded-md px-2 py-1.5 transition-colors ${
+                          className={`flex w-full items-center justify-between rounded-full px-2 py-1.5 transition-colors ${
                             selectedCategory === cat.key
                               ? "font-semibold text-ink bg-neutral-100"
                               : "text-neutral-600 hover:text-ink hover:bg-neutral-50"
@@ -245,7 +245,7 @@ export function ShopPageContent({ products: allProducts }: ShopPageContentProps)
                           setPriceRange([0, tempPriceMax]);
                           setCurrentPage(1);
                         }}
-                        className="flex-1 rounded-md bg-ink py-2 text-xs font-semibold uppercase tracking-wider text-white hover:bg-neutral-800 transition"
+                        className="flex-1 rounded-full bg-purple py-2 text-xs font-semibold uppercase tracking-wider text-ink hover:bg-lavender-hover hover:text-ink transition"
                       >
                         Apply Price
                       </button>
@@ -256,7 +256,7 @@ export function ShopPageContent({ products: allProducts }: ShopPageContentProps)
                             setTempPriceMax(maxPrice);
                             setCurrentPage(1);
                           }}
-                          className="rounded-md border border-neutral-300 px-3 text-xs text-neutral-600 hover:text-ink"
+                          className="rounded-full border border-neutral-300 px-3 text-xs text-neutral-600 hover:text-ink"
                         >
                           Reset
                         </button>
@@ -271,7 +271,7 @@ export function ShopPageContent({ products: allProducts }: ShopPageContentProps)
                 <div className="pt-5">
                   <button
                     onClick={resetFilters}
-                    className="w-full rounded-md border border-neutral-300 py-2.5 text-xs font-semibold uppercase tracking-wider text-neutral-700 hover:bg-neutral-100 transition"
+                    className="w-full rounded-full border border-neutral-300 py-2.5 text-xs font-semibold uppercase tracking-wider text-neutral-700 hover:bg-neutral-100 transition"
                   >
                     Clear All Filters
                   </button>
@@ -287,7 +287,7 @@ export function ShopPageContent({ products: allProducts }: ShopPageContentProps)
               {/* Mobile Filter Button */}
               <button
                 onClick={() => setMobileFilterOpen(true)}
-                className="flex items-center gap-2 rounded-md border border-neutral-300 px-4 py-2 text-xs font-semibold uppercase tracking-wider text-ink lg:hidden"
+                className="flex items-center gap-2 rounded-full border border-neutral-300 px-4 py-2 text-xs font-semibold uppercase tracking-wider text-ink lg:hidden"
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M4 6h16M6 12h12M8 18h8" strokeLinecap="round" />
@@ -311,8 +311,8 @@ export function ShopPageContent({ products: allProducts }: ShopPageContentProps)
                     <button
                       key={cols}
                       onClick={() => setColumnCount(cols as 2 | 3 | 4)}
-                      className={`grid size-7 place-items-center rounded-md text-xs font-semibold transition ${
-                        columnCount === cols ? "bg-ink text-white" : "text-neutral-500 hover:text-ink"
+                      className={`grid size-7 place-items-center rounded-full text-xs font-semibold transition ${
+                        columnCount === cols ? "bg-purple text-ink" : "text-neutral-500 hover:text-ink"
                       }`}
                       aria-label={`${cols} columns`}
                       title={`${cols} columns`}
@@ -408,7 +408,7 @@ export function ShopPageContent({ products: allProducts }: ShopPageContentProps)
                 <p className="mt-1 text-sm text-neutral-500">Try adjusting your filters or search terms.</p>
                 <button
                   onClick={resetFilters}
-                  className="mt-5 rounded-md bg-ink px-6 py-2.5 text-xs font-semibold uppercase tracking-wider text-white hover:bg-neutral-800 transition"
+                  className="mt-5 rounded-full bg-purple px-6 py-2.5 text-xs font-semibold uppercase tracking-wider text-ink hover:bg-lavender-hover hover:text-ink transition"
                 >
                   Reset All Filters
                 </button>
@@ -439,7 +439,7 @@ export function ShopPageContent({ products: allProducts }: ShopPageContentProps)
                 <button
                   onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
                   disabled={currentPage === 1}
-                  className="grid size-10 place-items-center rounded-md border border-neutral-300 text-sm font-medium transition hover:border-ink disabled:opacity-30 disabled:pointer-events-none"
+                  className="grid size-10 place-items-center rounded-full border border-neutral-300 text-sm font-medium transition hover:border-ink disabled:opacity-30 disabled:pointer-events-none"
                   aria-label="Previous page"
                 >
                   ‹
@@ -448,9 +448,9 @@ export function ShopPageContent({ products: allProducts }: ShopPageContentProps)
                   <button
                     key={page}
                     onClick={() => handlePageChange(page)}
-                    className={`grid size-10 place-items-center rounded-md text-xs font-semibold transition ${
+                    className={`grid size-10 place-items-center rounded-full text-xs font-semibold transition ${
                       currentPage === page
-                        ? "bg-ink text-white shadow-xs"
+                        ? "bg-purple text-ink shadow-xs"
                         : "border border-neutral-200 text-neutral-700 hover:border-ink hover:text-ink"
                     }`}
                     aria-current={currentPage === page ? "page" : undefined}
@@ -461,7 +461,7 @@ export function ShopPageContent({ products: allProducts }: ShopPageContentProps)
                 <button
                   onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
                   disabled={currentPage === totalPages}
-                  className="grid size-10 place-items-center rounded-md border border-neutral-300 text-sm font-medium transition hover:border-ink disabled:opacity-30 disabled:pointer-events-none"
+                  className="grid size-10 place-items-center rounded-full border border-neutral-300 text-sm font-medium transition hover:border-ink disabled:opacity-30 disabled:pointer-events-none"
                   aria-label="Next page"
                 >
                   ›
@@ -493,7 +493,7 @@ export function ShopPageContent({ products: allProducts }: ShopPageContentProps)
               <h2 id="shop-filter-title" className="font-display text-base font-semibold uppercase tracking-wider text-ink">Filters</h2>
               <button
                 onClick={() => setMobileFilterOpen(false)}
-                className="grid size-8 place-items-center rounded-md text-neutral-500 hover:bg-neutral-100"
+                className="grid size-8 place-items-center rounded-full text-neutral-500 hover:bg-neutral-100"
                 aria-label="Close filters"
               >
                 ✕
@@ -511,7 +511,7 @@ export function ShopPageContent({ products: allProducts }: ShopPageContentProps)
                     <button
                       key={cat.key}
                       onClick={() => { setSelectedCategory(cat.key); setCurrentPage(1); }}
-                      className={`flex w-full items-center justify-between rounded-md px-3 py-2 text-sm ${
+                      className={`flex w-full items-center justify-between rounded-full px-3 py-2 text-sm ${
                         selectedCategory === cat.key ? "bg-neutral-100 font-semibold text-ink" : "text-neutral-600"
                       }`}
                     >
@@ -563,7 +563,7 @@ export function ShopPageContent({ products: allProducts }: ShopPageContentProps)
                   setCurrentPage(1);
                   setMobileFilterOpen(false);
                 }}
-                className="w-full rounded-md bg-ink py-3 text-xs font-semibold uppercase tracking-wider text-white"
+                className="w-full rounded-full bg-purple py-3 text-xs font-semibold uppercase tracking-wider text-ink hover:bg-lavender-hover hover:text-ink transition"
               >
                 Apply Filters ({filteredProducts.length})
               </button>
@@ -573,7 +573,7 @@ export function ShopPageContent({ products: allProducts }: ShopPageContentProps)
                     resetFilters();
                     setMobileFilterOpen(false);
                   }}
-                  className="w-full rounded-md border border-neutral-300 py-2.5 text-xs font-semibold uppercase tracking-wider text-neutral-700"
+                  className="w-full rounded-full border border-neutral-300 py-2.5 text-xs font-semibold uppercase tracking-wider text-neutral-700"
                 >
                   Reset
                 </button>

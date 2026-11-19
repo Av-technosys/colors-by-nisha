@@ -27,7 +27,7 @@ export function CartPageContent({ initialCrossSellProducts }: CartPageContentPro
   const hasUnavailableItems = cart.some(item => item.available === false || (item.stockCount !== undefined && item.quantity > item.stockCount));
 
   return <Container className="pb-16 pt-8 text-ink md:pb-24 md:pt-12">
-    <Link href="/shop" className="inline-flex min-h-9 items-center gap-2 text-xs text-neutral-500 transition hover:text-purple"><ArrowLeft size={14} />Continue shopping</Link>
+    <Link href="/shop" className="inline-flex min-h-9 items-center gap-2 text-xs text-neutral-500 transition hover:text-ink"><ArrowLeft size={14} />Continue shopping</Link>
     <header className="mb-8 mt-5 flex flex-wrap items-end justify-between gap-4 border-b border-[#e8e3da] pb-7 md:mb-10 md:mt-8">
       <div><p className="mb-3 text-[10px] uppercase tracking-[0.2em] text-[#94764d]">Colors by Nisha</p><h1 className="font-display text-2xl md:text-4xl">Your shopping bag</h1></div>
       {cartReady && quantity > 0 && <p className="pb-1 text-sm text-neutral-500">{quantity} {quantity === 1 ? "piece" : "pieces"} selected</p>}
@@ -47,15 +47,15 @@ export function CartPageContent({ initialCrossSellProducts }: CartPageContentPro
             <Link href={`/products/${item.slug}`} className="relative aspect-2/3 w-24 shrink-0 self-start overflow-hidden rounded-md bg-[#f4f1eb] sm:w-32"><Image src={item.image || "/product-placeholder.svg"} alt={item.name} fill unoptimized sizes="(min-width: 640px) 128px, 96px" className="object-cover transition duration-500 hover:scale-105" /></Link>
             <div className="flex min-w-0 flex-1 flex-col justify-between gap-4 py-1">
               <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-2">
-                <div className="min-w-0"><Link href={`/products/${item.slug}`} className="break-words font-display text-base hover:text-purple sm:text-xl">{item.name}</Link><p className="mt-2 text-xs text-neutral-500">{item.size || "Standard"}</p><p className="mt-2 text-xs text-neutral-600">{formatINR(item.price)} each</p></div>
+                <div className="min-w-0"><Link href={`/products/${item.slug}`} className="break-words font-display text-base hover:text-ink sm:text-xl">{item.name}</Link><p className="mt-2 text-xs text-neutral-500">{item.size || "Standard"}</p><p className="mt-2 text-xs text-neutral-600">{formatINR(item.price)} each</p></div>
                 <p className="text-sm font-medium sm:text-base">{formatINR(item.price * item.quantity)}</p>
               </div>
               {(unavailable || overStock) && <p role="status" className="text-xs leading-relaxed text-[#9e5144]">{unavailable ? "This option is no longer available. Please remove it or choose another option." : `Only ${item.stockCount} available. Please reduce the quantity.`}</p>}
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div className="inline-flex items-center rounded-md border border-[#e8e3da] bg-[#faf9f6]" role="group" aria-label={`Quantity for ${item.name}, ${item.size}`}>
-                  <button type="button" disabled={item.quantity <= 1} onClick={() => updateQuantity(index, item.quantity - 1)} aria-label={`Decrease quantity of ${item.name}`} className="grid size-9 place-items-center text-purple disabled:opacity-25 sm:size-10"><Minus size={13} /></button>
+                  <button type="button" disabled={item.quantity <= 1} onClick={() => updateQuantity(index, item.quantity - 1)} aria-label={`Decrease quantity of ${item.name}`} className="grid size-9 place-items-center text-ink disabled:opacity-25 sm:size-10"><Minus size={13} /></button>
                   <span aria-live="polite" className="w-7 text-center text-xs tabular-nums">{item.quantity}</span>
-                  <button type="button" disabled={unavailable || item.quantity >= limit} onClick={() => updateQuantity(index, item.quantity + 1)} aria-label={`Increase quantity of ${item.name}`} className="grid size-9 place-items-center text-purple disabled:opacity-25 sm:size-10"><Plus size={13} /></button>
+                  <button type="button" disabled={unavailable || item.quantity >= limit} onClick={() => updateQuantity(index, item.quantity + 1)} aria-label={`Increase quantity of ${item.name}`} className="grid size-9 place-items-center text-ink disabled:opacity-25 sm:size-10"><Plus size={13} /></button>
                 </div>
                 <button type="button" onClick={() => removeFromCart(index)} aria-label={`Remove ${item.name}`} className="inline-flex min-h-9 items-center gap-1.5 text-xs text-neutral-600 transition hover:text-[#9e5144]"><Trash2 size={13} />Remove</button>
               </div>

@@ -31,14 +31,14 @@ function Sidebar({ onNavigate, pathname = "" }: { onNavigate?: () => void; pathn
   }
 
   return (
-    <div className="flex h-full flex-col overflow-y-auto bg-purple px-5 pb-6 pt-8 text-white">
+    <div className="flex h-full flex-col overflow-y-auto bg-purple px-5 pb-6 pt-8 text-ink">
       <Link href="/admin" scroll={false} onNavigate={navigate} className="mb-10 block px-3">
         <span className="block font-display text-[30px] leading-none tracking-tight">
-          Colors <span className="font-sans text-sm italic text-[#dcccae]">by</span> Nisha
+          Colors <span className="font-sans text-sm italic text-ink/70">by</span> Nisha
         </span>
-        <span className="mt-3 block text-[9px] uppercase tracking-[0.28em] text-white/50">The administration suite</span>
+        <span className="mt-3 block text-[9px] uppercase tracking-[0.28em] text-ink/60">The administration suite</span>
       </Link>
-      <p className="mb-3 px-3 text-[10px] uppercase tracking-[0.2em] text-white/40">Workspace</p>
+      <p className="mb-3 px-3 text-[10px] uppercase tracking-[0.2em] text-ink/60">Workspace</p>
       <nav aria-label="Admin navigation" className="space-y-1.5">
         {navigation.map(item => {
           const active = pathname === item.href || (item.href !== "/admin" && pathname.startsWith(`${item.href}/`));
@@ -49,7 +49,7 @@ function Sidebar({ onNavigate, pathname = "" }: { onNavigate?: () => void; pathn
               scroll={false}
               onNavigate={navigate}
               aria-current={active ? "page" : undefined}
-              className={`flex min-h-12 items-center gap-3 rounded-md px-3 text-[13px] transition-colors ${active ? "bg-white text-purple shadow-sm" : "text-white/65 hover:bg-white/8 hover:text-white"}`}
+              className={`flex min-h-12 items-center gap-3 rounded-full px-3 text-[13px] transition-colors ${active ? "bg-white text-ink shadow-sm" : "text-ink/80 hover:bg-white/60 hover:text-ink"}`}
             >
               <item.icon size={19} aria-hidden="true" />
               {item.label}
@@ -60,13 +60,13 @@ function Sidebar({ onNavigate, pathname = "" }: { onNavigate?: () => void; pathn
       </nav>
 
       <div className="mt-auto pt-8">
-        <div className="flex items-center gap-3 border-t border-white/10 px-2 pt-5">
-          <span className="grid size-10 shrink-0 place-items-center rounded-md bg-[#eeeaf5] font-display text-sm text-purple">NV</span>
+        <div className="flex items-center gap-3 border-t border-ink/15 px-2 pt-5">
+          <span className="grid size-10 shrink-0 place-items-center rounded-md bg-[#eeeaf5] font-display text-sm text-ink">NV</span>
           <div className="min-w-0 flex-1">
             <p className="font-display text-sm">Nisha Vijay</p>
-            <p className="text-[10px] text-white/45">Store administrator</p>
+            <p className="text-[10px] text-ink/60">Store administrator</p>
           </div>
-          <Link href="/" onClick={onNavigate} aria-label="Exit admin" title="Exit admin" className="grid size-9 shrink-0 place-items-center rounded-md text-white/60 transition-colors hover:bg-white/10 hover:text-white">
+          <Link href="/" onClick={onNavigate} aria-label="Exit admin" title="Exit admin" className="grid size-9 shrink-0 place-items-center rounded-md text-ink/70 transition-colors hover:bg-white/60 hover:text-ink">
             <DoorOpen size={19} aria-hidden="true" />
           </Link>
         </div>
@@ -105,7 +105,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
           aria-label="Open navigation"
           aria-expanded={menuOpen}
           onClick={() => setMenuOpen(true)}
-          className="fixed bottom-[max(1.25rem,env(safe-area-inset-bottom))] right-5 z-40 grid size-12 place-items-center rounded-md bg-purple text-white shadow-lg lg:hidden"
+          className="fixed bottom-[max(1.25rem,env(safe-area-inset-bottom))] right-5 z-40 grid size-12 place-items-center rounded-full bg-purple text-ink shadow-lg lg:hidden"
         >
           <Menu size={20} aria-hidden="true" />
         </button>
