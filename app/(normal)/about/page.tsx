@@ -190,7 +190,7 @@ export default function AboutUsPage() {
               </p>
               <Link
                 href="/shop?category=shree-nath-ji"
-                className="inline-flex items-center justify-center bg-[#2d254d] text-[#FCF1D8] hover:bg-[#d4af37] hover:text-[#2d254d] font-display text-[14px] font-normal uppercase tracking-[1.5px] leading-normal px-8 py-3.5 rounded-md transition-all duration-300 shadow-sm cursor-pointer"
+                className="inline-flex items-center justify-center bg-[#F9D8E0] text-ink hover:bg-ice hover:text-ink font-display text-[14px] font-normal uppercase tracking-[1.5px] leading-normal px-8 py-3.5 rounded-md transition-all duration-300 shadow-sm cursor-pointer"
               >
                 EXPLORE COLLECTION
               </Link>
@@ -220,7 +220,7 @@ export default function AboutUsPage() {
               </p>
               <Link
                 href="/products/raasleela"
-                className="inline-flex items-center justify-center bg-[#2d254d] text-[#FCF1D8] hover:bg-[#d4af37] hover:text-[#2d254d] font-display text-[14px] font-normal uppercase tracking-[1.5px] leading-normal px-10 py-3.5 rounded-md transition-all duration-300 shadow-sm cursor-pointer"
+                className="inline-flex items-center justify-center bg-[#F9D8E0] text-ink hover:bg-ice hover:text-ink font-display text-[14px] font-normal uppercase tracking-[1.5px] leading-normal px-10 py-3.5 rounded-md transition-all duration-300 shadow-sm cursor-pointer"
               >
                 SHOP NOW
               </Link>
@@ -241,21 +241,21 @@ export default function AboutUsPage() {
       </section>
 
       {/* 5. Section 5: Our Story*/}
-      <section className="w-full bg-[#2d254d] text-white py-10 md:py-14" aria-label="Our Story">
+      <section className="w-full bg-[#F9D8E0] text-ink py-10 md:py-14" aria-label="Our Story">
         <div className="mx-auto w-full max-w-[880px] px-4 md:px-6 text-center">
-          <p className="font-sans text-[13px] md:text-[14px] font-normal tracking-normal text-white mb-2">
+          <p className="font-sans text-[13px] md:text-[14px] font-normal tracking-normal text-ink mb-2">
             Colors by Nisha Vijay was born from a love for these moments.
           </p>
 
           <h2
-            className="font-display text-2xl font-medium leading-tight tracking-normal md:text-3xl text-white mb-3"
+            className="font-display text-2xl font-medium leading-tight tracking-normal md:text-3xl text-ink mb-3"
           >
             Our Story
           </h2>
 
           {/* 5 Stars with side lines using Ionicons */}
           <div className="flex items-center justify-center gap-3 my-4">
-            <span className="h-[1px] w-14 md:w-20 bg-white/40" />
+            <span className="h-[1px] w-14 md:w-20 bg-ink/40" />
             <div className="flex items-center gap-1 text-[#f6d155]">
               <IoStar className="w-3.5 h-3.5 fill-current" />
               <IoStar className="w-3.5 h-3.5 fill-current" />
@@ -263,27 +263,27 @@ export default function AboutUsPage() {
               <IoStar className="w-3.5 h-3.5 fill-current" />
               <IoStar className="w-3.5 h-3.5 fill-current" />
             </div>
-            <span className="h-[1px] w-14 md:w-20 bg-white/40" />
+            <span className="h-[1px] w-14 md:w-20 bg-ink/40" />
           </div>
 
-          <p className="font-sans text-sm md:text-[15px] font-normal leading-relaxed text-white max-w-[800px] mx-auto mb-4">
+          <p className="font-sans text-sm md:text-[15px] font-normal leading-relaxed text-ink max-w-[800px] mx-auto mb-4">
             We believe that while weddings are unforgettable, it is often the celebrations surrounding them that hold the most cherished memories. The candid photographs, the endless dancing, the happy tears, and the feeling of being surrounded by loved ones. Our collections are designed to be a part of those moments
           </p>
 
-          <p className="font-sans text-sm md:text-[15px] font-normal leading-relaxed text-white max-w-[800px] mx-auto">
+          <p className="font-sans text-sm md:text-[15px] font-normal leading-relaxed text-ink max-w-[800px] mx-auto">
             Every piece is thoughtfully created for those who want to celebrate in style while feeling effortlessly comfortable and confident. Blending vibrant colors, elegant silhouettes, and timeless details, our designs are made for every occasion that deserves to be remembered.
           </p>
 
           {/* Heart with side lines using Ionicons */}
           <div className="flex items-center justify-center gap-3 mt-5 mb-4">
-            <span className="h-[1px] w-14 md:w-20 bg-white/40" />
+            <span className="h-[1px] w-14 md:w-20 bg-ink/40" />
             <IoHeart className="w-2.5 h-2.5 text-[#f6d155] fill-current" />
-            <span className="h-[1px] w-14 md:w-20 bg-white/40" />
+            <span className="h-[1px] w-14 md:w-20 bg-ink/40" />
           </div>
 
           <div className="space-y-1">
-            <p className="font-sans text-[13px] md:text-[14px] text-white">With love</p>
-            <p className="font-display text-[18px] md:text-[20px] font-medium text-white">
+            <p className="font-sans text-[13px] md:text-[14px] text-ink">With love</p>
+            <p className="font-display text-[18px] md:text-[20px] font-medium text-ink">
               Colors by Nisha Vijay
             </p>
           </div>

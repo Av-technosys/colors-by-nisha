@@ -4,8 +4,8 @@
   --font-sans: var(--font-montserrat), Arial, sans-serif;
   --font-display: var(--font-outfit), Arial, sans-serif;
   --color-ink: #111111;
-  --color-purple: #2d254d;
-  --color-ice: #effafb;
+  --color-purple: #F9D8E0;
+  --color-ice: #FEF0F2;
 }
 
 /* Hide scrollbar utility for clean UI */

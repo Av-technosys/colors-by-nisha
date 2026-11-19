@@ -13,7 +13,7 @@ export async function AccountSidebarProfile() {
   const account = readAccount(user);
   const initials = account.fullName.trim().split(/\s+/).filter(Boolean).slice(0, 2).map(name => name[0]).join("");
   const joined = new Intl.DateTimeFormat("en-IN", { month: "long", year: "numeric", timeZone: "Asia/Kolkata" }).format(new Date(account.joinedAt));
-  return <div className="flex min-w-0 items-center gap-4 rounded-md bg-purple p-5 text-white lg:block lg:p-7">
+  return <div className="flex min-w-0 items-center gap-4 rounded-md bg-purple p-5 text-ink lg:block lg:p-7">
     <div className="grid size-11 shrink-0 place-items-center rounded-md border border-white/20 bg-white/10 font-display text-lg lg:mb-5 lg:size-14 lg:text-xl">{initials || <UserRound size={24} aria-hidden="true" />}</div>
     <div className="min-w-0">
     <p className="mb-1 hidden text-[10px] uppercase tracking-[0.16em] text-white/50 lg:block">Your profile</p>

@@ -41,7 +41,7 @@ export function RecordDetails({ data, record, onClose, onEdit, onStatusChange }:
         <p className="mb-6 rounded-md bg-[#f7f6f3] p-4 text-xs leading-relaxed text-neutral-600">{record.detail}</p>
       )}
       {data.canEdit && (
-        <button onClick={onEdit} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-md bg-purple px-4 font-display text-sm text-white transition-colors hover:bg-[#40345f]">
+        <button onClick={onEdit} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-md bg-purple px-4 font-display text-sm text-ink transition-colors hover:bg-ice">
           Edit {data.singular}
         </button>
       )}

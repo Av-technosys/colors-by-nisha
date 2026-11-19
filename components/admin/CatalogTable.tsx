@@ -95,7 +95,7 @@ export function CatalogTable({ title, singular, description, basePath, columns, 
             {basePath === "/admin/products" && <ProductCsvUpload onImportSuccess={reload} />}
             <Link
               href={`${basePath}/new`}
-              className="inline-flex min-h-11 items-center gap-2 rounded-md bg-purple px-4 font-display text-sm text-white"
+              className="inline-flex min-h-11 items-center gap-2 rounded-md bg-purple px-4 font-display text-sm text-ink"
             >
               <Plus size={17} />
               Add {singular}
@@ -105,7 +105,7 @@ export function CatalogTable({ title, singular, description, basePath, columns, 
       />
       <div className="overflow-hidden rounded-md border border-[#e8e5df] bg-white">
         <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#eeeae4] p-5">
-          <h2 className="font-display text-lg">All {title.toLowerCase()} <span className="ml-2 rounded-md bg-[#f2eff6] px-2 py-1 text-xs text-purple">{loading ? "—" : records.length}</span></h2>
+          <h2 className="font-display text-lg">All {title.toLowerCase()} <span className="ml-2 rounded-md bg-[#f2eff6] px-2 py-1 text-xs text-ink">{loading ? "—" : records.length}</span></h2>
           <div className="flex w-full flex-wrap gap-3 sm:w-auto">
             <label className="relative min-w-0 basis-full sm:flex-1 sm:basis-0 sm:w-60">
               <span className="sr-only">Search {title.toLowerCase()}</span><Search size={16} className="absolute left-3 top-3.5 text-neutral-400" aria-hidden="true" />
@@ -135,7 +135,7 @@ export function CatalogTable({ title, singular, description, basePath, columns, 
               )) : data.error ? (
                 <tr><td colSpan={columnCount} className="px-5 py-12 text-center">
                   <p role="alert" className="whitespace-normal text-sm text-neutral-500">{data.error}</p>
-                  <button onClick={reload} className="mt-4 min-h-10 rounded-md border border-[#e5e1da] px-4 text-xs text-purple">Try again</button>
+                  <button onClick={reload} className="mt-4 min-h-10 rounded-md border border-[#e5e1da] px-4 text-xs text-ink">Try again</button>
                 </td></tr>
               ) : !filtered.length ? (
                 <tr><td colSpan={columnCount} className="px-5 py-12 text-center">
@@ -144,10 +144,10 @@ export function CatalogTable({ title, singular, description, basePath, columns, 
                 </td></tr>
               ) : filtered.slice(start, start + 10).map(record => (
               <tr key={record.id} className="hover:bg-[#fcfbf9]">
-                <td className="px-5 py-5"><Link href={`${basePath}/${record.id}/edit`} className="block font-display text-sm text-purple hover:underline">{record.name}</Link><span className="mt-1 block max-w-64 truncate text-[10px] text-neutral-400">/{record.slug}</span></td>
+                <td className="px-5 py-5"><Link href={`${basePath}/${record.id}/edit`} className="block font-display text-sm text-ink hover:underline">{record.name}</Link><span className="mt-1 block max-w-64 truncate text-[10px] text-neutral-400">/{record.slug}</span></td>
                 {columns.map(column => <td key={column} className="px-5 py-5 text-neutral-500">{record.fields[column]}</td>)}
                 {!!statuses.length && <td className="px-5 py-5"><StatusBadge status={record.status ? record.status.charAt(0).toUpperCase() + record.status.slice(1) : "Draft"} /></td>}
-                <td className="px-5 py-5"><div className="flex items-center gap-2"><Link href={`${basePath}/${record.id}/edit`} aria-label={`Edit ${record.name}`} className="grid size-9 place-items-center rounded-md text-purple hover:bg-[#f1edf5]"><Pencil size={16} /></Link><button onClick={() => { setDeleting(record); setError(""); }} aria-label={`Delete ${record.name}`} className="grid size-9 place-items-center rounded-md text-[#a16b60] hover:bg-[#f7eeec]"><Trash2 size={16} /></button></div></td>
+                <td className="px-5 py-5"><div className="flex items-center gap-2"><Link href={`${basePath}/${record.id}/edit`} aria-label={`Edit ${record.name}`} className="grid size-9 place-items-center rounded-md text-ink hover:bg-[#f1edf5]"><Pencil size={16} /></Link><button onClick={() => { setDeleting(record); setError(""); }} aria-label={`Delete ${record.name}`} className="grid size-9 place-items-center rounded-md text-[#a16b60] hover:bg-[#f7eeec]"><Trash2 size={16} /></button></div></td>
               </tr>
             ))}
             </tbody>
