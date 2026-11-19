@@ -97,70 +97,12 @@ export function ContactPageContent() {
         </h1>
       </section>
 
-      {/* Google Map Section with Interactive Location Card (Matches Screenshot 1) */}
-      <section className="mx-auto w-[calc(100%-2rem)] max-w-[1328px] sm:w-[calc(100%-3rem)] lg:w-[calc(100%-4rem)] pb-10 md:pb-14">
-        <div className="relative overflow-hidden rounded-md border border-neutral-200/90 shadow-sm bg-neutral-100">
-          {/* Floating Google Place Card */}
-          <div className="relative md:absolute md:top-5 md:left-5 z-10 m-3 md:m-0 max-w-sm rounded-md bg-white/95 backdrop-blur-md p-4 shadow-xl border border-neutral-100/80">
-            <div className="flex items-start justify-between gap-2">
-              <div>
-                <h3 className="font-display font-semibold text-sm md:text-base text-ink capitalize tracking-tight">
-                  colors by nisha
-                </h3>
-                <p className="mt-1 text-xs text-neutral-600 leading-relaxed font-sans">
-                  A 235, Gandhi Path, Queens Rd, Guru Jhambeshwar Nagar A, Vaishali Nagar, Jaipur, Jaipur Nagar Nigam Area, Rajasthan 302021
-                </p>
-              </div>
-            </div>
-
-            {/* Rating */}
-            <div className="mt-2.5 flex items-center gap-2 text-xs font-sans">
-              <span className="font-bold text-ink">4.9</span>
-              <div className="flex text-amber-500 text-xs">
-                {"★★★★★"}
-              </div>
-              <span className="text-neutral-500 hover:underline cursor-pointer">(86)</span>
-            </div>
-
-            {/* Open in Maps Button */}
-            <div className="mt-3.5 pt-3 border-t border-neutral-100">
-              <a
-                href="https://maps.google.com/?q=colors+by+nisha+jaipur+A+235+Gandhi+Path+Queens+Rd+Vaishali+Nagar"
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center gap-2 rounded-md bg-[#1a73e8] hover:bg-[#1557b0] px-3.5 py-1.5 text-xs font-semibold text-white shadow-xs transition font-sans"
-              >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-                  <polyline points="15 3 21 3 21 9" />
-                  <line x1="10" y1="14" x2="21" y2="3" />
-                </svg>
-                Open in Maps
-              </a>
-            </div>
-          </div>
-
-          {/* Real Google Maps Iframe */}
-          <iframe
-            src="https://maps.google.com/maps?q=colors+by+nisha+jaipur+A+235+Gandhi+Path+Queens+Rd+Vaishali+Nagar&t=&z=16&ie=UTF8&iwloc=&output=embed"
-            width="100%"
-            height="460"
-            style={{ border: 0 }}
-            allowFullScreen={false}
-            loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
-            className="w-full h-[360px] md:h-[460px] grayscale-[10%]"
-            title="Colors by Nisha Studio Location Map"
-          />
-        </div>
-      </section>
-
-      {/* Two-Column Section: Support Customer & Contact Us Form (Matches Screenshot 2) */}
-      <section className="bg-[#eff8f8] py-10 md:py-14 border-t border-neutral-100">
+      {/* Contact form and customer support */}
+      <section className="bg-ice py-10 md:py-14 border-t border-neutral-100">
         <div className="mx-auto w-[calc(100%-2rem)] max-w-[1328px] sm:w-[calc(100%-3rem)] lg:w-[calc(100%-4rem)]">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-start">
             {/* Left Column: Support Customer */}
-            <div className="lg:col-span-5 space-y-6">
+            <div className="order-2 space-y-6 lg:order-1 lg:col-span-5">
               <div>
                 <h2 className="font-display text-2xl font-medium leading-tight tracking-normal md:text-3xl text-ink">
                   Support Customer
@@ -236,11 +178,9 @@ export function ContactPageContent() {
             </div>
 
             {/* Right Column: Contact Us Form */}
-            <div className="lg:col-span-7 space-y-6">
+            <div className="order-1 space-y-6 lg:order-2 lg:col-span-7">
               <div>
-                <h2 className="font-display text-2xl font-medium leading-tight tracking-normal md:text-3xl text-ink">
-                  Contact Us
-                </h2>
+               
                 <p className="mt-2 text-sm md:text-[15px] text-neutral-600 leading-relaxed font-sans">
                   Please submit all general enquiries in the contact form below and we look forward to hearing from you soon.
                 </p>
@@ -372,6 +312,64 @@ export function ContactPageContent() {
               )}
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Google Map Section */}
+      <section className="mx-auto w-[calc(100%-2rem)] max-w-[1328px] sm:w-[calc(100%-3rem)] lg:w-[calc(100%-4rem)] py-10 md:py-14">
+        <div className="relative overflow-hidden rounded-md border border-neutral-200/90 shadow-sm bg-neutral-100">
+          {/* Floating Google Place Card */}
+          <div className="relative md:absolute md:top-5 md:left-5 z-10 m-3 md:m-0 max-w-sm rounded-md bg-white/95 backdrop-blur-md p-4 shadow-xl border border-neutral-100/80">
+            <div className="flex items-start justify-between gap-2">
+              <div>
+                <h3 className="font-display font-semibold text-sm md:text-base text-ink capitalize tracking-tight">
+                  colors by nisha
+                </h3>
+                <p className="mt-1 text-xs text-neutral-600 leading-relaxed font-sans">
+                  A 235, Gandhi Path, Queens Rd, Guru Jhambeshwar Nagar A, Vaishali Nagar, Jaipur, Jaipur Nagar Nigam Area, Rajasthan 302021
+                </p>
+              </div>
+            </div>
+
+            {/* Rating */}
+            <div className="mt-2.5 flex items-center gap-2 text-xs font-sans">
+              <span className="font-bold text-ink">4.9</span>
+              <div className="flex text-amber-500 text-xs">
+                {"★★★★★"}
+              </div>
+              <span className="text-neutral-500 hover:underline cursor-pointer">(86)</span>
+            </div>
+
+            {/* Open in Maps Button */}
+            <div className="mt-3.5 pt-3 border-t border-neutral-100">
+              <a
+                href="https://maps.google.com/?q=colors+by+nisha+jaipur+A+235+Gandhi+Path+Queens+Rd+Vaishali+Nagar"
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-2 rounded-md bg-[#1a73e8] hover:bg-[#1557b0] px-3.5 py-1.5 text-xs font-semibold text-white shadow-xs transition font-sans"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                  <polyline points="15 3 21 3 21 9" />
+                  <line x1="10" y1="14" x2="21" y2="3" />
+                </svg>
+                Open in Maps
+              </a>
+            </div>
+          </div>
+
+          {/* Real Google Maps Iframe */}
+          <iframe
+            src="https://maps.google.com/maps?q=colors+by+nisha+jaipur+A+235+Gandhi+Path+Queens+Rd+Vaishali+Nagar&t=&z=16&ie=UTF8&iwloc=&output=embed"
+            width="100%"
+            height="460"
+            style={{ border: 0 }}
+            allowFullScreen={false}
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+            className="w-full h-[360px] md:h-[460px] grayscale-[10%]"
+            title="Colors by Nisha Studio Location Map"
+          />
         </div>
       </section>
     </div>
