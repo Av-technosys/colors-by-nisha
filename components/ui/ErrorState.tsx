@@ -9,6 +9,6 @@ export function ErrorState({ retry }: { retry: () => void }) {
     <h1 className="font-display text-3xl">Let’s try that again</h1>
     <p className="mt-4 text-sm leading-relaxed text-neutral-500">This page is temporarily unavailable. Please try again in a moment.</p>
     <Button variant="hero" onClick={retry} className="mt-7">Try again</Button>
-    <Link href="/" className="mt-5 min-h-11 content-center text-xs text-purple underline underline-offset-4">Return to home</Link>
+    <Link href="/" className="mt-5 min-h-11 content-center text-xs text-ink underline underline-offset-4">Return to home</Link>
   </main>;
 }

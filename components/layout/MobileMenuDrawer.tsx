@@ -83,7 +83,7 @@ export function MobileMenuDrawer() {
               className="flex items-center justify-between py-2.5 text-base font-bold text-ink bg-neutral-50 px-3 rounded-md hover:bg-neutral-100 transition"
             >
               <span className="uppercase tracking-wide text-ink">Shop All Products</span>
-              <span className="text-xs rounded-md bg-[#2d254d] text-white px-2 py-0.5">Explore</span>
+              <span className="text-xs rounded-md bg-[#F9D8E0] text-ink px-2 py-0.5">Explore</span>
             </Link>
           </div>
 

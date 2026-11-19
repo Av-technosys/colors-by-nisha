@@ -57,7 +57,7 @@ export function CategoryForm({ category }: { category?: typeof categories.$infer
           {error && <p role="alert" className="rounded-md bg-[#f7eeec] p-3 text-xs text-[#a16b60]">{error}</p>}
           <div className="flex flex-wrap justify-end gap-3 border-t border-neutral-100 pt-5">
             <Link href="/admin/categories" className="inline-flex min-h-11 items-center px-4 text-sm text-neutral-500">Cancel</Link>
-            <button type="submit" className="min-h-11 rounded-md bg-purple px-5 font-display text-sm text-white disabled:opacity-50">{pending ? "Saving…" : "Save category"}</button>
+            <button type="submit" className="min-h-11 rounded-md bg-purple px-5 font-display text-sm text-ink disabled:opacity-50">{pending ? "Saving…" : "Save category"}</button>
           </div>
         </fieldset>
       </Form>

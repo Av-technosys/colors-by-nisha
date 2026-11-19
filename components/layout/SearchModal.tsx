@@ -190,7 +190,7 @@ export function SearchModal() {
                             className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
                           />
                         </span>
-                        <span className="mt-3 block font-display text-[14px] md:text-[15px] font-medium text-ink uppercase tracking-wide group-hover:text-purple transition-colors">
+                        <span className="mt-3 block font-display text-[14px] md:text-[15px] font-medium text-ink uppercase tracking-wide group-hover:text-ink transition-colors">
                           {product.name}
                         </span>
                         <span className="mt-1 block font-sans text-xs md:text-sm text-neutral-600">
@@ -205,7 +205,7 @@ export function SearchModal() {
                     <Link
                       href={`/shop?search=${encodeURIComponent(query)}`}
                       onClick={handleClose}
-                      className="inline-flex items-center justify-center bg-[#201a3c] hover:bg-[#d4af37] text-[#FCF1D8] hover:text-[#201a3c] font-display text-[14px] md:text-[15px] font-semibold uppercase tracking-[1.5px] px-8 py-3.5 rounded-md transition-all duration-300 shadow-sm cursor-pointer"
+                      className="inline-flex items-center justify-center bg-[#F9D8E0] hover:bg-[#d4af37] text-[#FCF1D8] hover:text-[#F9D8E0] font-display text-[14px] md:text-[15px] font-semibold uppercase tracking-[1.5px] px-8 py-3.5 rounded-md transition-all duration-300 shadow-sm cursor-pointer"
                     >
                       VIEW ALL RESULTS
                     </Link>

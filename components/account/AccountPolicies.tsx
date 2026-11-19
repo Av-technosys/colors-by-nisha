@@ -163,7 +163,7 @@ export const policies: Record<PolicyKey, PolicyContent> = {
               Email:{" "}
               <a
                 href="mailto:colorbynishavijay@gmail.com"
-                className="underline underline-offset-4 text-[#2d254d] font-medium transition-colors"
+                className="underline underline-offset-4 text-ink font-medium transition-colors"
               >
                 colorbynishavijay@gmail.com
               </a>

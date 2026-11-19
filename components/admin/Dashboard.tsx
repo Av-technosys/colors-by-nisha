@@ -21,7 +21,7 @@ export function Dashboard({ data }: { data: AdminDashboardData }) {
         title="A beautiful day to create."
         description="Your latest payments, orders, and collection updates."
         action={(
-          <Link href="/admin/products/new" className="inline-flex min-h-11 items-center justify-center gap-2 rounded-md bg-purple px-4 font-display text-sm text-white transition-colors hover:bg-[#40345f]">
+          <Link href="/admin/products/new" className="inline-flex min-h-11 items-center justify-center gap-2 rounded-md bg-purple px-4 font-display text-sm text-ink transition-colors hover:bg-ice">
             <Plus size={17} aria-hidden="true" />Add to your collection
           </Link>
         )}
@@ -35,7 +35,7 @@ export function Dashboard({ data }: { data: AdminDashboardData }) {
               <p className="text-xs text-neutral-500">{stat.label}</p>
               <span className="rounded-md bg-[#f5f2f8] p-2 text-[#8e7ba7]"><stat.icon size={17} aria-hidden="true" /></span>
             </div>
-            <p className="font-display text-[30px] leading-none text-purple">{stat.value}</p>
+            <p className="font-display text-[30px] leading-none text-ink">{stat.value}</p>
             <p className="mt-3 text-[10px] text-neutral-400">{stat.note}</p>
           </div>
         ))}
@@ -52,13 +52,13 @@ export function Dashboard({ data }: { data: AdminDashboardData }) {
           <div className="space-y-5">
             {lowStock?.map(product => <Link key={product.id} href={`/admin/products/${product.productId}/edit`} className="group flex min-w-0 items-center gap-3">
               <span className="grid size-11 shrink-0 place-items-center rounded-md bg-[#f5f2f8] text-[#8e7ba7]"><Package size={18} aria-hidden="true" /></span>
-              <span className="min-w-0 flex-1"><span className="block truncate font-display text-sm group-hover:text-purple">{product.name}</span><span className="mt-1 block truncate text-[10px] text-neutral-400">{product.option}</span></span>
+              <span className="min-w-0 flex-1"><span className="block truncate font-display text-sm group-hover:text-ink">{product.name}</span><span className="mt-1 block truncate text-[10px] text-neutral-400">{product.option}</span></span>
               <span className={`shrink-0 text-xs ${product.stock === 0 ? "text-[#9e5144]" : "text-[#94764d]"}`}>{product.stock === 0 ? "Out of stock" : `${product.stock} left`}</span>
             </Link>)}
             {(!lowStock || !lowStock.length) && <p className="py-8 text-sm text-neutral-400">{lowStock ? "No low-stock options to review." : "Stock information is temporarily unavailable."}</p>}
 
           </div>
-          <Link href="/admin/products" className="mt-6 flex items-center justify-between border-t border-[#eeeae4] pt-4 text-xs text-purple">
+          <Link href="/admin/products" className="mt-6 flex items-center justify-between border-t border-[#eeeae4] pt-4 text-xs text-ink">
             Explore your products<ArrowRight size={16} aria-hidden="true" />
           </Link>
         </section>
@@ -70,7 +70,7 @@ export function Dashboard({ data }: { data: AdminDashboardData }) {
             <h2 className="font-display text-lg">Recent orders</h2>
             <p className="mt-1 text-[11px] text-neutral-400">The latest additions to someone’s wardrobe.</p>
           </div>
-          <Link href="/admin/orders" className="flex items-center gap-2 whitespace-nowrap text-[11px] text-purple">
+          <Link href="/admin/orders" className="flex items-center gap-2 whitespace-nowrap text-[11px] text-ink">
             View all<ArrowRight size={15} aria-hidden="true" />
           </Link>
         </div>
@@ -87,7 +87,7 @@ export function Dashboard({ data }: { data: AdminDashboardData }) {
             <tbody className="divide-y divide-[#f0ede8]">
               {recentOrders?.map(order => (
                 <tr key={order.id}>
-                  <td className="px-6 py-4 font-display text-sm text-purple"><Link href={`/admin/orders/${order.id}`} className="hover:underline">{orderReference(order.id)}</Link></td>
+                  <td className="px-6 py-4 font-display text-sm text-ink"><Link href={`/admin/orders/${order.id}`} className="hover:underline">{orderReference(order.id)}</Link></td>
                   <td className="px-6 py-4 text-neutral-500">{order.shippingName || order.customerName || "Customer"}</td>
                   <td className="px-6 py-4 text-neutral-400">{new Intl.DateTimeFormat("en-IN", { dateStyle: "medium", timeZone: "Asia/Kolkata" }).format(order.createdAt)}</td>
                   <td className="px-6 py-4">{formatINR(Number(order.totalAmount))}</td>

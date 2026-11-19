@@ -46,7 +46,7 @@ export function GoogleCallback() {
         navigateToSignUp={() => router.replace("/signup?sso=complete")}
       />
       <p role="status" className="text-sm text-neutral-600">{error || "Completing Google sign-in…"}</p>
-      {error && <Link href="/login" className="inline-flex rounded-md bg-purple px-5 py-3 text-sm text-white">Back to sign in</Link>}
+      {error && <Link href="/login" className="inline-flex rounded-md bg-purple px-5 py-3 text-sm text-ink">Back to sign in</Link>}
     </div>
   </main>;
 }

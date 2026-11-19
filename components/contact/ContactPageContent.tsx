@@ -287,7 +287,7 @@ export function ContactPageContent() {
                         placeholder="Your name *"
                         value={formData.name}
                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                        className="w-full rounded-md border border-neutral-200/90 bg-white px-5 py-3.5 text-sm text-ink placeholder:text-neutral-500 focus:border-[#2d254d] focus:ring-1 focus:ring-[#2d254d] outline-none transition shadow-2xs font-sans"
+                        className="w-full rounded-md border border-neutral-200/90 bg-white px-5 py-3.5 text-sm text-ink placeholder:text-neutral-500 focus:border-[#F9D8E0] focus:ring-1 focus:ring-[#F9D8E0] outline-none transition shadow-2xs font-sans"
                         required
                       />
                     </div>
@@ -299,7 +299,7 @@ export function ContactPageContent() {
                         placeholder="Your Email *"
                         value={formData.email}
                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                        className="w-full rounded-md border border-neutral-200/90 bg-white px-5 py-3.5 text-sm text-ink placeholder:text-neutral-500 focus:border-[#2d254d] focus:ring-1 focus:ring-[#2d254d] outline-none transition shadow-2xs font-sans"
+                        className="w-full rounded-md border border-neutral-200/90 bg-white px-5 py-3.5 text-sm text-ink placeholder:text-neutral-500 focus:border-[#F9D8E0] focus:ring-1 focus:ring-[#F9D8E0] outline-none transition shadow-2xs font-sans"
                         required
                       />
                     </div>
@@ -311,7 +311,7 @@ export function ContactPageContent() {
                         placeholder="Phone Number"
                         value={formData.phone}
                         onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                        className="w-full rounded-md border border-neutral-200/90 bg-white px-5 py-3.5 text-sm text-ink placeholder:text-neutral-500 focus:border-[#2d254d] focus:ring-1 focus:ring-[#2d254d] outline-none transition shadow-2xs font-sans"
+                        className="w-full rounded-md border border-neutral-200/90 bg-white px-5 py-3.5 text-sm text-ink placeholder:text-neutral-500 focus:border-[#F9D8E0] focus:ring-1 focus:ring-[#F9D8E0] outline-none transition shadow-2xs font-sans"
                       />
                     </div>
                   </div>
@@ -325,7 +325,7 @@ export function ContactPageContent() {
                       rows={6}
                       value={formData.message}
                       onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                      className="w-full rounded-md border border-neutral-200/90 bg-white px-5 py-4 text-sm text-ink placeholder:text-neutral-500 focus:border-[#2d254d] focus:ring-1 focus:ring-[#2d254d] outline-none transition shadow-2xs resize-none font-sans"
+                      className="w-full rounded-md border border-neutral-200/90 bg-white px-5 py-4 text-sm text-ink placeholder:text-neutral-500 focus:border-[#F9D8E0] focus:ring-1 focus:ring-[#F9D8E0] outline-none transition shadow-2xs resize-none font-sans"
                     />
                   </div>
 
@@ -336,7 +336,7 @@ export function ContactPageContent() {
                         type="checkbox"
                         checked={formData.agreedPrivacy}
                         onChange={(e) => setFormData({ ...formData, agreedPrivacy: e.target.checked })}
-                        className="size-4 rounded-md border-neutral-300 accent-[#2d254d] cursor-pointer"
+                        className="size-4 rounded-md border-neutral-300 accent-[#F9D8E0] cursor-pointer"
                       />
                       <span>
                         I agree to the{" "}
@@ -363,7 +363,7 @@ export function ContactPageContent() {
                     <button
                       type="submit"
                       disabled={status === "submitting"}
-                      className="rounded-md bg-[#2d254d] hover:bg-[#201938] px-10 py-3.5 font-display text-xs md:text-sm font-bold uppercase tracking-wider text-white shadow-xs transition-colors cursor-pointer text-center"
+                      className="rounded-md bg-[#F9D8E0] hover:bg-ice px-10 py-3.5 font-display text-xs md:text-sm font-bold uppercase tracking-wider text-ink shadow-xs transition-colors cursor-pointer text-center"
                     >
                       {status === "submitting" ? "SENDING..." : "SEND"}
                     </button>

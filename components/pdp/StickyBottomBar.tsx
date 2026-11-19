@@ -125,7 +125,7 @@ export function StickyBottomBar({ product, quantity, onQuantityChange: setQuanti
           <button
             onClick={onAdd}
             disabled={!product.inStock}
-            className="min-w-0 flex-1 md:flex-none rounded-md bg-[#2d254d] hover:bg-[#231c3d] py-2.5 px-3 md:px-8 font-display text-xs md:text-sm font-bold uppercase tracking-wider text-white shadow-xs transition-colors cursor-pointer text-center"
+            className="min-w-0 flex-1 md:flex-none rounded-md bg-[#F9D8E0] hover:bg-ice py-2.5 px-3 md:px-8 font-display text-xs md:text-sm font-bold uppercase tracking-wider text-ink shadow-xs transition-colors cursor-pointer text-center"
           >
             {product.inStock ? "ADD TO CART" : "OUT OF STOCK"}
           </button>
