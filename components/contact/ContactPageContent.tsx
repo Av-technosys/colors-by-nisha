@@ -181,7 +181,7 @@ export function ContactPageContent() {
             <div className="lg:col-span-7 space-y-6">
               <div>
                
-                <p className="mhttps://colors-by-nisha-git-nk-theme-orange-avt9.vercel.app/t-2 text-sm md:text-[15px] text-neutral-600 leading-relaxed font-sans">
+                <p className="mt-2 text-sm md:text-[15px] text-neutral-600 leading-relaxed font-sans">
                   Please submit all general enquiries in the contact form below and we look forward to hearing from you soon.
                 </p>
               </div>
