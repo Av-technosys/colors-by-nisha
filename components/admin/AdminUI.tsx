@@ -27,7 +27,7 @@ export function StatusBadge({ status }: { status: string }) {
   if (["Delivered", "Paid", "Active", "Published", "Resolved"].includes(status)) {
     color = "bg-[#edf4ed] text-[#517254]";
   } else if (["Processing", "New"].includes(status)) {
-    color = "bg-[#f1edf7] text-[#76618e]";
+    color = "bg-[#FEF6F0] text-[#9B684F]";
   } else if (status === "Shipped") {
     color = "bg-[#edf2f7] text-[#5a738c]";
   } else if (["Pending", "Low stock"].includes(status)) {

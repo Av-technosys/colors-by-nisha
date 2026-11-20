@@ -142,7 +142,7 @@ export function ProductDetailsInfo({ product, variantId, onVariantChange, quanti
           {/* Circular Wishlist Button */}
           <button
             onClick={() => toggleWishlist(product.slug)}
-            className={`size-11 shrink-0 rounded-md border border-neutral-300 flex items-center justify-center transition-colors cursor-pointer ${
+            className={`size-11 shrink-0 rounded-full border border-neutral-300 flex items-center justify-center transition-colors cursor-pointer ${
               wishlisted
                 ? "border-red-400 bg-red-50 text-red-600"
                 : "bg-white text-neutral-600 hover:border-ink hover:text-ink"
@@ -241,13 +241,13 @@ export function ProductDetailsInfo({ product, variantId, onVariantChange, quanti
                 )}`}
                 target="_blank"
                 rel="noreferrer"
-                className="flex items-center justify-center gap-2 rounded-md bg-[#25D366] hover:bg-[#20ba59] py-3 px-4 text-xs font-semibold uppercase text-white shadow-xs transition"
+                className="flex items-center justify-center gap-2 rounded-full bg-[#25D366] hover:bg-[#20ba59] py-3 px-4 text-xs font-semibold uppercase text-white shadow-xs transition"
               >
                 Chat with Stylist on WhatsApp
               </a>
               <a
                 href="mailto:colorbynishavijay@gmail.com"
-                className="flex items-center justify-center gap-2 rounded-md border border-neutral-300 py-2.5 px-4 text-xs font-semibold uppercase text-neutral-700 hover:bg-neutral-50 transition"
+                className="flex items-center justify-center gap-2 rounded-full border border-neutral-300 py-2.5 px-4 text-xs font-semibold uppercase text-neutral-700 hover:bg-neutral-50 transition"
               >
                 Email: colorbynishavijay@gmail.com
               </a>

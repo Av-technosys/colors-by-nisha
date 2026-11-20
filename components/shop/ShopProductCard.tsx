@@ -142,7 +142,7 @@ export function ShopProductCard({ product, onQuickView }: ShopProductCardProps) 
           <button
             onClick={handleQuickAdd}
             disabled={isAdding || !product.inStock}
-            className="w-full translate-y-2 rounded-md bg-white/95 backdrop-blur-xs py-2.5 px-3 font-display text-xs font-semibold uppercase tracking-wider text-ink shadow-md opacity-0 transition-all duration-200 group-hover:translate-y-0 group-hover:opacity-100 hover:bg-ink hover:text-white"
+            className="w-full translate-y-2 rounded-md bg-white/95 backdrop-blur-xs py-2.5 px-3 font-display text-xs font-semibold uppercase tracking-wider text-ink shadow-md opacity-0 transition-all duration-200 group-hover:translate-y-0 group-hover:opacity-100 hover:bg-orange-hover hover:text-ink"
           >
             {!product.inStock ? "Out of Stock" : isAdding ? "Adding..." : ((product.variants?.length ?? 0) > 1 && !product.variants?.every(v => ['standard', 'default title', 'title'].includes(v.name.toLowerCase().trim()))) ? "Choose Options" : "Add to Cart"}
           </button>

@@ -18,7 +18,7 @@ async function Details({ params, searchParams }: { params: Promise<{ id: string 
   const { received, payment } = await searchParams;
   return (
     <div className="min-w-0">
-      <Link href="/orders" className="mb-7 inline-block text-xs text-purple">← Your orders</Link>
+      <Link href="/orders" className="mb-7 inline-block text-xs text-ink">← Your orders</Link>
       {received === "1" && (
         <div role="status" className="mb-7 rounded-md border border-[#dce7db] bg-[#edf4ed] p-5 text-[#517254]">
           <h2 className="font-display text-2xl">
@@ -36,7 +36,7 @@ async function Details({ params, searchParams }: { params: Promise<{ id: string 
       <PaymentStatus orderId={order.id} paid={Boolean(order.paidAt)} cancelled={order.status === "cancelled"} awaitingConfirmation={payment === "pending"} />
       {order.paidAt && !order.stockDeductedAt && order.status !== "cancelled" && <p role="status" className="mb-5 rounded-md bg-[#faf3e6] p-4 text-sm text-[#9c7a3f]">Your payment is received. Our team is reviewing item availability before dispatch.</p>}
       <OrderSummary order={order} />
-      <Link href="/shop" className="mt-7 inline-block text-sm text-purple underline underline-offset-4">Continue shopping</Link>
+      <Link href="/shop" className="mt-7 inline-block text-sm text-ink underline underline-offset-4">Continue shopping</Link>
     </div>
   );
 }

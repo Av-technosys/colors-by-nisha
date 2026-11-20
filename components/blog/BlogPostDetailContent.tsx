@@ -165,7 +165,7 @@ export function BlogPostDetailContent({
               {/* Twitter / X */}
               <button
                 onClick={() => handleShare("twitter")}
-                className="size-8 rounded-md border border-neutral-200 flex items-center justify-center text-neutral-600 hover:border-ink hover:text-ink transition cursor-pointer"
+                className="size-8 rounded-full border border-neutral-200 flex items-center justify-center text-neutral-600 hover:border-ink hover:text-ink transition cursor-pointer"
                 aria-label="Share on X / Twitter"
                 title="Share on X"
               >
@@ -177,7 +177,7 @@ export function BlogPostDetailContent({
               {/* Facebook */}
               <button
                 onClick={() => handleShare("facebook")}
-                className="size-8 rounded-md border border-neutral-200 flex items-center justify-center text-neutral-600 hover:border-ink hover:text-ink transition cursor-pointer"
+                className="size-8 rounded-full border border-neutral-200 flex items-center justify-center text-neutral-600 hover:border-ink hover:text-ink transition cursor-pointer"
                 aria-label="Share on Facebook"
                 title="Share on Facebook"
               >
@@ -189,7 +189,7 @@ export function BlogPostDetailContent({
               {/* Pinterest */}
               <button
                 onClick={() => handleShare("pinterest")}
-                className="size-8 rounded-md border border-neutral-200 flex items-center justify-center text-neutral-600 hover:border-ink hover:text-ink transition cursor-pointer"
+                className="size-8 rounded-full border border-neutral-200 flex items-center justify-center text-neutral-600 hover:border-ink hover:text-ink transition cursor-pointer"
                 aria-label="Share on Pinterest"
                 title="Share on Pinterest"
               >
@@ -201,7 +201,7 @@ export function BlogPostDetailContent({
               {/* Copy Link */}
               <button
                 onClick={() => handleShare("copy")}
-                className="size-8 rounded-md border border-neutral-200 flex items-center justify-center text-neutral-600 hover:border-ink hover:text-ink transition cursor-pointer"
+                className="size-8 rounded-full border border-neutral-200 flex items-center justify-center text-neutral-600 hover:border-ink hover:text-ink transition cursor-pointer"
                 aria-label="Copy link"
                 title="Copy link"
               >

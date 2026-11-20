@@ -166,7 +166,7 @@ export default function PrivacyPolicyPage() {
                 Email:{" "}
                 <a
                   href="mailto:colorbynishavijay@gmail.com"
-                  className="underline underline-offset-4 hover:text-purple transition-colors"
+                  className="underline underline-offset-4 hover:text-ink transition-colors"
                 >
                   colorbynishavijay@gmail.com
                 </a>
