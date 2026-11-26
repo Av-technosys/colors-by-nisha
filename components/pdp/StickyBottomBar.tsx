@@ -80,7 +80,7 @@ export function StickyBottomBar({ product, quantity, onQuantityChange: setQuanti
           <div className="relative shrink-0">
             <button
               onClick={() => setPriceDropdownOpen(!priceDropdownOpen)}
-              className="flex items-center justify-between gap-2 md:gap-3 rounded-md border border-neutral-300 bg-white px-2 md:px-4 py-2 text-xs md:text-sm font-bold text-ink shadow-2xs hover:border-neutral-400 transition cursor-pointer"
+              className="flex items-center justify-between gap-2 md:gap-3 rounded-full border border-neutral-300 bg-white px-2 md:px-4 py-2 text-xs md:text-sm font-bold text-ink shadow-2xs hover:border-neutral-400 transition cursor-pointer"
               aria-expanded={priceDropdownOpen}
             >
               <span>{formatINR(product.price)}</span>
@@ -93,7 +93,7 @@ export function StickyBottomBar({ product, quantity, onQuantityChange: setQuanti
               <div className="absolute bottom-full mb-2 left-0 w-44 rounded-md bg-white border border-neutral-200 shadow-xl p-1.5 z-50 text-xs animate-in zoom-in-95 duration-150">
                 <button
                   onClick={() => setPriceDropdownOpen(false)}
-                  className="w-full text-left px-3 py-2 rounded-md hover:bg-neutral-100 font-medium text-ink transition cursor-pointer"
+                  className="w-full text-left px-3 py-2 rounded-full hover:bg-neutral-100 font-medium text-ink transition cursor-pointer"
                 >
                   {product.variants?.find(variant => variant.id === product.variantId)?.name || "Standard"} - {formatINR(product.price)}
                 </button>
@@ -125,7 +125,7 @@ export function StickyBottomBar({ product, quantity, onQuantityChange: setQuanti
           <button
             onClick={onAdd}
             disabled={!product.inStock}
-            className="min-w-0 flex-1 md:flex-none rounded-md bg-[#2d254d] hover:bg-[#231c3d] py-2.5 px-3 md:px-8 font-display text-xs md:text-sm font-bold uppercase tracking-wider text-white shadow-xs transition-colors cursor-pointer text-center"
+            className="min-w-0 flex-1 md:flex-none rounded-full bg-[#FEDECD] hover:bg-orange-hover py-2.5 px-3 md:px-8 font-display text-xs md:text-sm font-bold uppercase tracking-wider text-ink shadow-xs transition-colors cursor-pointer text-center"
           >
             {product.inStock ? "ADD TO CART" : "OUT OF STOCK"}
           </button>
@@ -133,7 +133,7 @@ export function StickyBottomBar({ product, quantity, onQuantityChange: setQuanti
           {/* Scroll-To-Top Button INSIDE THE STRAP ONLY */}
           <button
             onClick={scrollToTop}
-            className="back-to-top relative size-10 md:size-11 shrink-0 rounded-md overflow-hidden bg-white shadow-md border border-neutral-200 flex items-center justify-center transition-all cursor-pointer hover:scale-105"
+            className="back-to-top relative size-10 md:size-11 shrink-0 rounded-full overflow-hidden bg-white shadow-md border border-neutral-200 flex items-center justify-center transition-all cursor-pointer hover:scale-105"
             aria-label="Back to top"
             title="Back to top"
           >

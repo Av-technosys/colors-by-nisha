@@ -17,8 +17,8 @@ export function HandpickedSection({ onPlay, onSelect }: { onPlay: (id: number) =
                 <button className="group absolute inset-0 size-full" onClick={() => onPlay(item.video)} aria-label={`Play ${item.name}`}>
                   <PreviewVideo src={videos[item.video]} poster={videoPosters[item.video]} />
                 </button>
-                <button className="absolute inset-x-2.5 bottom-2.5 flex items-center gap-2.5 rounded-md bg-white/25 p-2 text-left text-white backdrop-blur-md transition-colors hover:bg-white/35 md:inset-x-[15px] md:bottom-[15px] md:p-2.5" onClick={() => onSelect(item)}>
-                  <span className="relative h-[60px] w-10 shrink-0 overflow-hidden rounded-md md:h-[75px] md:w-[50px]">
+                <button className="absolute inset-x-2.5 bottom-2.5 flex items-center gap-2.5 bg-white/25 p-2 text-left text-white backdrop-blur-md transition-colors hover:bg-white/35 md:inset-x-[15px] md:bottom-[15px] md:p-2.5" onClick={() => onSelect(item)}>
+                  <span className="relative h-[60px] w-10 shrink-0 overflow-hidden md:h-[75px] md:w-[50px]">
                     <Photo id={item.image} alt={item.name} />
                   </span>
                   <span className="min-w-0">

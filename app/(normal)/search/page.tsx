@@ -138,7 +138,7 @@ function SearchPageContent() {
                           className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
                         />
                       </span>
-                      <span className="mt-3 block font-display text-[14px] md:text-[15px] font-medium text-ink uppercase tracking-wide group-hover:text-purple transition-colors">
+                      <span className="mt-3 block font-display text-[14px] md:text-[15px] font-medium text-ink uppercase tracking-wide group-hover:text-ink transition-colors">
                         {product.name}
                       </span>
                       <span className="mt-1 block font-sans text-sm md:text-[15px] text-neutral-600">
@@ -152,7 +152,7 @@ function SearchPageContent() {
                 <div className="mt-10 mb-12 flex justify-center">
                   <Link
                     href={`/shop?search=${encodeURIComponent(query)}`}
-                    className="inline-flex items-center justify-center bg-[#201a3c] hover:bg-[#d4af37] text-[#FCF1D8] hover:text-[#201a3c] font-display text-[14px] md:text-[15px] font-semibold uppercase tracking-[1.5px] px-8 py-3.5 rounded-md transition-all duration-300 shadow-sm cursor-pointer"
+                    className="inline-flex items-center justify-center bg-[#FEDECD] hover:bg-orange-hover text-ink font-display text-[14px] md:text-[15px] font-semibold uppercase tracking-[1.5px] px-8 py-3.5 rounded-full transition-all duration-300 shadow-sm cursor-pointer"
                   >
                     VIEW ALL RESULTS
                   </Link>

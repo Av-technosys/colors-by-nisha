@@ -247,7 +247,7 @@ export function Header({
       </header>
       {scrolled && !pathname.startsWith("/products/") && (
         <button
-          className="fixed bottom-[calc(85px+env(safe-area-inset-bottom))] right-4 z-20 size-10 rounded-md bg-white text-xl shadow-md transition-transform hover:-translate-y-1 md:bottom-8 md:right-8 md:size-12 md:text-2xl cursor-pointer"
+          className="fixed bottom-[calc(85px+env(safe-area-inset-bottom))] right-4 z-20 size-10 rounded-full bg-white text-xl shadow-md transition-transform hover:-translate-y-1 md:bottom-8 md:right-8 md:size-12 md:text-2xl cursor-pointer"
           aria-label="Back to top"
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
         >

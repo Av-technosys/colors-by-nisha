@@ -1,11 +1,13 @@
 @import "tailwindcss";
 
+/* Orange palette for store accents and light surfaces. */
 @theme inline {
   --font-sans: var(--font-montserrat), Arial, sans-serif;
   --font-display: var(--font-outfit), Arial, sans-serif;
   --color-ink: #111111;
-  --color-purple: #2d254d;
-  --color-ice: #effafb;
+  --color-purple: #FEDECD;
+  --color-ice: #FEF6F0;
+  --color-orange-hover: #F6C4A8;
 }
 
 /* Hide scrollbar utility for clean UI */

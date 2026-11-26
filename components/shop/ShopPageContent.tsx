@@ -245,7 +245,7 @@ export function ShopPageContent({ products: allProducts }: ShopPageContentProps)
                           setPriceRange([0, tempPriceMax]);
                           setCurrentPage(1);
                         }}
-                        className="flex-1 rounded-md bg-ink py-2 text-xs font-semibold uppercase tracking-wider text-white hover:bg-neutral-800 transition"
+                        className="flex-1 rounded-md bg-purple py-2 text-xs font-semibold uppercase tracking-wider text-ink hover:bg-orange-hover hover:text-ink transition"
                       >
                         Apply Price
                       </button>
@@ -312,7 +312,7 @@ export function ShopPageContent({ products: allProducts }: ShopPageContentProps)
                       key={cols}
                       onClick={() => setColumnCount(cols as 2 | 3 | 4)}
                       className={`grid size-7 place-items-center rounded-md text-xs font-semibold transition ${
-                        columnCount === cols ? "bg-ink text-white" : "text-neutral-500 hover:text-ink"
+                        columnCount === cols ? "bg-purple text-ink" : "text-neutral-500 hover:text-ink"
                       }`}
                       aria-label={`${cols} columns`}
                       title={`${cols} columns`}
@@ -408,7 +408,7 @@ export function ShopPageContent({ products: allProducts }: ShopPageContentProps)
                 <p className="mt-1 text-sm text-neutral-500">Try adjusting your filters or search terms.</p>
                 <button
                   onClick={resetFilters}
-                  className="mt-5 rounded-md bg-ink px-6 py-2.5 text-xs font-semibold uppercase tracking-wider text-white hover:bg-neutral-800 transition"
+                  className="mt-5 rounded-md bg-purple px-6 py-2.5 text-xs font-semibold uppercase tracking-wider text-ink hover:bg-orange-hover hover:text-ink transition"
                 >
                   Reset All Filters
                 </button>
@@ -450,7 +450,7 @@ export function ShopPageContent({ products: allProducts }: ShopPageContentProps)
                     onClick={() => handlePageChange(page)}
                     className={`grid size-10 place-items-center rounded-md text-xs font-semibold transition ${
                       currentPage === page
-                        ? "bg-ink text-white shadow-xs"
+                        ? "bg-purple text-ink shadow-xs"
                         : "border border-neutral-200 text-neutral-700 hover:border-ink hover:text-ink"
                     }`}
                     aria-current={currentPage === page ? "page" : undefined}
@@ -563,7 +563,7 @@ export function ShopPageContent({ products: allProducts }: ShopPageContentProps)
                   setCurrentPage(1);
                   setMobileFilterOpen(false);
                 }}
-                className="w-full rounded-md bg-ink py-3 text-xs font-semibold uppercase tracking-wider text-white"
+                className="w-full rounded-md bg-purple py-3 text-xs font-semibold uppercase tracking-wider text-ink hover:bg-orange-hover hover:text-ink transition"
               >
                 Apply Filters ({filteredProducts.length})
               </button>
